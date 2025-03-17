@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.shoppingmall.repository.product.ProductRepository">  <!-- 어떤 리포지토리를 볼지 정하는 곳 -->
+    <!-- 상품 정보 불러오기 -->
+    <select id="getProductData">
+        SELECT * FROM product
+    </select>
+
+    <!--  새로운 상품 등록하기  -->
+    <insert id="setProductData">
+        INSERT INTO product (
+            `product_id`, `seller_id`, `season_id`, `shipping_company_id`, `category_id`,
+            `name`, `description`, `price`, `register_datetime`, `updated_datetime`,
+            `features`, `notes`, `access_count`, `search_count`, `status`, `new_product_flag`,
+            `like_count`, `gender`, `review_count`, `inquiry_count`, `fit`, `texture`,
+            `thickness`, `rating`, `total_sales`, `manufacturer`, `origin`,
+            `quality_assurance_standard`, `color_count`, `size_count`, `active_flag`
+        ) values (
+                  ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?,?, ?, ?
+        )
+    </insert>
+</mapper>
