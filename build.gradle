@@ -1,17 +1,15 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.4.3'
+    id 'org.springframework.boot' version '3.2.0'  // Spring Boot 3.2.x 버전
     id 'io.spring.dependency-management' version '1.1.7'
 }
-
 
 group = 'org.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
     toolchain {
-
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(21)  // Java 21 버전
     }
 }
 
@@ -27,12 +25,12 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc' // jdbc 드라이버
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' // thymleaf 드라이버
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' // Thymeleaf 드라이버
     implementation 'org.springframework.boot:spring-boot-starter-web' // 웹 드라이버
-    implementation 'org.springframework.boot:spring-boot-starter-webflux' //웹플럭스 드라이버
+    implementation 'org.springframework.boot:spring-boot-starter-webflux' // 웹플럭스 드라이버
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'com.mysql:mysql-connector-j' //mysql 사용하기 위한 의존성
+    runtimeOnly 'com.mysql:mysql-connector-j' // MySQL 사용하기 위한 의존성
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test' // 스프링 부트 스타터
     testImplementation 'io.projectreactor:reactor-test'
