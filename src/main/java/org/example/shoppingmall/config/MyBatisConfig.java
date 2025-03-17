@@ -24,7 +24,7 @@ public class MyBatisConfig {
         sessionFactory.setConfigLocation(myBatisConfig);
 
         sessionFactory.setTypeAliasesPackage("org/example/shoppingmall/repository/UserRepository"); //리포지토리는 여기를 참조 할게요.
-
+        sessionFactory.setTypeAliasesPackage("org/example/shoppingmall/dto/order");
         return sessionFactory.getObject();
     }
 }
