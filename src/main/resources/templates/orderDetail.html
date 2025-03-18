@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Detail</title>
+</head>
+<body>
+<h1>Order Detail</h1>
+<h3>주문 정보</h3>
+<table>
+    <tr>
+        <td>주문 ID:</td>
+        <td th:text="${order.orderId}"></td>
+    </tr>
+    <tr>
+        <td>고객 ID:</td>
+        <td th:text="${order.customerId}"></td>
+    </tr>
+    <tr>
+        <td>주문 상태:</td>
+        <td th:text="${order.orderStatus}"></td>
+    </tr>
+    <tr>
+        <td>결제 상태:</td>
+        <td th:text="${order.paymentStatus}"></td>
+    </tr>
+    <tr>
+        <td>총 주문 금액:</td>
+        <td th:text="${order.totalOrderAmount}"></td>
+    </tr>
+    <tr>
+        <td>할인 금액:</td>
+        <td th:text="${order.totalDiscountAmount}"></td>
+    </tr>
+    <tr>
+        <td>배송비:</td>
+        <td th:text="${order.shippingFee}"></td>
+    </tr>
+    <tr>
+        <td>최종 결제 금액:</td>
+        <td th:text="${order.finalPaymentAmount}"></td>
+    </tr>
+    <tr>
+        <td>수취인:</td>
+        <td th:text="${order.recipient}"></td>
+    </tr>
+    <tr>
+        <td>배송지:</td>
+        <td th:text="${order.shippingAddressBasic} + ' ' + ${order.shippingAddressDetail}"></td>
+    </tr>
+    <tr>
+        <td>연락처:</td>
+        <td th:text="${order.recipientContact}"></td>
+    </tr>
+    <tr>
+        <td>주문 날짜:</td>
+        <td th:text="${order.orderDatetime}"></td>
+    </tr>
+    <tr>
+        <td>결제 완료 날짜:</td>
+        <td th:text="${order.paymentCompletionDatetime}"></td>
+    </tr>
+</table>
+
+<h3>주문 상품 정보</h3>
+<table>
+    <tr>
+        <th>상품명</th>
+        <th>수량</th>
+        <th>가격</th>
+        <th>사이즈</th>
+        <th>색상</th>
+    </tr>
+    <tr th:each="orderDetail : ${order.orderDetails}">
+        <td th:text="${orderDetail.productName}"></td>
+        <td th:text="${orderDetail.quantity}"></td>
+        <td th:text="${orderDetail.price}"></td>
+        <td th:text="${orderDetail.size}"></td>
+        <td th:text="${orderDetail.color}"></td>
+    </tr>
+</table>
+
+<h3>결제 정보</h3>
+<table>
+    <tr>
+        <td>결제 트랜잭션 ID:</td>
+        <td th:text="${order.paymentTransactionId}"></td>
+    </tr>
+</table>
+
+</body>
+</html>
+
+</body>
+</html>

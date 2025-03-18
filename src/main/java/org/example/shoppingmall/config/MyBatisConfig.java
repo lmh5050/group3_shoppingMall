@@ -23,8 +23,7 @@ public class MyBatisConfig {
         Resource myBatisConfig = new PathMatchingResourcePatternResolver().getResource("classpath:mybatis/mybatis-config.xml"); //마이바티스 설정은 이거 입니다.
         sessionFactory.setConfigLocation(myBatisConfig);
 
-        sessionFactory.setTypeAliasesPackage("org/example/shoppingmall/repository/User"); //리포지토리는 여기를 참조 할게요.
-
+        sessionFactory.setTypeAliasesPackage("org/example/shoppingmall/repository , org/example/shoppingmall/dto"); //리포지토리는 여기를 참조 할게요.
         return sessionFactory.getObject();
     }
 }
