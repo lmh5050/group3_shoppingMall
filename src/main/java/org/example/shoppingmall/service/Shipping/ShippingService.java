@@ -1,6 +1,6 @@
 package org.example.shoppingmall.service.Shipping;
 
-import org.example.shoppingmall.dto.shipping.ShippingDto;
+import org.example.shoppingmall.dto.shipping.ShippingCompanyDto;
 import org.example.shoppingmall.repository.shipping.ShippingRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ public class ShippingService {
         this.shippingRepository = shipp;
     }
 
-   public ArrayList<ShippingDto> shippingCompany(){
+   public ArrayList<ShippingCompanyDto> shippingCompany(){
         return shippingRepository.shippingCompany();
     }
 }
