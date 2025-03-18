@@ -1,4 +1,12 @@
 package org.example.shoppingmall.repository.shipping;
 
-public class ShippingRepository {
+import org.apache.ibatis.annotations.Mapper;
+import org.example.shoppingmall.dto.shipping.ShippingCompanyDto;
+
+import java.util.ArrayList;
+
+@Mapper
+public interface ShippingRepository {
+   ArrayList<ShippingCompanyDto> shippingCompany();
+
 }
