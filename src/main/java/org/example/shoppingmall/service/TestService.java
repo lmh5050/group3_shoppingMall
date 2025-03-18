@@ -15,7 +15,6 @@ public class TestService {
     }
     //서비스 단
     public List<UserInfoDto> getTestData() {
-        List<UserInfoDto> testData = userRepository.getTestData();
-        return testData;
+        return userRepository.getTestData();
     }
 }
