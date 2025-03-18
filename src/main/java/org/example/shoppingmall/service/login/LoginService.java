@@ -15,8 +15,8 @@ public class LoginService {
     }
 
     //서비스 단
-    public List<UserInfoDto> getTestData() {
-        List<UserInfoDto> testData = userRepository.getTestData();
+    public String getCustomerId(String customerId) {
+        String testData = userRepository.getCustomerId(customerId);
         return testData;
     }
 }

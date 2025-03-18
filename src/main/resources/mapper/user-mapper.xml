@@ -3,8 +3,11 @@
 <mapper namespace="org.example.shoppingmall.repository.User.UserRepository">  <!-- 어떤 리포지토리를 볼지 정하는 곳 -->
     <!-- 사용자 정보 삽입 쿼리 -->
 
-    <select id="getTestData">
-        Select * from customer
+    <select id="getCustomerId" parameterType="String" resultType="String">
+        Select *
+        from customer
+        where customer_id = #{customerId}
+
     </select>
 
 </mapper>

@@ -36,6 +36,7 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3' // MyBatis 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-mail' //메일 인증기능 사용 위한 의존성
 }
 
 tasks.named('test') {

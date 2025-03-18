@@ -4,6 +4,7 @@
 <link rel="stylesheet" th:href="@{/css/Login.css}">
 <head>
     <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>로그인</title>
 </head>
 
@@ -16,7 +17,6 @@
 
 <div class="login-container">
     <h1>로그인</h1>
-    <form id="loginForm" th:action="@{/LoginCheck}" method="post">
         <div class="input-container">
             아이디:
             <input type="text" name="username" id="username" class="small-input" required th:value="${username}" /> <br>
@@ -31,9 +31,8 @@
             </label>
         </div>
         <div class="input-container">
-            <button type="submit" class="small-button">로그인</button>
+            <button class="small-button" onclick="login()">로그인</button>
         </div>
-    </form>
 
     <!-- 회원가입 버튼 추가 -->
     <div class="input-container signup-container">
@@ -74,8 +73,32 @@
 
     // 회원가입 버튼 클릭 시 signin 이벤트 트리거
     document.getElementById("signupButton").addEventListener("click", function() {
-        location.href = '/signup';
+        location.href = '/user/register';
     });
+
+    const back = () => {
+        history.back();
+    }
+    const login = () => {
+        const customerId = document.querySelector('input[name="username"]').value;
+        const pw = document.querySelector('input[name="password"]').value;
+        axios({
+            method: "post",
+            url: "/user/login",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {
+                customerId: customerId,
+                pw: pw
+            }
+        }).then(res => {
+            console.log("res", res);
+        }).catch(err => {
+            console.log("err", err);
+        });
+    }
+    console.log(document.querySelector('input[name="username"]').value);
 </script>
 
 </body>
