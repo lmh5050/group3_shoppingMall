@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>orderList</title>
+</head>
+<body>
+<h3>주문 목록</h3>
+
+<th:block th:each="order : ${orders}">
+  <div>
+    <p>주문 ID: <span th:text="${order.orderId}">주문 ID</span></p>
+    <p>주문 날짜: <span th:text="${order.orderDatetime}">주문 날짜</span></p>
+    <p>주문 상태: <span th:text="${order.orderStatus}">주문 상태</span></p>
+    <p>결제 금액: <span th:text="${order.finalAmount}">결제 금액</span>원</p>
+    <a th:href="@{/order/detail/{id}(id=${order.orderId})}">상세 보기</a>
+  </div>
+</th:block>
+
+</body>
+</html>
