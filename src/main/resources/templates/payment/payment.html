@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>결제 페이지 - 팝업 열기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .button {
+            cursor: pointer;
+            padding: 10px 15px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>결제 페이지</h2>
+<p>주문 번호 : <span th:text="${order.orderId}">ORD001</span></p>
+
+<!-- 팝업 열기 버튼 -->
+<button onclick="openPaymentPopup()" class="button">결제창 열기</button>
+
+<!-- Thymeleaf로 서버에서 전달받은 orderId를 JS 변수에 할당 -->
+<script th:inline="javascript">
+    const orderId = [[${order.orderId}]];
+</script>
+
+<script>
+    function openPaymentPopup() {
+        // 팝업 크기
+        const width = 500, height = 700;
+        // 화면 중앙에 위치하도록 계산
+        const left = (window.screen.width - width) / 2;
+        const top = (window.screen.height - height) / 2;
+
+        window.open(
+            '/payment/popup?orderId=' + orderId,
+            'paymentPopup',
+            `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`
+        );
+    }
+</script>
+
+</body>
+</html>
