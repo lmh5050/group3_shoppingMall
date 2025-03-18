@@ -21,6 +21,8 @@ public class ProductService {
     public ArrayList<ProductDto> getProductData() {
         return productRepository.getProductData();
     }
-
+    public ProductDto getProductById(String productId) {
+        return productRepository.getProductById(productId);
+    }
 
 }

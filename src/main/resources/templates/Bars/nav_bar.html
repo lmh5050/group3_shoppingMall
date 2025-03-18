@@ -3,32 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FontAwesome 아이콘 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 <body>
-
 <section id="header">
-    <!-- Nav -->
     <nav id="nav">
         <ul>
-            <li><h3><a class="kaqg_main-menu" th:href="@{/tempearteError}">공지사항</a></h3></li>
-            <li><h3><a class="kaqg_main-menu" th:href="@{/tempearteError}">교육/지원</a></h3></li>
-            <li><h3><a class="kaqg_main-menu" th:href="@{/board-main}">게시판</a></h3></li>
-            <li><h3><a class="kaqg_main-menu" th:href="@{/tempearteError}">고객센터</a></h3></li>
-            <li th:if="${username == null}"><h3><a class="kaqg_main-menu" th:href="@{/}">로그인</a></h3></li>
+            <li>
+                    <a class="kaqg_main-menu" th:href="@{/}">
+                        <i class="fa-solid fa-house-chimney" style="color: white"></i> 홈
+                    </a>
+            </li>
+            <li>
+                <a class="kaqg_main-menu" href="#">카테고리</a>
+            </li>
 
-            <!-- 'access_type'이 'admin'일 경우 마이페이지와 로그아웃 추가 -->
-            <li th:if="${username != null}"><h3><a th:href="@{/mypage}">마이페이지</a></h3></li>
+
+            <!-- ▼ 고객센터 메뉴 + 드롭다운 -->
+            <li>
+                <a class="kaqg_main-menu" href="#">고객센터</a>
+                <div class="dropdown">
+                    <a th:href="@{/faq}">FAQ</a>
+                    <a th:href="@{/notice}">공지사항</a>
+                    <a th:href="@{/contact}">고객 문의</a>
+                </div>
+            </li>
+
+            <li>
+                <a class="kaqg_main-menu" href="#">마이페이지</a>
+                <div class="dropdown">
+                    <a th:href="@{/faq}">주문 조회</a>
+                    <a th:href="@{/notice}">회원 정보 수정</a>
+                    <a th:href="@{/contact}">회원 정보 조회</a>
+                    <a th:href="@{/notice}">취소/환불/교환</a>
+                    <a th:href="@{/contact}">1;1 문의 내역</a>
+                </div>
+            </li>
+            <li><a class="kaqg_main-menu" th:href="@{/tempearteError}">장바구니</a></li>
+
+            <li th:if="${username == null}">
+                <a class="kaqg_main-menu" th:href="@{/user/login}">로그인</a>
+            </li>
+
+
+            <li th:if="${username != null}">
+                <a class="kaqg_main-menu" href="">마이페이지</a>
+                <div class="dropdown">
+                    <a th:href="@{/faq}">주문 조회</a>
+                    <a th:href="@{/notice}">회원 정보 수정</a>
+                    <a th:href="@{/contact}">회원 정보 조회</a>
+                    <a th:href="@{/notice}">취소/환불/교환</a>
+                    <a th:href="@{/contact}">1;1 문의 내역</a>
+                </div>
+            </li>
+
             <li th:if="${username != null}">
                 <form th:action="@{/logout}" method="post" style="display: inline;">
                     <button type="submit">로그아웃</button>
                 </form>
             </li>
-
         </ul>
     </nav>
 </section>
 
 </body>
-<style>
- </style>
 </html>
