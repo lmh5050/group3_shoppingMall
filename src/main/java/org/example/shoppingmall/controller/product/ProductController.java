@@ -22,6 +22,10 @@ public class ProductController {
     public String home(Model model) {
         ArrayList<ProductDto> products = productService.getProductData();
         model.addAttribute("products", products);
+        System.out.println( products);
+        for(ProductDto productDto : products) {
+            System.out.println(productDto);
+        }
         return "index";
     }
 
@@ -33,6 +37,7 @@ public class ProductController {
         // 서비스 측 구현할 것: 상품 ID를 통해 ProductDto 가져오기
         ProductDto product = productService.getProductById(prdId);
         model.addAttribute("product", product);
+
         return "indexDetail";
     }
 }

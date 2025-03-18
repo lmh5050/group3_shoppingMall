@@ -14,6 +14,7 @@ public class ProductService {
     private final ProductRepository productRepository;
 
 
+    @Autowired
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
@@ -24,5 +25,4 @@ public class ProductService {
     public ProductDto getProductById(String productId) {
         return productRepository.getProductById(productId);
     }
-
 }
