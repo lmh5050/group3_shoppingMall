@@ -13,4 +13,5 @@ public interface ProductRepository {  // org.example.shoppingmall.repository.pro
     void setNewProduct(ProductDto productDto);
 
     ProductDto getProductById(String productId);
+
 }

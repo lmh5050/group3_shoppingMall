@@ -10,6 +10,7 @@ import java.util.Date;
 @Getter
 @Data
 public class ProductDto {
+
     private String productId;
     private int sellerId;
     private int seasonId;
