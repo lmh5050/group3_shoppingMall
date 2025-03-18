@@ -7,29 +7,18 @@
     <meta charset="UTF-8">
     <title>Home</title>
 </head>
-<!-- ³×ºñ°ÔÀÌ¼Ç ¹Ù Æ÷ÇÔ -->
+<!-- ë„¤ë¹„ê²Œì´ì…˜ ë°” í¬í•¨ -->
 <div th:replace="Bars/nav_bar :: nav"></div>
 <body>
 <!-- Section-->
-<section style="width: 3000px; height : 700px; ">
+<section style="width: 3000px; height : 700px;">
     <div class="container px-4 px-lg-5 mt-5">
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-            <!--            <div th:if="${products != null}">-->
-            <!--                -->
-            <!--            </div>-->
-            <!-- ¹Ýº¹¹®À¸·Î »óÇ° Ãâ·Â -->
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center"> <!-- row-cols-xl-5ë¡œ 5ê°œ ë°°ì¹˜ -->
+            <!-- ë°˜ë³µë¬¸ìœ¼ë¡œ ìƒí’ˆ ì¶œë ¥ -->
             <div class="col mb-5" th:each="product : ${products}">
-
                 <div class="card h-100">
-                    <!-- Sale badge Ç¥½Ã -->
-                    <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem"
-                         th:if="${product.getName()}">
-                        Sale
-                    </div>
                     <!-- Product image-->
                     <img class="card-img-top" th:src="|/images/product/@{${product.getProductId()}}.png|" alt="Product Image" />
-                    <!--                    <img class="card-img-top" th:src="@{/images/product/${product.getProductId()}.png}" alt="Product Image" />-->
-<!--                    <img class="card-img-top" src="/images/product/P0001.png" alt="Product Image" />-->
                     <!-- Product details-->
                     <div class="card-body p-4">
                         <div class="text-center">
@@ -40,8 +29,6 @@
                                 <div class="bi-star-fill" th:each="star : ${#numbers.sequence(1, product.getRating())}"></div>
                             </div>
                             <!-- Product price-->
-                            <span th:if="${product.getPrice() != null}" class="text-muted text-decoration-line-through"
-                                  th:text="'$' + ${product.getPrice()}">$50.00</span>
                             <span th:text="'$' + ${product.price}">$40.00</span>
                         </div>
                     </div>
@@ -53,10 +40,11 @@
                     </div>
                 </div>
             </div>
-            <!-- »óÇ° ¹Ýº¹¹® ³¡ -->
+            <!-- ìƒí’ˆ ë°˜ë³µë¬¸ ë -->
         </div>
     </div>
 </section>
+
 <footer>
     <div th:replace="Bars/footer :: #footer"></div>
 </footer>

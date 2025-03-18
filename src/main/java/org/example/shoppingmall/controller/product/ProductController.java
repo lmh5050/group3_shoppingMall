@@ -26,8 +26,13 @@ public class ProductController {
     }
 
     @GetMapping("/productDetail")
-    public String productDetail(String prdId) {
+    public String productDetail(String prdId, Model model) {
+        System.out.println("prdId:"+prdId);
+        model.addAttribute("prdId", prdId);
 
+        // 서비스 측 구현할 것: 상품 ID를 통해 ProductDto 가져오기
+        ProductDto product = productService.getProductById(prdId);
+        model.addAttribute("product", product);
         return "indexDetail";
     }
 }
