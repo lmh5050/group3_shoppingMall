@@ -1,31 +1,60 @@
 package org.example.shoppingmall.controller.complaint;
 
+import org.example.shoppingmall.dto.complaint.ComplaintDto;
+import org.example.shoppingmall.service.complaint.ComplaintService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.ui.Model;  // Model import 추가
+import org.springframework.ui.Model;
 
+import java.util.List;
 
 @Controller
 public class ComplaintController {
-    @GetMapping("/complaint") //기본 민원 페이지
-    public String complaint() {
-        return "complaint/complaint.html";
+
+    private final ComplaintService complaintService;
+
+    @Autowired
+    public ComplaintController(ComplaintService complaintService) {
+        this.complaintService = complaintService;
+    }
+
+    @GetMapping("/complaint") // 기본 민원 리스트 페이지
+    public String complaint(Model model) {
+        // 모든 complaint 목록 조회
+        List<ComplaintDto> complaints = complaintService.getAllComplaints();
+        model.addAttribute("complaints", complaints); // complaints 데이터를 뷰로 전달
+        return "complaint/complaintList";
+    }
+
+    @GetMapping("/complaintForm") //민원 신청 페이지
+    public String complaintForm() {
+        return "complaint/complaintForm";
+    }
+
+
+    @PostMapping("/requestComplaint")
+    public String requestComplaint( @RequestParam ("complaintType") String complaintType,
+                                    @RequestParam String complaintTitle,
+                                    @RequestParam String complaintText) {
+
+        // ComplaintService에서 complaint 저장 처리
+        complaintService.saveComplaint(complaintType, complaintTitle, complaintText);
+
+        return "redirect:/complaint";
     }
 
 
 
-    @PostMapping("/complaintValue") //문의 내용, 문의 제목 넘겨주기
-    public String complaintValue(@RequestParam("complaintTitle") String complaintTitle,
-                                 @RequestParam("complaintText") String complaintText, Model model) {
+    // 민원 상세 페이지
+    @GetMapping("/complaint/detail/{complaintId}")
+    public String viewComplaintDetail(@PathVariable("complaintId") String complaintId, Model model) {
+        // complaintId로 해당 민원 조회
+        ComplaintDto complaint = complaintService.getComplaintById(complaintId);
 
-        if (complaintText.equals("") || complaintTitle.equals("")) { // 문의 내용 혹은 제목을 입력안하면 알림메세지 띄워주기
-            model.addAttribute("alertMessage", "제목과 내용을 입력해주세요.");
-            return "complaint/complaint";
-        }
+        // 조회한 민원 데이터를 모델에 추가
+        model.addAttribute("complaint", complaint);
 
-        model.addAttribute("complaintTitle", complaintTitle);
-        model.addAttribute("complaintText", complaintText);
-
-        return "complaint/complaintValue.html";
+        return "complaint/complaintDetail"; // 상세 페이지로 이동
     }
 }
