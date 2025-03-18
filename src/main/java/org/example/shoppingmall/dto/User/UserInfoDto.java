@@ -1,4 +1,4 @@
-package org.example.shoppingmall.dto;
+package org.example.shoppingmall.dto.User;
 
 import lombok.Data;
 import java.util.Date;

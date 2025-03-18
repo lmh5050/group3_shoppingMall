@@ -1,7 +1,7 @@
-package org.example.shoppingmall.repository;
+package org.example.shoppingmall.repository.User;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.example.shoppingmall.dto.UserInfoDto;
+import org.example.shoppingmall.dto.User.UserInfoDto;
 
 import java.util.List;
 
