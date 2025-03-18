@@ -1,15 +1,10 @@
 package org.example.shoppingmall.dto.order;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
+import lombok.Data;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class OrderDto {
     private String orderId;
     private String customerId;
@@ -18,11 +13,11 @@ public class OrderDto {
     private BigDecimal totalOrderAmount;
     private BigDecimal totalDiscountAmount;
     private BigDecimal shippingFee;
-    private int totalQuantity;
+    private Integer totalQuantity;
     private BigDecimal finalPaymentAmount;
     private String paymentTransactionId;
     private String recipient;
-    private int postalCode;
+    private Integer postalCode;
     private String shippingAddressBasic;
     private String shippingAddressDetail;
     private String recipientContact;
