@@ -13,47 +13,52 @@
 <body>
 <div th:replace="Bars/nav_bar :: nav"></div>
 
-<div class="login-container" style="width: 600px; height : 800px;">
+<div class="login-container" style="width: 900px; height : 800px;">
     <div class="container px-4 px-lg-5 mt-5" style="display: flex; justify-content: center; align-items: center; height: 50vh;">
         <div class="d-flex flex-column align-items-center gap-3" style="width: 600px;">
 
             <!-- 아이디 입력 + 중복 확인 버튼 -->
-            <div class="d-flex gap-2" style="width: 100%; max-width: 400px;">
-                <input id="customerId" class="form-control flex-grow-1" type="text" placeholder="아이디 (필수)" />
-                <button class="btn btn-outline-primary" onclick="duplicateCheck()">중복 확인</button>
+            <div class="d-flex gap-2" style="width: 100%; max-width: 600px;">
+                <input id="customerId" class="form-control flex-grow-1" type="text" placeholder="아이디 (필수)" style="width: 100%; max-width: 450px;" />
+                <button class="btn btn-outline-primary" onclick="duplicateCheck()" style="width: 100%; max-width: 150px;">중복 확인</button>
             </div>
             <!-- 중복 확인 메시지 -->
             <div id="idCheckMessage" style="margin-top: 5px;"></div>
             <!-- 비밀번호 -->
-            <input id="password" class="form-control" type="password" placeholder="비밀번호 (필수)" style="width: 100%; max-width: 400px;" />
-            <input id="confirmPassword" class="form-control" type="password" placeholder="비밀번호 확인 (필수)" style="width: 100%; max-width: 400px;" />
+            <input id="password" class="form-control" type="password" placeholder="비밀번호 (필수)" style="width: 100%; max-width: 600px;" />
+            <input id="confirmPassword" class="form-control" type="password" placeholder="비밀번호 확인 (필수)" style="width: 100%; max-width: 600px;" />
             <!-- 이름 -->
-            <input id="name" class="form-control" type="text" placeholder="이름 (필수)" style="width: 100%; max-width: 400px;" />
-            <!-- 별명 -->
-            <input id="nickname" class="form-control" type="text" placeholder="별명 (필수)" style="width: 100%; max-width: 400px;" />
+            <input id="name" class="form-control" type="text" placeholder="이름 (필수)" style="width: 100%; max-width: 600px;" />
+            <!-- 별명 입력 -->
+            <div class="d-flex gap-2" style="width: 100%; max-width: 600px;">
+            <input id="nickname" class="form-control" type="text" placeholder="별명 (필수)" style="width: 100%; max-width: 450px;" />
+            <button class="btn btn-outline-primary" onclick="checkNicknameAvailability()" style="width: 100%; max-width: 150px;">중복 확인</button>
+            </div>
+            <!-- 중복 확인 메시지 -->
+            <div id="nicknameCheckMessage" style="margin-top: 5px;"></div>
             <!-- 생년월일 -->
-            <input id="birth" class="form-control" type="text" placeholder="생년월일 (필수)" style="width: 100%; max-width: 400px;" />
+            <input id="birth" class="form-control" type="text" placeholder="생년월일 (필수)" style="width: 100%; max-width: 600px;" />
             <!-- 이메일 -->
-            <input id="email" class="form-control" type="text" placeholder="이메일 (필수)" style="width: 100%; max-width: 400px;" />
+            <input id="email" class="form-control" type="text" placeholder="이메일 (필수)" style="width: 100%; max-width: 600px;" />
             <!-- 우편 번호 -->
-            <div class="d-flex gap-2" style="width: 100%; max-width: 400px;">
-                <input id="zipCode" class="form-control" type="text" placeholder="우편번호 (필수)" style="width: 100%; max-width: 400px;" disabled />
+            <div class="d-flex gap-2" style="width: 100%; max-width: 600px;">
+                <input id="zipCode" class="form-control" type="text" placeholder="우편번호 (필수)" style="width: 100%; max-width: 600px;" disabled />
                 <input type="button" onclick="execDaumPostcode()" value="우편번호 찾기">
             </div>
             <!-- 주소 -->
-                <input id="address" class="form-control" type="text" placeholder="주소 (필수)" style="width: 100%; max-width: 400px;" disabled />
+                <input id="address" class="form-control" type="text" placeholder="주소 (필수)" style="width: 100%; max-width: 600px;" disabled />
 
             <!-- 상세주소 -->
-            <input id="extraAddress" class="form-control" type="text" placeholder="상세주소 (필수)" style="width: 100%; max-width: 400px;" />
+            <input id="extraAddress" class="form-control" type="text" placeholder="상세주소 (필수)" style="width: 100%; max-width: 600px;" />
 
             <!-- 전화번호 -->
-            <input id="phoneNumber" class="form-control" type="text" placeholder="전화번호 (필수)" style="width: 100%; max-width: 400px;" />
+            <input id="phoneNumber" class="form-control" type="text" placeholder="전화번호 (필수)" style="width: 100%; max-width: 600px;" />
 
             <!-- 추천인 -->
-            <input id="recommender" class="form-control" type="text" placeholder="추천인 (선택)" style="width: 100%; max-width: 400px;" />
+            <input id="recommender" class="form-control" type="text" placeholder="추천인 (선택)" style="width: 100%; max-width: 600px;" />
 
             <!-- 가입 완료 버튼 -->
-            <button class="btn btn-dark" style="width: 100%; max-width: 400px;" onclick="registerSubmit()">가입 완료</button>
+            <button class="btn btn-dark" style="width: 100%; max-width: 600px;" onclick="registerSubmit()">가입 완료</button>
         </div>
     </div>
 </div>
@@ -199,6 +204,40 @@
             .catch(err => {
                 console.error('회원가입 실패:', err);
                 alert('회원가입 중 오류가 발생했습니다.');
+            });
+    };
+
+    const checkNicknameAvailability = () => {
+        const nickName = document.querySelector('#nickname').value.trim();
+        let message = document.querySelector("#nicknameCheckMessage");
+
+        if (!nickName) {
+            message.textContent = "별명을 입력해주세요.";
+            message.style.color = "red";
+            return;
+        }
+
+        axios({
+            method: "post",
+            url: "/user/checkNickname",  // 서버에 닉네임 중복 확인을 위한 API 엔드포인트
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {
+                nickName: nickName
+            }
+        })
+            .then(res => {
+                if (res.data === "사용 가능") {
+                    message.textContent = "사용 가능한 별명입니다.";
+                    message.style.color = "green";
+                } else {
+                    message.textContent = "이미 사용 중인 별명입니다.";
+                    message.style.color = "red";
+                }
+            })
+            .catch(err => {
+                console.error("닉네임 중복 확인 오류", err);
             });
     };
 </script>

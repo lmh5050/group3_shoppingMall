@@ -102,7 +102,13 @@ public class UserController {
     @ResponseBody
     public String insertUserInfo(@RequestBody InsertUserInfoDto InsertUserInfo) {
         String result = loginService.insertUserInfo(InsertUserInfo);
-        System.out.println("이거탐");
+        return result;
+    }
+
+    @PostMapping("/user/checkNickname")
+    @ResponseBody
+    public String checkNickname(@RequestBody String nickName) {
+        String result = loginService.checkNickname(nickName);
         return result;
     }
 

@@ -7,7 +7,6 @@
         Select *
         from customer
         where customer_id = #{customerId}
-
     </select>
 
     <insert id="insertUserInfo" parameterType="InsertUserInfoDto">
@@ -18,6 +17,14 @@
             (#{customerId}, #{pw}, #{email}, #{name}, #{nickName}, now(),
              #{phoneNumber}, #{birth}, #{recommendId})
     </insert>
+
+    <select id="checkNickname" parameterType="String" resultType="int">
+        SELECT COUNT(*)
+        FROM main_shopping_mall_db.customer
+        WHERE nickname = #{nickName}
+    </select>
+
+
 
 
 

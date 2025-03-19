@@ -40,4 +40,13 @@ public class LoginService {
         }
         return "";
     }
+
+    //서비스 단
+    public String checkNickname(String nickName) {
+        String result = "사용가능";
+        int searchData = userRepository.checkNickname(nickName);
+        System.out.println(nickName);
+        System.out.println(searchData + "결과값");
+        return result;
+    }
 }
