@@ -10,4 +10,17 @@
 
     </select>
 
+    <insert id="insertUserInfo" parameterType="InsertUserInfoDto">
+        INSERT INTO customer
+            (customer_id, pw, email, name, nickname, created_datetime,
+             phone_number, birth, recommend_id)
+        VALUES
+            (#{customerId}, #{pw}, #{email}, #{name}, #{nickName}, now(),
+             #{phoneNumber}, #{birth}, #{recommendId})
+    </insert>
+
+
+
+
+
 </mapper>
