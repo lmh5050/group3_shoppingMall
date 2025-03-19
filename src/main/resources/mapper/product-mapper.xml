@@ -19,4 +19,12 @@
                   ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ?,?, ?, ?
         )
     </insert>
+
+    <select id="getProductById">
+        SELECT * FROM product WHERE product_id = #{productId}
+    </select>
+
+    <insert id="setName">
+        insert into name from product where season_id = #{id}
+    </insert>
 </mapper>
