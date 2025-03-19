@@ -4,10 +4,9 @@ import org.apache.ibatis.annotations.Mapper;
 import org.example.shoppingmall.dto.product.ProductDto;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Mapper
-public interface ProductRepository {  // org.example.shoppingmall.repository.product.ProductRepository
+public interface ProductRepository {  // ªÛ«∞ Repository
     ArrayList<ProductDto> getProductData();
 
     void setNewProduct(ProductDto productDto);

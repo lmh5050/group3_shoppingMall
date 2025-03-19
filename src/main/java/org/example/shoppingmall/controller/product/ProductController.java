@@ -1,6 +1,8 @@
 package org.example.shoppingmall.controller.product;
 
+import org.example.shoppingmall.dto.product.ProductCategoryDto;
 import org.example.shoppingmall.dto.product.ProductDto;
+import org.example.shoppingmall.service.product.ProductCategoryService;
 import org.example.shoppingmall.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,12 +14,15 @@ import java.util.ArrayList;
 @Controller
 public class ProductController {
     private final ProductService productService;
+    private final ProductCategoryService productCategoryService;
 
     @Autowired
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService,  ProductCategoryService productCategoryService) {
         this.productService = productService;
+        this.productCategoryService = productCategoryService;
     }
 
+//    홈 이동
     @GetMapping("/")
     public String home(Model model) {
         ArrayList<ProductDto> products = productService.getProductData();
@@ -29,6 +34,7 @@ public class ProductController {
         return "index";
     }
 
+//    상세 페이지 이동
     @GetMapping("/productDetail")
     public String productDetail(String prdId, Model model) {
         System.out.println("prdId:"+prdId);
@@ -39,5 +45,13 @@ public class ProductController {
         model.addAttribute("product", product);
 
         return "indexDetail";
+    }
+
+//    카테고리 이동
+    @GetMapping("/category")
+    public String category(Model model) {
+        ArrayList<ProductCategoryDto> categoryList  = productCategoryService.getCategoryListAll();
+        model.addAttribute("categoryList", categoryList);
+        return "/product/category";
     }
 }

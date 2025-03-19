@@ -9,7 +9,7 @@ import java.util.Date;
 @Setter
 @Getter
 @Data
-public class ProductDto {
+public class ProductDto {  //ªÛ«∞ DTO
 
     private String productId;
     private int sellerId;
