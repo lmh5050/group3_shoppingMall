@@ -20,31 +20,98 @@
 
 </header>
 
-<!-- Section-->
-<section class="py-5">
+    <!-- Section-->
+    <section class="py-5">
+        <div class="mt-4">
+            <a class="btn btn-success" th:href="@{/complaint}">민원 신청하기</a>
+        </div>
     <!-- 민원 목록 출력 -->
-    <div class="row gx-4 gx-lg-5 justify-content-center">
-        <!-- 12등분에서 3개씩 한줄에 출력, mb-5는 여백-->
-        <div class="col-md-4 mb-5" th:each="complaint : ${complaints}">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${complaint.complaintId}">Complaint ID</h5>
-                    <p class="card-text">
-                        <strong>제목:</strong> <span th:text="${complaint.description}">Description</span><br>
-                        <strong>상태:</strong> <span th:text="${complaint.status}">Status</span><br>
-                        <strong>작성일:</strong> <span th:text="${complaint.requestDatetime}">Request Date</span>
-                    </p>
-                    <!-- 확인 버튼과 수정 버튼 추가 -->
-                    <div th:if="${complaint != null}">
-                        <a class="btn btn-primary" th:href="@{'/complaint/detail/' + ${complaint.complaintId}}">확인</a>
-                        <!-- 수정 버튼 미구현-->
-                        <a class="btn btn-warning" th:href="@{'/complaint/edit/' + ${complaint.complaintId}}">수정</a>
-                    </div>
+    <!-- 취소 테이블 -->
+        <div style="display: flex; gap: 40px; overflow-x: auto;">
+            <div>
+                <h3>취소</h3>
+                <div style="max-height: 500px; width: 630px; overflow-y: auto;">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th style="white-space: nowrap;">민원 유형</th>
+                            <th>민원 상태</th>
+                            <th>제목</th>
+                            <th>액션</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="complaint : ${complaints}" th:if="${complaint.complaintTypeId == 'cancel'}">
+                            <td th:text="${complaint.complaintTypeId}"></td>
+                            <td th:text="${complaint.status}"></td>
+                            <td th:text="${complaint.reason}"></td>
+                            <td>
+                                <a class="btn btn-primary btn-sm"  th:href="@{'/complaint/detail/' + ${complaint.complaintId}}">확인</a>
+                                <a class="btn btn-warning btn-sm" th:href="@{'/complaint/edit/' + ${complaint.complaintId}}">수정</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 환불 테이블 -->
+            <div>
+                <h3>환불</h3>
+                <div style="max-height: 500px; width: 630px; overflow-y: auto;">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th style="white-space: nowrap;">민원 유형</th>
+                            <th>민원 상태</th>
+                            <th>제목</th>
+                            <th>액션</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="complaint : ${complaints}" th:if="${complaint.complaintTypeId == 'refund'}">
+                            <td th:text="${complaint.complaintTypeId}"></td>
+                            <td th:text="${complaint.status}"></td>
+                            <td th:text="${complaint.reason}"></td>
+                            <td>
+                                <a class="btn btn-primary btn-sm" th:href="@{'/complaint/detail/' + ${complaint.complaintId}}">확인</a>
+                                <a class="btn btn-warning btn-sm" th:href="@{'/complaint/edit/' + ${complaint.complaintId}}">수정</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 교환 테이블 -->
+            <div>
+                <h3>교환</h3>
+                <div style="max-height: 500px; width: 630px; overflow-y: auto;">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th style="white-space: nowrap;">민원 유형</th>
+                            <th>민원 상태</th>
+                            <th>제목</th>
+                            <th>액션</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="complaint : ${complaints}" th:if="${complaint.complaintTypeId == 'change'}">
+                            <td th:text="${complaint.complaintTypeId}"></td>
+                            <td th:text="${complaint.status}"></td>
+                            <td th:text="${complaint.reason}"></td>
+                            <td>
+                                <a class="btn btn-primary btn-sm" th:href="@{'/complaint/detail/' + ${complaint.complaintId}}">확인</a>
+                                <a class="btn btn-warning btn-sm" th:href="@{'/complaint/edit/' + ${complaint.complaintId}}">수정</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 <!-- Footer-->
 <footer>
