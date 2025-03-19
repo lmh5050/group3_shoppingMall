@@ -19,7 +19,7 @@ public class ComplaintController {
         this.complaintService = complaintService;
     }
 
-    @GetMapping("/complaint") // 기본 민원 리스트 페이지
+    @GetMapping("/complaint/list") // 기본 민원 리스트 페이지
     public String complaint(Model model) {
         // 모든 complaint 목록 조회
         List<ComplaintDto> complaints = complaintService.getAllComplaints();
@@ -27,13 +27,13 @@ public class ComplaintController {
         return "complaint/complaintList";
     }
 
-    @GetMapping("/complaintForm") //민원 신청 페이지
+    @GetMapping("/complaint") //민원 신청 페이지
     public String complaintForm() {
         return "complaint/complaintForm";
     }
 
 
-    @PostMapping("/requestComplaint")
+    @PostMapping("/complaint/request")
     public String requestComplaint( @RequestParam ("complaintType") String complaintType,
                                     @RequestParam String complaintTitle,
                                     @RequestParam String complaintText) {
@@ -41,7 +41,7 @@ public class ComplaintController {
         // ComplaintService에서 complaint 저장 처리
         complaintService.saveComplaint(complaintType, complaintTitle, complaintText);
 
-        return "redirect:/complaint";
+        return "redirect:/complaint/list";
     }
 
 

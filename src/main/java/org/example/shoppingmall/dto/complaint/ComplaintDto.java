@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 @Setter
 @ToString
 public class ComplaintDto {
-
     private String complaintId;            // complaint_id
     private String complaintTypeId;        // complaint_type_id
     private String refundMethodId;         // refund_method_id
@@ -29,6 +28,4 @@ public class ComplaintDto {
     private Double shippingPrice;          // shipping_price
     private Byte deleteFlag;               // delete_flag
     private String exchangeProductId;      // exchange_product_id
-
-
 }
