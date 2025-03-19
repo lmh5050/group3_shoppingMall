@@ -21,15 +21,14 @@
 <body>
 
 <h2>결제 페이지</h2>
-<p>주문 번호 : <span th:text="${order.orderId}">ORD001</span></p>
+<p>주문 ID: <span th:text="${orderId}"></span></p>
+<p>결제 금액: <span th:text="${totalOrderAmount}"></span>원</p>
+
+<input type="hidden" id="orderId" th:value="${orderId}">
+<input type="hidden" id="totalOrderAmount" th:value="${totalOrderAmount}">
 
 <!-- 팝업 열기 버튼 -->
 <button onclick="openPaymentPopup()" class="button">결제창 열기</button>
-
-<!-- Thymeleaf로 서버에서 전달받은 orderId를 JS 변수에 할당 -->
-<script th:inline="javascript">
-    const orderId = [[${order.orderId}]];
-</script>
 
 <script>
     function openPaymentPopup() {
@@ -39,11 +38,22 @@
         const left = (window.screen.width - width) / 2;
         const top = (window.screen.height - height) / 2;
 
-        window.open(
-            '/payment/popup?orderId=' + orderId,
+        // 숨은 input에서 데이터를 가져옴
+        const orderData = {
+            orderId: document.getElementById("orderId").value,
+            totalOrderAmount: document.getElementById("totalOrderAmount").value
+        };
+
+        const popup = window.open(
+            '/payment',
             'paymentPopup',
             `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`
         );
+
+        // 팝업이 로드될 때 데이터를 보냄
+        setTimeout(() => {
+            popup.postMessage(orderData, "*");
+        }, 300);
     }
 </script>
 
