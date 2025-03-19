@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>orderForm</title>
+</head>
+<body>
+<form action="/order/order" method="post">
+    <h2>주문서</h2>
+    <!-- 배송지 설정 -->
+    <div id="shipping">
+        <h2>배송지</h2>
+        <p><span th:text="${address.receivePeople}" name="recipient" required></span>
+            <span th:if="${address.status == 1}" style="background-color: lightgray; color: black; font-size: 12px; padding: 3px 6px; border-radius: 5px;">기본배송지</span>
+            <button onclick="location.href='/order/changeAddress'">배송지 변경</button>
+        </p>
+        <p><span th:text="${address.address}" name="shipping_address_basic" required></span>
+        <span th:text="${address.detailAddress}" name="shipping_address_detail" required></span></p>
+        <p><span th:text="${address.receivePhoneNumber}" name="recipient_contact" required></span></p>
+
+        <label for="deliveryRequest"></label>
+        <select id="deliveryRequest" name="deliveryRequest" onchange="checkCustomOption()">
+            <option value="">배송요청사항(선택)</option>
+            <option value="door">문 앞에 놓아주세요</option>
+            <option value="security">경비실에 맡겨주세요</option>
+            <option value="contact">배송 전 연락 주세요</option>
+            <option value="other">직접 입력</option>
+        </select>
+        <input type="text" id="customRequest" name="customRequest" placeholder="요청 사항(50자 이내)" style="display: none;">
+        <script>
+            function checkCustomOption() {
+                let selectBox = document.getElementById("deliveryRequest");
+                let customInput = document.getElementById("customRequest");
+
+                if (selectBox.value === "other") {
+                    customInput.style.display = "inline-block";
+                } else {
+                    customInput.style.display = "none";
+                }
+            }
+        </script>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>상품명</th>
+            <th>가격</th>
+            <th>사이즈</th>
+            <th>색상</th>
+            <th>수량</th>
+            <th>총 금액</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="orderDetail : ${orderDetailList}">
+            <td th:text="${orderDetail.productName}"></td>
+            <td th:text="${orderDetail.price}"></td>
+            <td th:text="${orderDetail.size}"></td>
+            <td th:text="${orderDetail.color}"></td>
+            <td th:text="${orderDetail.quantity}"></td>
+            <td th:text="${orderDetail.totalProductAmount}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 결제 금액 -->
+    <div id="paymentInfo">
+        <h4>결제 금액</h4>
+        <div>총 상품 금액: <span th:text="${totalAmount}">0원</span></div>
+        <div>할인 금액: <span th:text="${discountAmount}">0원</span></div>
+        <div>배송비: <span th:text="${shippingFee}">0원</span></div>
+        <div>최종 결제 금액: <span th:text="${finalAmount}">0원</span></div>
+    </div>
+
+    <!-- 결제 방법 선택 -->
+    <div id="paymentMethod">
+        <button type="submit">결제방법 선택하기</button>
+    </div>
+</form>
+</body>
+</html>
