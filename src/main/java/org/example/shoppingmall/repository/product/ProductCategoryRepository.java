@@ -8,4 +8,6 @@ import java.util.ArrayList;
 @Mapper
 public interface ProductCategoryRepository {  //카테고리 Repository
     ArrayList<ProductCategoryDto> getCategoryListAll();
+    ArrayList<ProductCategoryDto> getCategoryByPId(String categoryId);
+    ArrayList<ProductCategoryDto> getMajorCategoryByPId();
 }

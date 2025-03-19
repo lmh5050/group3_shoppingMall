@@ -14,4 +14,5 @@ public class ProductCategoryDto {  //카테고리 DTO
     private String description;
     private int order;
     private boolean activeFlag;
+
 }

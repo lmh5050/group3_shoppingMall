@@ -1,11 +1,17 @@
 .category-nav {
     position: absolute;
-    font-size: 140px;
+    /*font-size: 140px;*/
 
     padding: 100px;
     background-color: #fff;
     border-bottom: 1px solid #ddd;
     font-family: 'Noto Sans KR', sans-serif;
+}
+
+.category {
+    display: grid;
+    grid-auto-flow: column;   /* 행이 아닌 열 방향으로 흐르게 */
+    gap: 20px;
 }
 
 .main-menu {

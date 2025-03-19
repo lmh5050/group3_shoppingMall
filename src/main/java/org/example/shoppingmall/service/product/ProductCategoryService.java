@@ -20,4 +20,22 @@ public class ProductCategoryService {
     public ArrayList<ProductCategoryDto> getCategoryListAll() {
         return productCategoryRepository.getCategoryListAll();
     }
+
+    public ArrayList<ProductCategoryDto> getCategoryByPId(String categoryId) {
+        return productCategoryRepository.getCategoryByPId(categoryId);
+    }
+
+    // 대분류 불러오기
+    public ArrayList<ProductCategoryDto> getMajorCategoryByPId() {
+        return productCategoryRepository.getMajorCategoryByPId();
+    }
+
+    // 대분류에 맞는 중분류만 불러오기
+    public ArrayList<ProductCategoryDto> getMiddleCategoryByPId() {
+        return null;
+    }
+
+    // 중분류에 맞는 소분류만 불러오기
+
+
 }

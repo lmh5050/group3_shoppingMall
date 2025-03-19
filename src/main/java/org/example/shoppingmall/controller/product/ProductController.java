@@ -22,7 +22,7 @@ public class ProductController {
         this.productCategoryService = productCategoryService;
     }
 
-//    È¨ ÀÌµ¿
+    //home
     @GetMapping("/")
     public String home(Model model) {
         ArrayList<ProductDto> products = productService.getProductData();
@@ -34,24 +34,35 @@ public class ProductController {
         return "index";
     }
 
-//    »ó¼¼ ÆäÀÌÁö ÀÌµ¿
+//    ìƒì„¸ í˜ì´ì§€ ì´ë™
     @GetMapping("/productDetail")
     public String productDetail(String prdId, Model model) {
         System.out.println("prdId:"+prdId);
         model.addAttribute("prdId", prdId);
 
-        // ¼­ºñ½º Ãø ±¸ÇöÇÒ °Í: »óÇ° ID¸¦ ÅëÇØ ProductDto °¡Á®¿À±â
+        // ì„œë¹„ìŠ¤ ì¸¡ êµ¬í˜„í•  ê²ƒ: ìƒí’ˆ IDë¥¼ í†µí•´ ProductDto ê°€ì ¸ì˜¤ê¸°
         ProductDto product = productService.getProductById(prdId);
         model.addAttribute("product", product);
 
         return "indexDetail";
     }
 
-//    Ä«Å×°í¸® ÀÌµ¿
+//    ì¹´í…Œê³ ë¦¬ ì´ë™
     @GetMapping("/category")
-    public String category(Model model) {
+    public String categoryList(Model model) {
         ArrayList<ProductCategoryDto> categoryList  = productCategoryService.getCategoryListAll();
         model.addAttribute("categoryList", categoryList);
+        System.out.println("categoryList = " + categoryList);
+        System.out.println();
+
+        ArrayList<ProductCategoryDto> productCategory = productCategoryService.getCategoryByPId("ALL");
+        System.out.println("productCategory = " + productCategory);
+        System.out.println();
+
+        ArrayList<ProductCategoryDto> majorCategory = productCategoryService.getMajorCategoryByPId();
+        model.addAttribute("majorCategory", majorCategory);
+        System.out.println("majorCategory = " + majorCategory);
+
         return "/product/category";
     }
 }

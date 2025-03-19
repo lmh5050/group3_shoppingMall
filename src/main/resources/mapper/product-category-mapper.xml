@@ -5,4 +5,17 @@
     <select id="getCategoryListAll">
         SELECT * FROM product_category
     </select>
+    
+    <!--  대분류 카테고리만 조회  -->
+    <select id="getMajorCategoryByPId">
+        SELECT * FROM product_category
+        WHERE parent_category_id IS NULL
+    </select>
+
+    <!--  중, 소분류 카테고리 조회  -->
+    <select id="getCategoryByPId">
+        SELECT * FROM product_category
+        WHERE category_id LIKE #{%categoryId}
+        AND parent_category_id IS NOT NULL;
+    </select>
 </mapper>
