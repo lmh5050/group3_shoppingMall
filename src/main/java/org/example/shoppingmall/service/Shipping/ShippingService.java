@@ -1,20 +1,16 @@
 package org.example.shoppingmall.service.Shipping;
 
-import org.example.shoppingmall.dto.shipping.ShippingCompanyDto;
-import org.example.shoppingmall.repository.shipping.ShippingRepository;
+import lombok.RequiredArgsConstructor;
+import org.example.shoppingmall.dto.shipping.ShippingDto;
+import org.example.shoppingmall.repository.shipping.ManagementRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
 @Service
+@RequiredArgsConstructor
 public class ShippingService {
-    private final ShippingRepository shippingRepository;
+    private final ManagementRepository managementRepository;
 
-    public ShippingService(ShippingRepository shipp) {
-        this.shippingRepository = shipp;
-    }
-
-   public ArrayList<ShippingCompanyDto> shippingCompany(){
-        return shippingRepository.shippingCompany();
+    public void shippingCompany(ShippingDto shippingDto) {
+        managementRepository.shippingCompany(shippingDto);
     }
 }
