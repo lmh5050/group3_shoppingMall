@@ -2,14 +2,14 @@ package org.example.shoppingmall.service.order;
 
 
 import org.example.shoppingmall.dto.order.AddressDto;
-import org.example.shoppingmall.dto.order.OrderDetailDto;
 import org.example.shoppingmall.dto.order.OrderDto;
-import org.example.shoppingmall.dto.product.ProductDto;
+import org.example.shoppingmall.dto.order.ProductInfoDto;
 import org.example.shoppingmall.repository.order.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.ArrayList;
+
 
 @Service
 public class OrderService {
@@ -25,7 +25,10 @@ public class OrderService {
     public AddressDto getDefaultAddress(String customerId) {
         return orderRepository.findDefaultAddressByCustomerId(customerId); }
 
-
+    //주문 상품 정보 표시
+    public ProductInfoDto getProductInfoByProductDetailId(String productDetailId) {
+        return orderRepository.findProductInfoByProductDetailId(productDetailId);
+    }
 
 
     /*//주문서 상품정보 표시
