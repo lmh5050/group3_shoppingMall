@@ -13,4 +13,15 @@
         VALUES (#{paymentId}, #{orderId}, #{paymentMethodId})
     </insert>
 
+    <!-- 결제하기 페이지 데이터 조회-->
+    <select id="findById">
+        SELECT
+            order_id AS orderId,
+            total_order_amount AS baseAmount,
+            total_discount_amount AS discountAmount,
+            final_payment_amount AS finalAmount
+        FROM orders
+        WHERE order_id = #{orderId}
+    </select>
+
 </mapper>
