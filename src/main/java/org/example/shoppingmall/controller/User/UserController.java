@@ -1,6 +1,7 @@
 package org.example.shoppingmall.controller.User;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.shoppingmall.dto.User.InsertUserInfoDto;
 import org.example.shoppingmall.dto.User.UserEmailDto;
 import org.example.shoppingmall.service.login.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,4 +97,19 @@ public class UserController {
     {
         return "user/mypage";
     }
+
+    @PostMapping("/user/register")
+    @ResponseBody
+    public String insertUserInfo(@RequestBody InsertUserInfoDto InsertUserInfo) {
+        String result = loginService.insertUserInfo(InsertUserInfo);
+        return result;
+    }
+
+    @PostMapping("/user/checkNickname")
+    @ResponseBody
+    public String checkNickname(@RequestBody String nickName) {
+        String result = loginService.checkNickname(nickName);
+        return result;
+    }
+
 }

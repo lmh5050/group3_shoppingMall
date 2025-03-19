@@ -6,11 +6,28 @@
 
     <!-- 고객id로 기본배송지 가져오기 -->
     <select id="findDefaultAddressByCustomerId" parameterType="String" resultType="AddressDto">
-        SELECT * FROM address WHERE customer_id = #{customer_id} AND status = 1 AND delete_flag = 0
+        SELECT *
+        FROM address
+        WHERE customer_id = #{customer_id}
+          AND status = 1
     </select>
 
 
+    <!-- 상품상세id로 상품정보 가져오기 -->
+    <select id="findProductInfoByProductDetailId" parameterType="String" resultType="ProductInfoDto">
+        SELECT
+            pd.color AS color,
+            pd.size AS size,
+            p.name AS name,
+            p.price AS price
+        FROM product_detail AS pd
+                 INNER JOIN product AS p
+                            ON pd.product_id = p.product_id
+        WHERE pd.product_detail_id = #{produtct_detail_id}
+    </select>
 
+    <!-- 주문번호 매기기 -->
+    <select id=""></select>
 
 
 
@@ -34,14 +51,14 @@
 
     <update id="insertOrderDetail" parameterType="OrderDetailDto">
         INSERT INTO order_detail (order_detail_id, order_id, product_detail_id, seller_id,
-        product_name, size, color, quantity, price, vat,
-        discount_amount, total_order_amount, total_product_amount,
-        status, created_at, updated_at)
+                                    product_name, size, color, quantity, price, vat,
+                                    discount_amount, total_order_amount, total_product_amount,
+                                    status, created_at, updated_at)
         VALUES (#{orderDetailId}, #{orderId}, #{productDetailId}, #{sellerId}, #{productName},
-        #{size}, #{color}, #{quantity}, #{price}, #{price} * 0.1,  //VAT은 price의 10%로 계산
-        #{discountAmount}, #{totalOrderAmount},
-        (#{price} + #{price} * 0.1 - #{discountAmount}) * #{quantity}, //Total Product Amount 계산
-        #{status}, NOW(), NOW())
+                #{size}, #{color}, #{quantity}, #{price}, #{price} * 0.1,  //VAT은 price의 10%로 계산
+                #{discountAmount}, #{totalOrderAmount},
+                (#{price} + #{price} * 0.1 - #{discountAmount}) * #{quantity}, //Total Product Amount 계산
+                #{status}, NOW(), NOW())
     </update>
 
 

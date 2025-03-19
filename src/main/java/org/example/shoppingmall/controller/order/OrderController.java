@@ -3,6 +3,7 @@ package org.example.shoppingmall.controller.order;
 import org.example.shoppingmall.dto.order.AddressDto;
 import org.example.shoppingmall.dto.order.OrderDetailDto;
 import org.example.shoppingmall.dto.order.OrderDto;
+import org.example.shoppingmall.dto.order.ProductInfoDto;
 import org.example.shoppingmall.service.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,12 +21,18 @@ public class OrderController {
 
     // 주문서 페이지
     @GetMapping("/order")
-    public String showOrder(String  customerId, String orderId, Model model) {
+    public String showOrder(@RequestParam("customerId") String customerId, @RequestParam("productDetailId") String productDetailId, Model model) {
         //기본배송지 가져오기
         AddressDto address = orderService.getDefaultAddress(customerId);
         model.addAttribute("address", address);
 
+        //주문상품정보 가져오기
+        ProductInfoDto productInfo = orderService.getProductInfoByProductDetailId(productDetailId);
+        model.addAttribute("productInfo", productInfo);
         return "order/orderForm";
+
+        //주문번호 생성하기
+
     }
 
 
