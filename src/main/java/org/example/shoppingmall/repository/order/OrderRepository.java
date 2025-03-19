@@ -2,15 +2,13 @@ package org.example.shoppingmall.repository.order;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.example.shoppingmall.dto.order.AddressDto;
-import org.example.shoppingmall.dto.order.OrderDetailDto;
 import org.example.shoppingmall.dto.order.OrderDto;
-import org.example.shoppingmall.dto.product.ProductDto;
-import org.springframework.stereotype.Repository;
+import org.example.shoppingmall.dto.order.ProductInfoDto;
 
-import java.util.List;
+import java.util.ArrayList;
+
 
 @Mapper
-@Repository
 public interface OrderRepository {
 
     // 주문 저장
@@ -19,6 +17,8 @@ public interface OrderRepository {
     //기본배송지 가져오기
     AddressDto findDefaultAddressByCustomerId(String customerId);
 
+    //상품정보가져오기
+    ProductInfoDto findProductInfoByProductDetailId(String productDetailId);
 
 
     /*// 전체 주문 목록 조회

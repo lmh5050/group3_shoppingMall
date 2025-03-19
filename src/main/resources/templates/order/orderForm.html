@@ -6,7 +6,7 @@
 </head>
 <body>
 <form action="/order/order" method="post">
-    <h2>주문서</h2>
+    <h1>주문서</h1>
     <!-- 배송지 설정 -->
     <div id="shipping">
         <h2>배송지</h2>
@@ -41,28 +41,13 @@
         </script>
     </div>
 
-    <table>
-        <thead>
-        <tr>
-            <th>상품명</th>
-            <th>가격</th>
-            <th>사이즈</th>
-            <th>색상</th>
-            <th>수량</th>
-            <th>총 금액</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="orderDetail : ${orderDetailList}">
-            <td th:text="${orderDetail.productName}"></td>
-            <td th:text="${orderDetail.price}"></td>
-            <td th:text="${orderDetail.size}"></td>
-            <td th:text="${orderDetail.color}"></td>
-            <td th:text="${orderDetail.quantity}"></td>
-            <td th:text="${orderDetail.totalProductAmount}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <div id="productInfo">
+        <h2>상품정보</h2>
+        <div>상품명 <span th:text="${productInfo.name}"></span></div>
+        <div>색상: <span th:text="${productInfo.color}">0원</span></div>
+        <div>사이즈: <span th:text="${productInfo.size}">0원</span></div>
+        <div>상품 금액: <span th:text="${productInfo.price}">0원</span></div>
+    </div>
 
     <!-- 결제 금액 -->
     <div id="paymentInfo">
