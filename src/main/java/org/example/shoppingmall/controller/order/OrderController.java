@@ -21,18 +21,24 @@ public class OrderController {
 
     // 주문서 페이지
     @GetMapping("/order")
-    public String showOrder(@RequestParam("customerId") String customerId, @RequestParam("productDetailId") String productDetailId, Model model) {
+    public String showOrder(@RequestParam("customerId") String customerId,
+                            @RequestParam("productDetailId") String productDetailId,
+                            Model model) {
+
         //기본배송지 가져오기
         AddressDto address = orderService.getDefaultAddress(customerId);
         model.addAttribute("address", address);
 
-        //주문상품정보 가져오기
         ProductInfoDto productInfo = orderService.getProductInfoByProductDetailId(productDetailId);
         model.addAttribute("productInfo", productInfo);
         return "order/orderForm";
+    }
 
-        //주문번호 생성하기
-
+    @PostMapping("/orderTest")
+    public String test(@ModelAttribute("productDetailInfo") ProductInfoDto productInfoDto) {
+        System.out.println("productInfoDto = " + productInfoDto.getQuantity());
+        System.out.println("productInfoDto = " + productInfoDto.getProductDetailId());
+        return "order/orderForm";
     }
 
 

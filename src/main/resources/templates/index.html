@@ -5,7 +5,7 @@
 <link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>신사 숙녀 Home</title>
 </head>
 <!-- 네비게이션 바 포함 -->
 <div th:replace="Bars/nav_bar :: nav"></div>
@@ -35,7 +35,7 @@
                     <!-- Product actions-->
                     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                         <div class="text-center">
-                            <a class="btn btn-outline-dark mt-auto" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Add to cart</a>
+                            <a class="btn btn-outline-dark mt-auto" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
                         </div>
                     </div>
                 </div>
