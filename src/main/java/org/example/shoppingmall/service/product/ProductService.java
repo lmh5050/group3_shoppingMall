@@ -1,6 +1,7 @@
 package org.example.shoppingmall.service.product;
 
 import org.example.shoppingmall.dto.User.UserInfoDto;
+import org.example.shoppingmall.dto.product.ProductDetailDto;
 import org.example.shoppingmall.dto.product.ProductDto;
 import org.example.shoppingmall.repository.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,11 @@ public class ProductService {
                 filteredProducts.add(product);
         }
         return filteredProducts;
+    }
+
+//    상품의 상세 정보를 조회함
+    public ArrayList<ProductDetailDto> getProductDetailOptions(String productId) {
+        return productRepository.getProductDetailOptions(productId);
     }
 }
 

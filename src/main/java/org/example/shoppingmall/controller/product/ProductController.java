@@ -1,6 +1,7 @@
 package org.example.shoppingmall.controller.product;
 
 import org.example.shoppingmall.dto.product.ProductCategoryDto;
+import org.example.shoppingmall.dto.product.ProductDetailDto;
 import org.example.shoppingmall.dto.product.ProductDto;
 import org.example.shoppingmall.service.product.ProductCategoryService;
 import org.example.shoppingmall.service.product.ProductService;
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
@@ -45,7 +45,11 @@ public class ProductController {
         ProductDto product = productService.getProductById(prdId);
         model.addAttribute("product", product);
 
-        return "indexDetail";
+        // 상품의 상세 옵션을 가져옴
+        ArrayList<ProductDetailDto> productDetailOptions = productService.getProductDetailOptions(prdId);
+        model.addAttribute("productDetailOptions", productDetailOptions);
+
+        return "product/indexDetail";
     }
 
 //    카테고리 이동
@@ -56,7 +60,7 @@ public class ProductController {
             @RequestParam(required = false, name = "subCID") String subCID,
             Model model) {
         // 상품 전체 리스트 가져오기
-        ArrayList<ProductDto> products = productService.getProductData();
+        ArrayList<ProductDto> products;
 
         // 대분류 카테고리 가져오기
         ArrayList<ProductCategoryDto> list = productCategoryService.getMajorCategoryByPId();
@@ -66,12 +70,6 @@ public class ProductController {
         ArrayList<ProductCategoryDto> midCList = productCategoryService.getMiddleCategoryByPId(majorCID, "mid");
         model.addAttribute("midCategoryList", midCList);
 
-        // 카테고리 대분류가 ALL(전체)가 선택된 경우
-//        if (majorCID.equals("ALL")) {
-//            model.addAttribute("products", products);
-//        } else {
-//            model.addAttribute("products",  productService.getFilteredProductData(majorCID));
-//        }
         products = productService.getFilteredProductData(majorCID);
 
         // 중분류 카테고리가 선택된 경우
