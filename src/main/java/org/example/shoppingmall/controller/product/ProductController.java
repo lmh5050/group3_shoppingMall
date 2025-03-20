@@ -55,26 +55,41 @@ public class ProductController {
             @RequestParam(required = false, name = "midCID") String midCID,
             @RequestParam(required = false, name = "subCID") String subCID,
             Model model) {
+        // 상품 전체 리스트 가져오기
+        ArrayList<ProductDto> products = productService.getProductData();
 
+        // 대분류 카테고리 가져오기
+        ArrayList<ProductCategoryDto> list = productCategoryService.getMajorCategoryByPId();
+        model.addAttribute("categoryList", list);
+
+        // 중분류 카테고리 가져오기
         ArrayList<ProductCategoryDto> midCList = productCategoryService.getMiddleCategoryByPId(majorCID, "mid");
         model.addAttribute("midCategoryList", midCList);
 
-        ArrayList<ProductCategoryDto> list = productCategoryService.getMajorCategoryByPId();
-        model.addAttribute("categoryList", list);
+        // 카테고리 대분류가 ALL(전체)가 선택된 경우
+//        if (majorCID.equals("ALL")) {
+//            model.addAttribute("products", products);
+//        } else {
+//            model.addAttribute("products",  productService.getFilteredProductData(majorCID));
+//        }
+        products = productService.getFilteredProductData(majorCID);
 
         // 중분류 카테고리가 선택된 경우
         ArrayList<ProductCategoryDto> subCList;
         if(midCID != null) {
             subCList = productCategoryService.getMiddleCategoryByPId(midCID, "sub");
             model.addAttribute("subCategoryList", subCList);
+            // 중분류 상품(소분류도 포함)만 가져오는 서비스
+            products = productService.getFilteredProductData(midCID);
         }
 
         // 소분류 카테고리가 선택된 경우
-        if(subCID != null) {
-            ArrayList<ProductDto> products = productService.getProductData();
-            model.addAttribute("products", products);
+        if (subCID != null) {
+            // 소분류 상품만 가져오는 서비스
+            products = productService.getFilteredProductData(subCID);
         }
-        
+
+        model.addAttribute("products", products);
         return "/product/category";
     }
 }
