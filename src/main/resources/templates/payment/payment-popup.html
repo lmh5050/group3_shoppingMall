@@ -37,46 +37,42 @@
         .title-box {
             text-align: center;
             padding: 20px 0 10px 0;
+            border-bottom: 1px solid #eee;
         }
         .title-box h1 {
             margin: 0;
             font-size: 1.3rem;
         }
 
-        /* 회색 영역(결제 금액) */
-        .gray-area {
-            background-color: #eee;
+        /* 결제 금액 영역 */
+        .payment-amount-section {
+            background-color: #f8f8f8;
             padding: 20px;
         }
-        .gray-area h2 {
-            margin: 0;
-            text-align: center;
+        .payment-amount-section h2 {
+            margin: 0 0 15px 0;
             font-size: 1.1rem;
-            font-weight: bold;
-            margin-bottom: 10px;
+            text-align: center;
         }
-        .price-row {
+        .amount-row {
             display: flex;
             justify-content: space-between;
+            margin-bottom: 10px;
             font-size: 0.95rem;
-            margin: 6px 0;
         }
-        .price-row .label { }
-        .price-row .value {
-            text-align: right;
-            min-width: 100px;
-        }
-        .discount .value {
-            color: #e00; /* 할인금액 빨간색 */
-        }
-        .final-amount .label,
-        .final-amount .value {
+        .amount-row:last-child {
+            margin-bottom: 0;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
             font-weight: bold;
+        }
+        .discount-amount {
+            color: #e00;
         }
         .vat-info {
             font-size: 0.85rem;
             color: #666;
-            margin-left: 5px;
+            font-weight: normal;
         }
 
         /* 경계선 */
@@ -160,7 +156,7 @@
             margin-top: 15px;
         }
         .cancel-btn, .confirm-btn {
-            width: 48%;
+            width: 49.5%;
             padding: 12px 0;
             font-size: 0.95rem;
             border: none;
@@ -169,11 +165,11 @@
             font-weight: bold;
         }
         .cancel-btn {
-            background-color: #aaa;  /* 회색 */
+            background-color: #aaa;  
             color: #fff;
         }
         .confirm-btn {
-            background-color: #333;  /* 검정 */
+            background-color: #333; 
             color: #fff;
         }
     </style>
@@ -186,19 +182,23 @@
             <h1>결제하기</h1>
         </div>
 
-        <!-- 결제 금액 영역 (회색 배경) -->
-        <div class="gray-area">
+        <!-- 결제 금액 영역 -->
+        <div class="payment-amount-section">
             <h2>결제 금액</h2>
-            <div class="price-row">
-                <span class="label">주문 ID</span>
-                <span class="value" id="orderId"></span>
+            <div class="amount-row">
+                <span>기본 금액</span>
+                <span id="baseAmount">0원</span>
             </div>
-            <div class="price-row final-amount">
-                <span class="label">
-                    총 결제 금액
+            <div class="amount-row">
+                <span>할인금액</span>
+                <span id="discountAmount" class="discount-amount">0원</span>
+            </div>
+            <div class="amount-row">
+                <span>
+                    최종 결제 금액
                     <span class="vat-info">(VAT 10% 포함)</span>
                 </span>
-                <span class="value" id="totalOrderAmount">"원"</span>
+                <span id="finalAmount">0원</span>
             </div>
         </div>
 
@@ -218,29 +218,43 @@
                     <div id="cardArea">
                         <select id="cardType">
                             <option value="">카드를 선택해주세요.</option>
-                            <option value="삼성카드">삼성카드</option>
-                            <option value="현대카드">현대카드</option>
-                            <option value="신한카드">신한카드</option>
+                            <option value="2">KB카드</option> 
+                            <option value="3">신한카드</option>
+                            <option value="4">현대카드</option>
+                            <option value="5">삼성카드</option>
+                            <option value="6">농협카드</option>
+                            <option value="7">카카오뱅크</option>
+                            <option value="8">BC카드</option>
+                            <option value="9">하나카드</option>
+                            <option value="10">우리카드</option>
                         </select>
-                        <select id="installmentPlan">
-                            <option value="일시불">일시불</option>
-                            <option value="3개월 할부">3개월 할부</option>
-                            <option value="6개월 할부">6개월 할부</option>
+                        <select id="cardInstallment">
+                            <option value="1">일시불</option>
+                            <option value="3">3개월 할부</option>
+                            <option value="6">6개월 할부</option>
                         </select>
                         <input type="text" id="cardNumber" placeholder="카드 번호를 입력해주세요."/>
                     </div>
                     <!-- 가상계좌 영역 -->
                     <div id="accountArea" style="display:none;">
-                        <select id="bankName">
+                        <select id="cashBankName">
                             <option value="">입금은행을 선택해주세요.</option>
+                            <option value="기업은행">기업은행</option>
                             <option value="국민은행">국민은행</option>
                             <option value="우리은행">우리은행</option>
+                            <option value="NH농협은행">NH농협은행</option>
+                            <option value="부산은행">부산은행</option>
                             <option value="신한은행">신한은행</option>
+                            <option value="하나은행">하나은행</option>
+                            <option value="광주은행">광주은행</option>
+                            <option value="우체국">우체국</option>
+                            <option value="대구은행">대구은행</option>
+                            <option value="경남뱅크">경남뱅크</option>
                         </select>
                         <p><strong>현금영수증</strong></p>
                         <select id="cashReceiptType">
-                            <option value="개인소득공제">개인소득공제</option>
-                            <option value="사업자지출증빙">사업자지출증빙</option>
+                            <option value="1">개인소득공제</option>
+                            <option value="2">사업자지출증빙</option>
                         </select>
                         <input type="text" id="cashReceiptNumber" placeholder="현금영수증 발행용 번호를 입력해주세요."/>
                     </div>
@@ -249,89 +263,125 @@
 
             <!-- 동의 체크박스 -->
             <div class="agreement">
-                <label>
-                    <input type="checkbox" id="agreeTerms"/>
-                    주문 내용을 확인했으며 결제에 동의합니다.
-                </label>
+                <input type="checkbox" id="agreeCheck" required>
+                <label for="agreeCheck">결제 금액을 확인했으며, 결제에 동의합니다.</label>
             </div>
 
-            <!-- 하단 버튼 -->
+            <!-- 하단 버튼 영역 -->
             <div class="button-row">
-                <button type="button" class="cancel-btn" onclick="window.close()">결제취소</button>
-                <button type="button" class="confirm-btn" id="confirmBtn">결제하기</button>
+                <button class="cancel-btn" onclick="window.close()">결제취소</button>
+                <button class="confirm-btn" onclick="processPayment()">결제하기</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function(){
-        const cardBtn = document.getElementById('cardBtn');
-        const accountBtn = document.getElementById('accountBtn');
-        const cardArea = document.getElementById('cardArea');
-        const accountArea = document.getElementById('accountArea');
-        const confirmBtn = document.getElementById('confirmBtn');
-        let receivedData = {};
+    let orderData = null;
 
-        // 탭 전환 이벤트
-        cardBtn.addEventListener('click', () => {
-            cardBtn.classList.add('active');
-            accountBtn.classList.remove('active');
-            cardArea.style.display = 'block';
-            accountArea.style.display = 'none';
-        });
-        accountBtn.addEventListener('click', () => {
-            accountBtn.classList.add('active');
-            cardBtn.classList.remove('active');
-            accountArea.style.display = 'block';
-            cardArea.style.display = 'none';
-        });
+    // 금액을 원 단위로 포맷팅하는 함수
+    function formatAmount(amount) {
+        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원";
+    }
 
-        // 메인 페이지에서 보낸 데이터 받기
-        window.addEventListener("message", (event) => {
-            receivedData = event.data;
-            document.getElementById("orderId").innerText = receivedData.orderId;
-            document.getElementById("totalOrderAmount").innerText = receivedData.totalOrderAmount;
-        });
+    // 부모 창으로부터 데이터 수신
+    window.addEventListener('message', function(event) {
+        orderData = event.data;
+        
+        // 금액 표시 업데이트
+        const baseAmount = orderData.totalOrderAmount;
+        const discountAmount = orderData.discountAmount || 0;
+        const finalAmount = baseAmount - discountAmount;
 
-        // 결제 전송 함수
-        function submitPayment() {
-            if (!document.getElementById("agreeTerms").checked) {
-                alert("결제 동의에 체크해주세요.");
+        document.getElementById('baseAmount').textContent = formatAmount(baseAmount);
+        document.getElementById('discountAmount').textContent = '-' + formatAmount(discountAmount);
+        document.getElementById('finalAmount').textContent = formatAmount(finalAmount);
+    });
+
+    // 결제 처리 함수
+    function processPayment() {
+        if (!document.getElementById('agreeCheck').checked) {
+            alert('결제 동의를 해주세요.');
+            return;
+        }
+
+        const isCardPayment = document.getElementById('cardBtn').classList.contains('active');
+        let paymentData = {
+            ...orderData,
+            paymentMethod: isCardPayment ? '신용/체크카드' : '가상계좌',
+            cardType: null,
+            cardInstallment: null,
+            cardNumber: null,
+            cashBankName: null,
+            cashReceiptType: null,
+            cashReceiptNumber: null
+        };
+
+        // 신용/체크카드 결제 시 유효성 검사
+        if (isCardPayment) {
+            const cardType = document.getElementById('cardType').value;
+            const cardNumber = document.getElementById('cardNumber').value;
+            const cardInstallment = document.getElementById('cardInstallment').value;
+
+            if (!cardType) {
+                alert('카드를 선택해주세요.');
+                return;
+            }
+            if (!cardNumber) {
+                alert('카드 번호를 입력해주세요.');
                 return;
             }
 
-            // 탭에 따라 결제 수단 결정
-            const paymentMethod = cardBtn.classList.contains("active") ? "신용/체크카드" : "가상계좌";
+            paymentData.cardType = parseInt(cardType);
+            paymentData.cardInstallment = parseInt(cardInstallment);
+            paymentData.cardNumber = parseInt(cardNumber);
+        }
+        // 가상계좌 결제 시 유효성 검사
+        else {
+            const cashBankName = document.getElementById('cashBankName').value;
+            const cashReceiptNumber = document.getElementById('cashReceiptNumber').value;
+            const cashReceiptType = document.getElementById('cashReceiptType').value;
 
-            // 결제 데이터 구성
-            let paymentData = {
-                orderId: receivedData.orderId,
-                totalOrderAmount: receivedData.totalOrderAmount,
-                paymentMethod: paymentMethod
-            };
-
-            if (paymentMethod === "신용/체크카드") {
-                paymentData.cardType = document.getElementById("cardType").value;
-                paymentData.installmentPlan = document.getElementById("installmentPlan").value;
-            } else if (paymentMethod === "가상계좌") {
-                paymentData.bankName = document.getElementById("bankName").value;
-                paymentData.cashReceiptType = document.getElementById("cashReceiptType").value;
-                paymentData.cashReceiptNumber = document.getElementById("cashReceiptNumber").value;
+            if (!cashBankName) {
+                alert('입금은행을 선택해주세요.');
+                return;
+            }
+            if (!cashReceiptNumber) {
+                alert('현금영수증 발행용 번호를 입력해주세요.');
+                return;
             }
 
-            // Axios로 결제 요청 전송
-            axios.post('/payment', paymentData)
-                .then(response => {
-                    alert('결제가 완료되었습니다!');
-                    window.close();
-                })
-                .catch(error => {
-                    alert('결제 실패: ' + (error.response?.data?.message || '오류 발생'));
-                });
+            paymentData.cashBankName = cashBankName;
+            paymentData.cashReceiptType = parseInt(cashReceiptType);
+            paymentData.cashReceiptNumber = parseInt(cashReceiptNumber);
         }
+        console.log('결제 데이터:', paymentData);
+        
+        // 결제 API 호출
+        axios.post('/payment', paymentData)
+            .then(response => {
+                alert('결제가 완료되었습니다.');
+                //window.close();
+            })
+            .catch(error => {
+                console.error('결제 실패:', error);
+                alert('결제 처리 중 오류가 발생했습니다.');
+            });
+    }
 
-        confirmBtn.addEventListener('click', submitPayment);
+    // 결제 방법 탭 전환
+    document.getElementById('cardBtn').addEventListener('click', function() {
+        this.classList.add('active');
+        document.getElementById('accountBtn').classList.remove('active');
+        document.getElementById('cardArea').style.display = 'block';
+        document.getElementById('accountArea').style.display = 'none';
+    });
+
+    document.getElementById('accountBtn').addEventListener('click', function() {
+        this.classList.add('active');
+        document.getElementById('cardBtn').classList.remove('active');
+        document.getElementById('cardArea').style.display = 'none';
+        document.getElementById('accountArea').style.display = 'block';
     });
 </script>
 </body>

@@ -34,14 +34,51 @@
     function openPaymentPopup() {
         // 팝업 크기
         const width = 500, height = 700;
-        // 화면 중앙에 위치하도록 계산
         const left = (window.screen.width - width) / 2;
         const top = (window.screen.height - height) / 2;
 
-        // 숨은 input에서 데이터를 가져옴
         const orderData = {
-            orderId: document.getElementById("orderId").value,
-            totalOrderAmount: document.getElementById("totalOrderAmount").value
+            orderId: 10001,
+            customerId: "User001",
+            orderStatus: "MA01006",
+            totalOrderAmount: 30000,
+            totalQuantity: 5,
+            totalTypeCnt: 3,
+            orderDetailList: [
+                {
+                    orderDetailId: 1,
+                    productId: "P1",
+                    productName: "테스트1",
+                    size: "M",
+                    quantity: 3,
+                    price: 5000,
+                    discountAmount: 0,
+                    productPrice: 5000,
+                    productTotalPrice: 15000
+                },
+                {
+                    orderDetailId: 2,
+                    productId: "P2",
+                    productName: "테스트2",
+                    size: "L",
+                    quantity: 2,
+                    price: 6000,
+                    discountAmount: 0,
+                    productPrice: 6000,
+                    productTotalPrice: 12000
+                },
+                {
+                    orderDetailId: 3,
+                    productId: "P3",
+                    productName: "테스트3",
+                    size: "S",
+                    quantity: 1,
+                    price: 3000,
+                    discountAmount: 0,
+                    productPrice: 3000,
+                    productTotalPrice: 3000
+                }
+            ]
         };
 
         const popup = window.open(

@@ -1,7 +1,6 @@
 package org.example.shoppingmall.controller.payment;
 
 import lombok.RequiredArgsConstructor;
-import org.example.shoppingmall.dto.payment.PaymentDto;
 import org.example.shoppingmall.dto.payment.PaymentInfoDto;
 import org.example.shoppingmall.service.payment.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/payment")
@@ -21,23 +18,25 @@ public class PaymentController {
     // 결제버튼이 보이는 페이지
     @GetMapping("/page")
     public String paymentPage(Model model){
-        model.addAttribute("orderId", "OR001");
-        model.addAttribute("totalOrderAmount", 50000);
+        model.addAttribute("orderId", "테스트");
+        model.addAttribute("totalOrderAmount", 30000);
         return "payment/payment";
     }
 
     // 결제 팝업 페이지
     @GetMapping
-    public String paymentPopup(Model model) {
-//        PaymentInfoDto order = paymentService.getOrderDetails(orderId);
-//        model.addAttribute("order", order);
+    public String paymentPopup() {
         return "payment/payment-popup";
     }
 
     // 결제하기
     @PostMapping
-    public ResponseEntity<String> postPayment(@RequestBody PaymentDto paymentDto) {
-        // paymentService.createPayment(paymentDto);
-        return ResponseEntity.ok("created payment");
+    public ResponseEntity<String> postPayment(@RequestBody PaymentInfoDto paymentInfoDto) {
+        try {
+            paymentService.processPayment(paymentInfoDto);
+            return ResponseEntity.ok("결제가 완료되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("결제 처리 중 오류가 발생했습니다: " + e.getMessage());
+        }
     }
 }

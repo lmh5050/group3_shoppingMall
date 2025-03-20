@@ -1,16 +1,24 @@
 package org.example.shoppingmall.dto.payment;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PaymentDto {
+    // 결제 정보
     private String paymentId;
-    private String orderId;
-    private Integer paymentMethodId;
+    private Integer orderId;
+    private String paymentMethod;
+    private Integer cardType;
+    private Integer cardInstallment;
+    private Integer cardNumber;
+    private String cashBankName;
+    private Integer cashReceiptType;
+    private Integer cashReceiptNumber;
 }
