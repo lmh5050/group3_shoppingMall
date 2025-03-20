@@ -29,6 +29,7 @@ public class ProductController {
     public String home(Model model) {
         ArrayList<ProductDto> products = productService.getProductData();
         model.addAttribute("products", products);
+
         ArrayList<ProductCategoryDto> list = productCategoryService.getMajorCategoryByPId();
         model.addAttribute("categoryList", list);
 
@@ -52,15 +53,28 @@ public class ProductController {
     public String categoryList(
             @RequestParam(name = "majorCID") String majorCID,
             @RequestParam(required = false, name = "midCID") String midCID,
+            @RequestParam(required = false, name = "subCID") String subCID,
             Model model) {
+
         ArrayList<ProductCategoryDto> midCList = productCategoryService.getMiddleCategoryByPId(majorCID, "mid");
         model.addAttribute("midCategoryList", midCList);
+
+        ArrayList<ProductCategoryDto> list = productCategoryService.getMajorCategoryByPId();
+        model.addAttribute("categoryList", list);
+
+        // 중분류 카테고리가 선택된 경우
         ArrayList<ProductCategoryDto> subCList;
         if(midCID != null) {
             subCList = productCategoryService.getMiddleCategoryByPId(midCID, "sub");
-            System.out.println("subCID = " + subCList);
             model.addAttribute("subCategoryList", subCList);
         }
+
+        // 소분류 카테고리가 선택된 경우
+        if(subCID != null) {
+            ArrayList<ProductDto> products = productService.getProductData();
+            model.addAttribute("products", products);
+        }
+        
         return "/product/category";
     }
 }

@@ -1,17 +1,108 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<!--<link rel="stylesheet" th:href="@{/css/Bars.css}">-->
-<!--<link rel="stylesheet" th:href="@{/css/Login.css}">-->
-<!--<link rel="stylesheet" th:href="@{/css/category.css}">-->
-<!--<link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">-->
+<link rel="stylesheet" th:href="@{/css/Bars.css}">
+<link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">
 
 <head>
     <meta charset="UTF-8">
     <title>신사 숙녀 category</title>
 </head>
-<body>
-<script>
+<style>
+    body {
+        font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+        background-color: #fff;
+        padding: 40px;
+        color: #111;
+    }
 
+    h1 {
+        margin-top: 80px;
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #111;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 40px;
+    }
+
+    li {
+        margin-bottom: 10px;
+    }
+
+    button {
+        all: unset;
+        display: block;
+        width: 100%;
+        max-width: 240px;
+        padding: 12px 20px;
+        background-color: #f9f9f9;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 400;
+        color: #333;
+        cursor: pointer;
+        transition: all 0.25s ease;
+    }
+
+    button:hover {
+        background-color: #111;
+        color: #fff;
+        border-color: #111;
+    }
+
+    /* 선택된 버튼 스타일 (선택 시 클래스 붙여서 적용 가능) */
+    button.selected {
+        background-color: #111;
+        color: #fff;
+        border-color: #111;
+    }
+
+    /* 반응형 - 모바일 */
+    @media (max-width: 480px) {
+        button {
+            font-size: 14px;
+            padding: 10px 16px;
+        }
+    }
+
+
+
+
+</style>
+/*  section  */
+<style>
+    .category-product-section {
+        display: flex;
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 60px 20px;
+    }
+
+    .category-section {
+        width: 250px;
+        padding-right: 30px;
+    }
+
+    .vertical-line {
+        width: 1px;
+        background-color: #ddd;
+        margin: 0 20px;
+    }
+
+    .product-section {
+        flex-grow: 1;
+    }
+</style>
+
+<body>
+<!-- 네비게이션 바 포함 -->
+<div th:replace="Bars/nav_bar :: nav"></div>
+<script>
     // 중분류 선택하면 소분류가 화면에 띄워짐
     function getSubCategory(midCId) {
         let url = new URL(window.location.href);
@@ -24,28 +115,87 @@
             url.searchParams.append('midCID', midCId);
         }
 
+        if (url.searchParams.has('subCID')){
+            url = url.toString().substring(0, url.toString().indexOf('subCID')-1);
+        }
+
         // 페이지 이동
         window.location.href = url.toString();
     }
 
-    //중
+    // 카테고리 세부목록과 관련된 목록을 보여줌
+    function getProductList(subCID){
+        let url = new URL(window.location.href);
 
+        if (url.searchParams.has('subCID')) {
+            // 기존 midCId 쿼리 값을 덮어씀
+            url.searchParams.set('subCID', subCID);
+        } else {
+            // 없으면 새로 추가
+            url.searchParams.append('subCID', subCID);
+        }
+
+        // 페이지 이동
+        window.location.href = url.toString();
+    }
 </script>
-<h1 th:text="${param.majorCID}"></h1>
 
-<ul th:each="ctg : ${midCategoryList}">
-    <li>
-        <button type="button" th:value="${ctg.getCategoryId()}" th:name="${ctg.getCategoryId()}"
-                th:text="${ctg.getName()}" onclick="return getSubCategory(this.value)"></button>
-    </li>
-</ul>
-<br>
-<h1 th:text="${param.midCID}"></h1>
-<ul th:each="mtg : ${subCategoryList}">
-    <li>
-        <button type="button" th:value="${mtg.getCategoryId()}" th:name="${mtg.getCategoryId()}"
-                th:text="${mtg.getName()}" onclick=""></button>
-    </li>
-</ul>
+<section class="category-product-section">
+    <!-- 왼쪽: 카테고리 -->
+    <div class="category-section">
+        <h1 th:text="${param.majorCID}"></h1>
+        <ul th:each="ctg : ${midCategoryList}">
+            <li>
+                <button type="button" th:value="${ctg.getCategoryId()}" th:name="${ctg.getCategoryId()}"
+                        th:text="${ctg.getName()}" onclick="return getSubCategory(this.value)"></button>
+            </li>
+        </ul>
+
+        <h1 th:text="${param.midCID}"></h1>
+        <ul th:each="mtg : ${subCategoryList}">
+            <li>
+                <button type="button" th:value="${mtg.getCategoryId()}" th:name="${mtg.getCategoryId()}"
+                        th:text="${mtg.getName()}" onclick="return getProductList(this.value)"></button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 구분선 -->
+    <div class="vertical-line"></div>
+
+    <!--th:if="${}"  카테고리에 맞는 조건들을 보여줄 곳  -->
+    <th:block >
+
+        <!-- 오른쪽: 상품 리스트 -->
+        <div class="product-section container px-4 px-lg-5 mt-5">
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
+                <div class="col mb-5" th:each="product : ${products}">
+                    <div class="card h-100">
+                        <img class="card-img-top" th:src="|/images/product/@{${product.getProductId()}}.png|" alt="Product Image" />
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <h5 class="fw-bolder" th:text="${product.getName()}">Fancy Product</h5>
+                                <div class="d-flex justify-content-center small text-warning mb-2" th:if="${product.getRating() != null}">
+                                    <div class="bi-star-fill" th:each="star : ${#numbers.sequence(1, product.getRating())}"></div>
+                                </div>
+                                <span th:text="'$' + ${product.price}">$40.00</span>
+                            </div>
+                        </div>
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                <a class="btn btn-outline-dark mt-auto" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Add to cart</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+
+</section>
+
+<footer>
+    <div th:replace="Bars/footer :: #footer"></div>
+</footer>
 </body>
 </html>
