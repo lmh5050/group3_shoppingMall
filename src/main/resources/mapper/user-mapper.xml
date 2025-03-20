@@ -20,7 +20,7 @@
 
     <select id="checkNickname" parameterType="String" resultType="int">
         SELECT COUNT(*)
-        FROM main_shopping_mall_db.customer
+        FROM customer
         WHERE nickname = #{nickName}
     </select>
 

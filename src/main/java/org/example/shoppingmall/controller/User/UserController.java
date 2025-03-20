@@ -3,6 +3,7 @@ package org.example.shoppingmall.controller.User;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.shoppingmall.dto.User.InsertUserInfoDto;
 import org.example.shoppingmall.dto.User.UserEmailDto;
+import org.example.shoppingmall.dto.User.UserInfoDto;
 import org.example.shoppingmall.service.login.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -107,7 +108,8 @@ public class UserController {
 
     @PostMapping("/user/checkNickname")
     @ResponseBody
-    public String checkNickname(@RequestBody String nickName) {
+    public String checkNickname(@RequestBody UserInfoDto userInfo) {
+        String nickName = userInfo.getNickname();
         String result = loginService.checkNickname(nickName);
         return result;
     }

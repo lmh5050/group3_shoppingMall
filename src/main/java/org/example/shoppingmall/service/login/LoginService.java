@@ -43,8 +43,16 @@ public class LoginService {
 
     //서비스 단
     public String checkNickname(String nickName) {
-        String result = "사용가능";
+        String result = "";
         int searchData = userRepository.checkNickname(nickName);
+        if (searchData == 1)
+        {
+            result = "사용불가";
+        }
+        else
+        {
+            result = "사용가능";
+        }
         System.out.println(nickName);
         System.out.println(searchData + "결과값");
         return result;

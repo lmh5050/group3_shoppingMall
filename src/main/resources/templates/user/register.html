@@ -211,9 +211,9 @@
         const nickName = document.querySelector('#nickname').value.trim();
         let message = document.querySelector("#nicknameCheckMessage");
 
+        // 빈 값이면 메세지 띄우지 않음
         if (!nickName) {
-            message.textContent = "별명을 입력해주세요.";
-            message.style.color = "red";
+            message.textContent = "";
             return;
         }
 
@@ -224,11 +224,11 @@
                 'Content-Type': 'application/json'
             },
             data: {
-                nickName: nickName
+                nickname: nickName
             }
         })
             .then(res => {
-                if (res.data === "사용 가능") {
+                if (res.data === "사용가능") {
                     message.textContent = "사용 가능한 별명입니다.";
                     message.style.color = "green";
                 } else {
