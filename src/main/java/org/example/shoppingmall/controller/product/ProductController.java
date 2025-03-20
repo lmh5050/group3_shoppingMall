@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 
@@ -27,17 +29,15 @@ public class ProductController {
     public String home(Model model) {
         ArrayList<ProductDto> products = productService.getProductData();
         model.addAttribute("products", products);
-        System.out.println( products);
-        for(ProductDto productDto : products) {
-            System.out.println(productDto);
-        }
+        ArrayList<ProductCategoryDto> list = productCategoryService.getMajorCategoryByPId();
+        model.addAttribute("categoryList", list);
+
         return "index";
     }
 
 //    상세 페이지 이동
     @GetMapping("/productDetail")
     public String productDetail(String prdId, Model model) {
-        System.out.println("prdId:"+prdId);
         model.addAttribute("prdId", prdId);
 
         // 서비스 측 구현할 것: 상품 ID를 통해 ProductDto 가져오기
@@ -49,20 +49,18 @@ public class ProductController {
 
 //    카테고리 이동
     @GetMapping("/category")
-    public String categoryList(Model model) {
-        ArrayList<ProductCategoryDto> categoryList  = productCategoryService.getCategoryListAll();
-        model.addAttribute("categoryList", categoryList);
-        System.out.println("categoryList = " + categoryList);
-        System.out.println();
-
-        ArrayList<ProductCategoryDto> productCategory = productCategoryService.getCategoryByPId("ALL");
-        System.out.println("productCategory = " + productCategory);
-        System.out.println();
-
-        ArrayList<ProductCategoryDto> majorCategory = productCategoryService.getMajorCategoryByPId();
-        model.addAttribute("majorCategory", majorCategory);
-        System.out.println("majorCategory = " + majorCategory);
-
+    public String categoryList(
+            @RequestParam(name = "majorCID") String majorCID,
+            @RequestParam(required = false, name = "midCID") String midCID,
+            Model model) {
+        ArrayList<ProductCategoryDto> midCList = productCategoryService.getMiddleCategoryByPId(majorCID, "mid");
+        model.addAttribute("midCategoryList", midCList);
+        ArrayList<ProductCategoryDto> subCList;
+        if(midCID != null) {
+            subCList = productCategoryService.getMiddleCategoryByPId(midCID, "sub");
+            System.out.println("subCID = " + subCList);
+            model.addAttribute("subCategoryList", subCList);
+        }
         return "/product/category";
     }
 }
