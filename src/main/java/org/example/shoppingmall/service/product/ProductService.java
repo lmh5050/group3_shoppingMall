@@ -37,7 +37,7 @@ public class ProductService {
         if(category.contains("ALL")){
             category = category.replace("ALL", "");
         }
-        
+
         for (ProductDto product : products) {
             if(product.getCategoryId().contains(category))
                 filteredProducts.add(product);
