@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Data
-public class ProductCategoryDto {  //카테고리 DTO
+public class ProductCategoryDto {  // DTO
     private String categoryId;
     private String parentCategoryId;
     private String name;

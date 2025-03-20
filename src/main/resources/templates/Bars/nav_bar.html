@@ -18,7 +18,10 @@
                     </a>
             </li>
             <li>
-                <a class="kaqg_main-menu" href="/category">카테고리</a>
+                <a class="kaqg_main-menu" href="#">카테고리</a>
+                <div class="dropdown" th:each="majorC : ${categoryList}">
+                    <a th:href="|/category?majorCID=${majorC.categoryId}|" th:text="${majorC.name}">default</a>
+                </div>
             </li>
 
 

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 @Service
 public class ProductCategoryService {
@@ -22,21 +23,52 @@ public class ProductCategoryService {
         return productCategoryRepository.getCategoryListAll();
     }
 
-    public ArrayList<ProductCategoryDto> getCategoryByPId(String categoryId) {
-        return productCategoryRepository.getCategoryByPId(categoryId);
-    }
-
     // 대분류 불러오기
     public ArrayList<ProductCategoryDto> getMajorCategoryByPId() {
         return productCategoryRepository.getMajorCategoryByPId();
     }
 
-    // 대분류에 맞는 중분류만 불러오기
-    public ArrayList<ProductCategoryDto> getMiddleCategoryByPId() {
-        return null;
+    // 분류에 맞는 카테고리만 가지고 오기
+    public ArrayList<ProductCategoryDto> getMiddleCategoryByPId(String PCID, String role) {  //찾는 대분류 ID를 매개변수로 받음
+        // 1. 먼저 들어온 부모 카테고리 아이디가 유효한지 판단
+        if (!isCategory(PCID, role)) {
+            return null;
+        }
+
+        // 2. 대분류를 제외한 중분류만 가져오기
+        return productCategoryRepository.getMiddleCategoryById(PCID);
+    }
+
+    // 카테고리가 아닌 경우 확인
+    private boolean isCategory(String PCID, String role) {
+       if(role.equals("mid")){
+           return isMajorCategory(PCID);
+       } else if(role.equals("sub")) {
+           return isMidCategory(PCID);
+       } else {
+           return false;
+       }
+    }
+
+    // 대분류가 아닌 경우를 반환하는 메서드
+    private boolean isMajorCategory(String PCID) {
+        for(ProductCategoryDto ctg : getMajorCategoryByPId()) {
+            if(ctg.getCategoryId().equals(PCID) && ctg.getParentCategoryId() == null){
+                return true;
+            }
+        }
+        return false;
     }
 
     // 중분류에 맞는 소분류만 불러오기
+    private boolean isMidCategory(String PCID) {
+        for(ProductCategoryDto ctg : getCategoryListAll()) {
+            if(ctg.getCategoryId().contains(PCID)){
+                return true;
+            }
+        }
+        return false;
+    }
 
 
 }
