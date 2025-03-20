@@ -6,29 +6,17 @@ import java.sql.Timestamp;
 
 @Data
 public class OrderDto {
-    private String orderId;
-    private String customerId;
-    private String orderStatus;
-    private String paymentStatus;
-    private BigDecimal totalOrderAmount;
-    private BigDecimal totalDiscountAmount;
-    private BigDecimal shippingFee;
-    private Integer totalQuantity;
-    private BigDecimal finalPaymentAmount;
-    private String paymentTransactionId;
-    private String recipient;
-    private Integer postalCode;
-    private String shippingAddressBasic;
-    private String shippingAddressDetail;
-    private String recipientContact;
-    private String shippingRequest;
-    private Timestamp orderDatetime;
-    private Timestamp paymentCompletionDatetime;
-    private Timestamp shippingStartDatetime;
-    private Timestamp shippingCompletionDatetime;
-    private Timestamp orderCancellationDatetime;
-    private Timestamp refundCompletionDatetime;
-    private String adminNote;
-    private Timestamp createdAt;
+    private Long orderId;                 // 주문번호
+    private String customerId;              // 사용자 아이디
+    private String orderStatus;             // 주문 상태
+    private BigDecimal totalDiscountAmount; // 총 할인 금액
+    private BigDecimal totalOrderAmount;    // 총 주문 금액
+    private Integer totalQuantity;          // 총 수량
+    private Integer totalTypeCnt;           // 주문 타입 수
+    private Timestamp orderDatetime;        // 주문일시
+    private Timestamp orderCancellationDatetime; // 주문취소일시
+    private String adminNote;               // 관리자 메모
+    private Boolean activeFlag;             // 활성 여부
+    private Timestamp createdAt;            // 생성일시
     private Timestamp updatedAt;
 }
