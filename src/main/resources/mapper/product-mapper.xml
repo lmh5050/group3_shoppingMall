@@ -27,4 +27,10 @@
     <insert id="setName">
         insert into name from product where season_id = #{id}
     </insert>
+
+<!--  상품에 존재하는 옵션들을 나열하기 위해 상품 상세 정보 찾기  -->
+    <select id="getProductDetailOptions">
+        SELECT * FROM product_detail
+        WHERE product_id = #{productId}
+    </select>
 </mapper>
