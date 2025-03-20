@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class ProductCategoryService {
     private final ProductCategoryRepository productCategoryRepository;
 
+
     @Autowired
     public ProductCategoryService(ProductCategoryRepository pCategoryRepo) {
         this.productCategoryRepository = pCategoryRepo;

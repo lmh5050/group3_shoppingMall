@@ -24,6 +24,12 @@ public class ProductService {
         return productRepository.getProductData();
     }
 
+
+
+
+
+
+
     public ProductDto getProductById(String productId) {
         return productRepository.getProductById(productId);
     }
