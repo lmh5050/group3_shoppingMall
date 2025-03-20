@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 public class ShippingService {
     private final ManagementRepository managementRepository;
 
-    public void shippingCompany(ShippingDto shippingDto) {
-        managementRepository.shippingCompany(shippingDto);
+    public void test(ShippingDto shippingDto) {
+        //managementRepository.test(shippingDto);
+
     }
 }
