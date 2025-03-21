@@ -3,6 +3,7 @@ package org.example.shoppingmall.dto.order;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 public class OrderDto {
