@@ -25,30 +25,42 @@
 <section class="py-5">
     <!--민원 신청 부분 -->
     <div>
-        <!-- 민원 유형 선택 -->
-        <form name="complaint" action="/complaint/request" method="post" onsubmit="return validateForm()">
+        <form name="complaint" th:action="${complaint != null} ? '/complaint/update' : '/complaint/request'"
+              method="post" onsubmit="return validateForm();">
+            <!-- 기존 민원의 경우 complaintId를 숨김 필드로 전달 -->
+            <input type="hidden" name="complaintId" th:if="${complaint != null}" th:value="${complaint.complaintId}">
+
+            <!-- 민원 유형 선택 -->
             <div class="mb-3">
                 <label for="complaintType" class="form-label">민원 유형</label>
                 <select name="complaintType" id="complaintType" class="form-select">
-                    <option value="cancel">취소</option>
-                    <option value="change">교환</option>
-                    <option value="refund">환불</option>
+                    <option value="cancel" th:selected="${complaint?.complaintTypeId == 'cancel'}">취소</option>
+                    <option value="refund" th:selected="${complaint?.complaintTypeId == 'refund'}">환불</option>
+                    <option value="exchange" th:selected="${complaint?.complaintTypeId == 'exchange'}">교환</option>
                 </select>
             </div>
-            <!-- 문의 제목 입력 -->
+
+            <!-- 제목 입력 -->
             <div class="mb-3">
                 <label for="complaintTitle" class="form-label">문의 제목</label>
-                <input type="text" id="complaintTitle" name="complaintTitle" class="form-control" placeholder="문의 제목 입력" style="width: 400px;">
+                <input type="text" id="complaintTitle" name="complaintTitle" class="form-control"
+                       placeholder="문의 제목 입력" style="width: 400px;" th:value="${complaint?.reason}">
             </div>
-            <!-- 문의 내용 입력 -->
+            <!-- 제목 입력 -->
+            <div class="mb-3">
+                <label for="pickupAddress" class="form-label">반품 회수지</label>
+                <input type="text" id="pickupAddress" name="pickupAddress" class="form-control"
+                       placeholder="반품 회수지 입력" style="width: 400px;" th:value="${complaint?.pickupAddress}">
+            </div>
+            <!-- 내용 입력 -->
             <div class="mb-3">
                 <label for="complaintText" class="form-label">문의 내용</label>
-                <textarea id="complaintText" name="complaintText" class="form-control" placeholder="문의 내용 입력" rows="6" style="width: 400px;"></textarea>
+                <textarea id="complaintText" name="complaintText" class="form-control"
+                          placeholder="문의 내용 입력" rows="6" style="width: 400px;" th:text="${complaint?.description}"></textarea>
             </div>
 
             <div class="d-flex justify-content-between">
                 <button type="submit" class="btn btn-primary">확인</button>
-                <!-- 민원 리스트 화면으로 이동 -->
                 <a class="btn btn-secondary" th:href="@{/complaint/list}" role="button">취소</a>
             </div>
         </form>
@@ -65,21 +77,53 @@
 <!-- Core theme JS-->
 <script th:src="@{/js/homejs/homeScripts.js}"></script>
 
-<!-- 민원 내용, 제목 비어있으면 알림 창 발생 기능 -->
+<!-- 민원 내용, 제목 비어있으면 알림 창 발생 -->
 <script>
     function validateForm() {
-        // complaintTitle과 complaintText 값 가져오기
-        const title = document.getElementById('complaintTitle').value;
-        const text = document.getElementById('complaintText').value;
+        // 제목과 내용 가져오기
+        const title = document.getElementById('complaintTitle').value.trim();
+        const text = document.getElementById('complaintText').value.trim();
+        const complaintType = document.getElementById('complaintType').value;
+        const pickupAddress = document.getElementById('pickupAddress').value.trim();
 
-        // 제목이나 내용이 비어있으면 팝업을 띄우고 폼 제출을 막음
+        // 제목과 내용이 비어있을 경우 경고
         if (title === "" || text === "") {
             alert("제목과 내용을 입력해주세요.");
-            return false; // 폼 제출을 막음
+            return false; // 폼 제출 막기
+        }
+
+        // 환불 또는 교환인 경우, pickupAddress가 비어있으면 경고
+        if ((complaintType === "refund" || complaintType === "exchange") && pickupAddress === "") {
+            alert("환불 또는 교환을 선택한 경우 반품 회수지를 입력해야 합니다.");
+            return false; // 폼 제출 막기
         }
 
         return true; // 폼 제출 허용
     }
 </script>
+
+
+<!-- 취소 선택시 반품 회수지 입력창 감추기 -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const complaintType = document.getElementById("complaintType");
+        const pickupAddressField = document.getElementById("pickupAddress").parentElement;
+
+        function togglePickupAddress() {
+            if (complaintType.value === "cancel") {
+                pickupAddressField.style.display = "none";
+            } else {
+                pickupAddressField.style.display = "block";
+            }
+        }
+
+        // 페이지 로드 시 기본 상태 설정
+        togglePickupAddress();
+
+        // 선택 값 변경 시 실행
+        complaintType.addEventListener("change", togglePickupAddress);
+    });
+</script>
+
 </body>
 </html>
