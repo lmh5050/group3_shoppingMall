@@ -11,7 +11,7 @@ public class ShippingService {
     private final ManagementRepository managementRepository;
 
     public void test(ShippingDto shippingDto) {
-        //managementRepository.test(shippingDto);
+        managementRepository.test(shippingDto);
 
     }
 }

@@ -11,11 +11,5 @@ import java.util.List;
 
 @Mapper
 public interface ManagementRepository {
-
-        ArrayList<ProductDto> getProductData();
-
-        void setNewProduct(ProductDto productDto);
-
-        ProductDto getProductById(String productId);
-
-    }
+    void test(ShippingDto shippingDto);
+}
