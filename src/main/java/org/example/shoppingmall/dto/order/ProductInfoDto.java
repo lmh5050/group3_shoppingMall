@@ -17,6 +17,8 @@ public class ProductInfoDto {
     private Integer orderDetailId;
     private BigDecimal totalPrice;
 
+
+
     public BigDecimal getTotalPrice() {
         if (price != null && quantity != null) {
             return price.multiply(BigDecimal.valueOf(quantity));  // BigDecimal의 multiply() 사용
