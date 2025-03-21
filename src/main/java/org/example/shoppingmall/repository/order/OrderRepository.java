@@ -29,5 +29,6 @@ public interface OrderRepository {
     List<OrderDto> findAllOrders();
 
     // 주문 ID로 주문 상세 조회
-    OrderDto findOrderById(String orderId);*/
+    OrderDto findOrderById(String orderId);
+    */
 }

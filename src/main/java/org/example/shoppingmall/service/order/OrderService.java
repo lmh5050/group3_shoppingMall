@@ -40,6 +40,11 @@ public class OrderService {
         // 데이터 조회
         List<ProductInfoDto> productInfoList = orderRepository.findProductInfoByProductDetailId(params);
 
+        // 조회된 상품 정보에 quantity 설정
+        for (int i = 0; i < productInfoList.size(); i++) {
+            productInfoList.get(i).setQuantity(quantity.get(i));  // 순차적으로 quantity 설정
+        }
+
         // 주문 일련번호 부여
         for (int i = 0; i < productInfoList.size(); i++) {
             productInfoList.get(i).setOrderDetailId(i + 1);  // 순차적으로 번호를 부여

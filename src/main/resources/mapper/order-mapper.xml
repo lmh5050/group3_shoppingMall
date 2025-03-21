@@ -8,6 +8,7 @@
         FROM orders;
     </select>
 
+
     <!-- 고객id로 기본배송지 가져오기 -->
     <select id="findDefaultAddressByCustomerId" parameterType="String" resultType="AddressDto">
         SELECT *
@@ -19,15 +20,12 @@
     <!-- 상품상세id로 상품정보 가져오기 -->
     <select id="findProductInfoByProductDetailId" parameterType="Map" resultType="ProductInfoDto">
         SELECT
-            pd.product_id,
-            pd.product_detail_id,
-            pd.color,
-            pd.size,
-            p.name,
-            p.price,
-        <foreach item="qty" collection="quantity" open="(" close=")" separator=",">
-            #{qty}
-        </foreach> AS quantity
+        pd.product_id,
+        pd.product_detail_id,
+        pd.color,
+        pd.size,
+        p.name,
+        p.price
         FROM product_detail AS pd
         INNER JOIN product AS p
         ON pd.product_id = p.product_id
@@ -39,7 +37,7 @@
 
 
 
-    <!-- 고객별 주문 목록 가져오기 -->
+    <!-- 고객별 주문 목록 가져오기
     <select id="findOrderListByCustomerId" parameterType="String" resultType="orderListDto">
         SELECT
             o.create_at,
@@ -57,14 +55,14 @@
         ON pd.product_id = pdi.product_id
         WHERE o.customer_id = #{customer_id}
     </select>
-
-    <!-- 특정 주문에 대한 주문 상세 정보 가져오기 -->
+ -->
+    <!-- 특정 주문에 대한 주문 상세 정보 가져오기
     <select id="findOrderDetailsByOrderId" parameterType="String" resultType="order">
         SELECT o.order_id
         FROM
         WHERE
     </select>
-
+ -->
 
 
 <!--
