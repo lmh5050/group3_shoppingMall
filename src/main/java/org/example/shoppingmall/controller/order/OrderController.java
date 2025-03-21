@@ -47,6 +47,15 @@ public class OrderController {
 
 
 
+   /* // 주문 생성 처리
+    @PostMapping("/order/submit")
+    public String submitPayment(OrderDto orderDto) {
+        orderService.createOrder(orderDto);
+        return "redirect:/order/payment"; // 주문 완료 페이지로 리다이렉션
+    }
+
+
+
     /*// 주문 목록 페이지
     @GetMapping("/order/list")
     public String orderList(Model model) {
