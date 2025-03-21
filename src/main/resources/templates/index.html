@@ -14,32 +14,65 @@
 <section style="width: 3000px; height : 700px;">
     <div class="container px-4 px-lg-5 mt-5">
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center"> <!-- row-cols-xl-5로 5개 배치 -->
-            <!-- 반복문으로 상품 출력 -->
-            <div class="col mb-5" th:each="product : ${products}">
-                <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" th:src="|/images/product/@{${product.getProductId()}}.png|" alt="Product Image" />
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder" th:text="${product.getName()}">Fancy Product</h5>
-                            <!-- Product reviews-->
-                            <div class="d-flex justify-content-center small text-warning mb-2" th:if="${product.getRating() != null}">
-                                <div class="bi-star-fill" th:each="star : ${#numbers.sequence(1, product.getRating())}"></div>
+            <!-- 1. 만약 쿼리스트링 searchProduct가 있는 경우 : 필터링된 상품만 보여줘야 함 -->
+            <th:block th:if="${param.searchProduct != null}">
+                <!-- 반복문으로 상품 출력 -->
+                <div class="col mb-5" th:each="product : ${products}"
+                     th:if="${product.getName().contains(param.searchProduct)}">
+                    <div class="card h-100">
+                        <!-- Product image-->
+                        <img class="card-img-top" th:src="|/images/product/@{${product.getProductId()}}.png|" alt="Product Image" />
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <!-- Product name-->
+                                <h5 class="fw-bolder" th:text="${product.getName()}">Fancy Product</h5>
+                                <!-- Product reviews-->
+                                <div class="d-flex justify-content-center small text-warning mb-2" th:if="${product.getRating() != null}">
+                                    <div class="bi-star-fill" th:each="star : ${#numbers.sequence(1, product.getRating())}"></div>
+                                </div>
+                                <!-- Product price-->
+                                <span th:text="'$' + ${product.price}">$40.00</span>
                             </div>
-                            <!-- Product price-->
-                            <span th:text="'$' + ${product.price}">$40.00</span>
                         </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center">
-                            <a class="btn btn-outline-dark mt-auto" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
+                        <!-- Product actions-->
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                <a class="btn btn-outline-dark mt-auto" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </th:block>
+
+            <!-- 2. 만약 쿼리스트링 searchProduct가 없는 경우 경우 : 모든 상품만 보여줘야 함 -->
+            <th:block th:if="${param.searchProduct == null}">
+                <div class="col mb-5" th:each="product : ${products}">
+                    <div class="card h-100">
+                        <!-- Product image-->
+                        <img class="card-img-top" th:src="|/images/product/@{${product.getProductId()}}.png|" alt="Product Image" />
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <!-- Product name-->
+                                <h5 class="fw-bolder" th:text="${product.getName()}">Fancy Product</h5>
+                                <!-- Product reviews-->
+                                <div class="d-flex justify-content-center small text-warning mb-2" th:if="${product.getRating() != null}">
+                                    <div class="bi-star-fill" th:each="star : ${#numbers.sequence(1, product.getRating())}"></div>
+                                </div>
+                                <!-- Product price-->
+                                <span th:text="'$' + ${product.price}">$40.00</span>
+                            </div>
+                        </div>
+                        <!-- Product actions-->
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                <a class="btn btn-outline-dark mt-auto" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
             <!-- 상품 반복문 끝 -->
         </div>
     </div>
@@ -48,5 +81,25 @@
 <footer>
     <div th:replace="Bars/footer :: #footer"></div>
 </footer>
+<script defer>
+<!--  상품 입력 받아서 쿼리 스트링으로 검색함  -->
+    function searchProductFunction() {
+        let pdName = document.getElementById('productName').value;
+
+        if (!pdName) {
+            alert("검색어를 입력하세요.");
+            return false;
+        }
+
+        let url = new URL(window.location.href);
+        if (url.toString().includes('searchProduct')){
+            url.searchParams.set('searchProduct', pdName);
+        } else {
+            url.searchParams.append('searchProduct', pdName);
+        }
+
+        window.location.href = url.toString();
+    }
+</script>
 </body>
 </html>
