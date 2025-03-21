@@ -11,5 +11,12 @@ import java.util.List;
 
 @Mapper
 public interface ManagementRepository {
+
     void test(ShippingDto shippingDto);
+
+    List<ShippingDto> findAll2();
+
+    ShippingDto findById(Long id);
 }
+
+

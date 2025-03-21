@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -25,9 +26,12 @@ public class ShippingDto {
 //    private Timestamp updatedAt;
 //    private String shippingCompanyNo;
 
+    private Long id;
     private String boardTitle;
     private String boardWriter;
     private String boardPass;
     private String boardContents;
+    private String boardHits;
+    private Date createdAt;
 }
 

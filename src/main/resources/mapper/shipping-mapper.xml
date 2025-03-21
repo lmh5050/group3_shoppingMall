@@ -11,4 +11,15 @@
         INSERT INTO test (boardWriter, boardPass, boardTitle, boardContents)
         VALUES (#{boardWriter}, #{boardPass}, #{boardTitle}, #{boardContents});
     </insert>
+
+    <select id="findAll2" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
+        select Id, boardTitle, boardWriter, boardHits, createdAt as createdAt
+        from test order by id desc
+    </select>
+
+    <select id="findById" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
+        select Id, boardTitle, boardWriter, boardHits, createdAt as createdAt
+        from test where id=#{id}
+    </select>
+
 </mapper>
