@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.DocFlavor;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -22,24 +24,26 @@ public class OrderController {
     // 주문서 페이지
     @GetMapping("/order")
     public String showOrder(@RequestParam("customerId") String customerId,
-                            @RequestParam("productDetailId") String productDetailId,
+                            @RequestParam("productDetailId") List<String> productDetailId,
+                            @RequestParam("quantity") List<Integer> quantity,
                             Model model) {
+        //주문번호 표시
+        Long showOrderId = orderService.getOrderId();
+        model.addAttribute("showOrderId", showOrderId);
+
 
         //기본배송지 가져오기
         AddressDto address = orderService.getDefaultAddress(customerId);
         model.addAttribute("address", address);
 
-        ProductInfoDto productInfo = orderService.getProductInfoByProductDetailId(productDetailId);
+
+        //주문상품정보 가져오기
+        List<ProductInfoDto> productInfo = orderService.getProductInfoByProductDetailId(productDetailId, quantity);
         model.addAttribute("productInfo", productInfo);
         return "order/orderForm";
+
     }
 
-    @PostMapping("/orderTest")
-    public String test(@ModelAttribute("productDetailInfo") ProductInfoDto productInfoDto) {
-        System.out.println("productInfoDto = " + productInfoDto.getQuantity());
-        System.out.println("productInfoDto = " + productInfoDto.getProductDetailId());
-        return "order/orderForm";
-    }
 
 
 
@@ -50,7 +54,9 @@ public class OrderController {
         return "redirect:/order/payment"; // 주문 완료 페이지로 리다이렉션
     }
 
-    // 주문 목록 페이지
+
+
+    /*// 주문 목록 페이지
     @GetMapping("/order/list")
     public String orderList(Model model) {
         model.addAttribute("orders", orderService.getAllOrders());
