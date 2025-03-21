@@ -33,4 +33,10 @@
         SELECT * FROM product_detail
         WHERE product_id = #{productId}
     </select>
+
+<!--  상품을 원하는 방식으로 정렬함  -->
+    <select id="getProductOrderByOptions">
+        SELECT * FROM product
+        ORDER BY #{orderOption}
+    </select>
 </mapper>

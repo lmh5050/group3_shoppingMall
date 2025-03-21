@@ -50,5 +50,10 @@ public class ProductService {
     public ArrayList<ProductDetailDto> getProductDetailOptions(String productId) {
         return productRepository.getProductDetailOptions(productId);
     }
+
+//    상품을 원하는 순서로 정렬
+    public ArrayList<ProductDto> getProductOrderByOptions(String orderOption) {
+        return productRepository.getProductOrderByOptions(orderOption);
+    }
 }
 

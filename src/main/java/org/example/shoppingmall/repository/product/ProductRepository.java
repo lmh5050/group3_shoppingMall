@@ -7,7 +7,7 @@ import org.example.shoppingmall.dto.product.ProductDto;
 import java.util.ArrayList;
 
 @Mapper
-public interface ProductRepository {  // ��ǰ Repository
+public interface ProductRepository {  // Repository
     ArrayList<ProductDto> getProductData();
 
     void setNewProduct(ProductDto productDto);
@@ -15,4 +15,6 @@ public interface ProductRepository {  // ��ǰ Repository
     ProductDto getProductById(String productId);
 
     ArrayList<ProductDetailDto> getProductDetailOptions(String productId);
+
+    ArrayList<ProductDto> getProductOrderByOptions(String orderOption);
 }

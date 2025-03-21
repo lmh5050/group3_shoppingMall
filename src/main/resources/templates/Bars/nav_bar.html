@@ -6,25 +6,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- FontAwesome 아이콘 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+    <title></title>
 </head>
 <body>
 <section id="header">
     <nav id="nav">
+        <div style="display: flex; align-items: center; gap: 12px; padding: 20px;">
+            <input type="search" placeholder="Search Product Name"
+                   id="productName"
+                   style="
+               height: 44px;
+               width: 280px;
+               padding: 0 16px;
+               border: 1px solid #ddd;
+               border-radius: 8px;
+               font-size: 14px;
+               font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+               background-color: #f9f9f9;
+               color: #333;"
+            >
+
+            <button type="button" onclick="return searchProductFunction()"
+                    id="button"
+                    style="
+                height: 44px;
+                padding: 0 20px;
+                border: 1px solid #111;
+                background-color: #111;
+                color: #fff;
+                border-radius: 8px;
+                font-size: 14px;
+                font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+                cursor: pointer;
+                transition: all 0.2s ease-in-out;">
+                Search
+            </button>
+        </div>
+
         <ul>
-            <li>
+            <!-- home -->
+            <li style="padding-left: 200px;">
                     <a class="kaqg_main-menu" th:href="@{/}">
                         <i class="fa-solid fa-house-chimney" style="color: white"></i> 홈
                     </a>
             </li>
+            <!-- category -->
             <li>
                 <a class="kaqg_main-menu" href="#">카테고리</a>
                 <div class="dropdown" th:each="majorC : ${categoryList}">
                     <a th:href="|/category?majorCID=${majorC.categoryId}|" th:text="${majorC.name}">default</a>
                 </div>
             </li>
-
-
             <!-- ▼ 고객센터 메뉴 + 드롭다운 -->
             <li>
                 <a class="kaqg_main-menu" href="#">고객센터</a>
@@ -34,7 +66,7 @@
                     <a th:href="@{/contact}">고객 문의</a>
                 </div>
             </li>
-
+            <!-- 마이페이지 -->
             <li>
                 <a class="kaqg_main-menu" href="#">마이페이지</a>
                 <div class="dropdown">
@@ -45,13 +77,14 @@
                     <a th:href="@{/contact}">1;1 문의 내역</a>
                 </div>
             </li>
-            <li><a class="kaqg_main-menu" th:href="@{/tempearteError}">장바구니</a></li>
-
-            <li th:if="${username == null}">
+            <!-- 장바구니 -->
+            <li>
+                <a class="kaqg_main-menu" th:href="@{/tempearteError}">장바구니</a>
+            </li>
+            <!-- 회원 로그인 여부로 구성 -->
+            <li th:if="${username == null}" style="padding-left: 300px;">
                 <a class="kaqg_main-menu" th:href="@{/user/login}">로그인</a>
             </li>
-
-
             <li th:if="${username != null}">
                 <a class="kaqg_main-menu" href="">마이페이지</a>
                 <div class="dropdown">
@@ -62,7 +95,6 @@
                     <a th:href="@{/contact}">1;1 문의 내역</a>
                 </div>
             </li>
-
             <li th:if="${username != null}">
                 <form th:action="@{/logout}" method="post" style="display: inline;">
                     <button type="submit">로그아웃</button>
@@ -71,6 +103,5 @@
         </ul>
     </nav>
 </section>
-
 </body>
 </html>
