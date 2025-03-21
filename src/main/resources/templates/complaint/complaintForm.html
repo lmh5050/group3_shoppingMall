@@ -30,10 +30,11 @@
             <!-- 기존 민원의 경우 complaintId를 숨김 필드로 전달 -->
             <input type="hidden" name="complaintId" th:if="${complaint != null}" th:value="${complaint.complaintId}">
 
-            <!-- 민원 유형 선택 -->
+            <!-- 민원 유형 선택, complaint가 존재하면 선택 못 함 -->
             <div class="mb-3">
                 <label for="complaintType" class="form-label">민원 유형</label>
-                <select name="complaintType" id="complaintType" class="form-select">
+                <select name="complaintType" id="complaintType" class="form-select"
+                        th:disabled="${complaint != null}">
                     <option value="cancel" th:selected="${complaint?.complaintTypeId == 'cancel'}">취소</option>
                     <option value="refund" th:selected="${complaint?.complaintTypeId == 'refund'}">환불</option>
                     <option value="exchange" th:selected="${complaint?.complaintTypeId == 'exchange'}">교환</option>

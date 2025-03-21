@@ -18,14 +18,17 @@
                                complaint_type_id,
                                reason,
                                pickup_address,
+                               stauts,
                                description,
                                request_datetime,
                                shipping_price
-        ) VALUES (
+        )
+        VALUES (
                   #{complaintId},
                   #{complaintTypeId},
                   #{reason},
                   #{pickupAddress},
+                  #{status},
                   #{description},
                   #{requestDatetime},
                   #{shippingPrice}
@@ -35,17 +38,8 @@
 
     <!-- complaintId에 해당하는 민원 상세 정보 조회 -->
     <select id="findComplaintById" resultType="org.example.shoppingmall.dto.complaint.ComplaintDto">
-        SELECT complaint_id,
-               complaint_type_id,
-               order_detail_id,
-               reason,
-               pickup_address,
-               description,
-               request_datetime,
-               end_datetime,
-               expected_refund_amount,
-               refund_amount,
-               shipping_price
+        SELECT
+            *
         FROM complaint
         WHERE complaint_id = #{complaintId}
     </select>
@@ -54,7 +48,6 @@
     <update id="updateComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
         UPDATE complaint
         SET
-            complaint_type_id = #{complaintTypeId},
             reason = #{reason},
             description = #{description},
             pickup_address = #{pickupAddress},
@@ -64,7 +57,7 @@
 
     <!-- 민원 삭제 쿼리 -->
     <delete id="deleteComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
-        DELETE FROM complaint WHERE complaint_id = #{complaintId};
+        DELETE FROM complaint WHERE complaint_id = #{complaintId}
     </delete>
 
 </mapper>

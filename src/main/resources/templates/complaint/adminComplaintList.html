@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="stylesheet" th:href="@{/css/Bars.css}">
+    <link rel="stylesheet" th:href="@{/css/Login.css}">
+    <title th:text="${pageTitle}">Shop Homepage - Start Bootstrap Template</title>
+    <!-- Bootstrap icons-->
+    <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-icons1.5.0/font/bootstrap-icons.css}" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link th:href="@{/css/homecss/homeStyles.css}" rel="stylesheet" />
+</head>
+
+<body>
+
+<div style="max-height: 500px; width: 800px; overflow-y: auto;">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>민원 신청 날짜</th>
+            <th>민원 완료 날짜</th>
+            <th style="white-space: nowrap;">민원 유형</th>
+            <th>민원 상태</th>
+            <th>제목</th>
+            <th>액션</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="complaint : ${complaints}">
+            <td th:text="${complaint.requestDatetime}"></td>
+            <td th:text="${complaint.endDatetime}"></td>
+            <td th:text="${complaint.complaintTypeId}"></td>
+            <td th:text="${complaint.status}"></td>
+            <td th:text="${complaint.reason}"></td>
+            <td>
+                <a class="btn btn-primary btn-sm" th:href="@{'/complaint/detail/' + ${complaint.complaintId}}">확인</a>
+                <a class="btn btn-warning btn-sm" th:href="@{'/admin/complaint/edit/' + ${complaint.complaintId}}">수정</a>
+                <!-- 삭제 버튼 (POST 방식) -->
+                <form th:action="@{'/complaint/admin/delete/' + ${complaint.complaintId}}" method="post" style="display:inline;" onsubmit="return confirmDelete();">
+                    <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+
+<footer>
+    <div th:replace="Bars/footer :: #footer"></div>
+</footer>
+
+<!-- Bootstrap core JS-->
+<script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap5.2.3/dist/js/bootstrap.bundle.min.js}"></script>
+<!-- Core theme JS-->
+<script th:src="@{/js/homejs/homeScripts.js}"></script>
+
+<script>
+    // 삭제 버튼 클릭 시 확인 창
+    function confirmDelete() {
+        return confirm("정말로 삭제하시겠습니까?");
+    }
+</script>
+
+</html>
