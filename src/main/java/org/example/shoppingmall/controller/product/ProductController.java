@@ -58,6 +58,8 @@ public class ProductController {
             @RequestParam(name = "majorCID") String majorCID,
             @RequestParam(required = false, name = "midCID") String midCID,
             @RequestParam(required = false, name = "subCID") String subCID,
+            @RequestParam(required = false, name = "searchProduct") String searchProduct,
+            @RequestParam(required = false, name = "")
             Model model) {
         // 상품 전체 리스트 가져오기
         ArrayList<ProductDto> products;
