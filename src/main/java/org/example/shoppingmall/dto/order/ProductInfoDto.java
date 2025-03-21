@@ -3,6 +3,7 @@ package org.example.shoppingmall.dto.order;
 import lombok.Data;
 import java.math.BigDecimal;
 
+
 @Data
 public class ProductInfoDto {
     private String productId;
@@ -15,6 +16,8 @@ public class ProductInfoDto {
     private BigDecimal discount;
     private Integer orderDetailId;
     private BigDecimal totalPrice;
+
+
 
     public BigDecimal getTotalPrice() {
         if (price != null && quantity != null) {

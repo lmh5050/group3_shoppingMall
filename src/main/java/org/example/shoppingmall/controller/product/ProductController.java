@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 
+
 @Controller
 public class ProductController {
     private final ProductService productService;
@@ -35,6 +36,7 @@ public class ProductController {
 
         return "index";
     }
+
 
 //    상세 페이지 이동
     @GetMapping("/productDetail")
@@ -59,6 +61,8 @@ public class ProductController {
             @RequestParam(name = "majorCID") String majorCID,
             @RequestParam(required = false, name = "midCID") String midCID,
             @RequestParam(required = false, name = "subCID") String subCID,
+            @RequestParam(required = false, name = "searchProduct") String searchProduct,
+            @RequestParam(required = false, name = "")
             Model model) {
         // 상품 전체 리스트 가져오기
         ArrayList<ProductDto> products;

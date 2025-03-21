@@ -10,4 +10,5 @@ public interface UserRepository {
     void insertUserInfo(InsertUserInfoDto InsertUserInfo);
     void insertUserDeliveryInfo(InsertUserInfoDto InsertUserInfo);
     int checkNickname(String nickName);
+    String getAddressCode(String addressName);
 }
