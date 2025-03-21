@@ -55,6 +55,23 @@ public class ProductService {
     public ArrayList<ProductDto> getProductOrderByOptions(String orderOption) {
         return productRepository.getProductOrderByOptions(orderOption);
     }
+
+//    카테고리에서 이름으로 찾을 경우 -> 카테고리 & 이름으로 필터링
+    public  ArrayList<ProductDto> getProductBySearch(String search, ArrayList<ProductDto> products) {
+        ArrayList<ProductDto> searchProducts = productRepository.getProductBySearch(search);
+        ArrayList<ProductDto> filteredProducts = new ArrayList<>();
+        System.out.println("searchProducts = " + searchProducts);
+        System.out.println("products = " + products);
+        for(ProductDto categoryProduct : products){
+            for(ProductDto searchProduct : searchProducts){
+                if(categoryProduct.getName().contains(searchProduct.getName())){
+                    filteredProducts.add(categoryProduct);
+                }
+            }
+        }
+        System.out.println("filteredProducts = " + filteredProducts);
+        return filteredProducts;
+    }
 }
 
 

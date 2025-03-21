@@ -197,5 +197,25 @@
 <footer>
     <div th:replace="Bars/footer :: #footer"></div>
 </footer>
+<script defer>
+    <!--  상품 입력 받아서 쿼리 스트링으로 검색함  -->
+    function searchProductFunction() {
+        let pdName = document.getElementById('productName').value;
+
+        if (!pdName) {
+            alert("검색어를 입력하세요.");
+            return false;
+        }
+
+        let url = new URL(window.location.href);
+        if (url.toString().includes('searchProduct')){
+            url.searchParams.set('searchProduct', pdName);
+        } else {
+            url.searchParams.append('searchProduct', pdName);
+        }
+
+        window.location.href = url.toString();
+    }
+</script>
 </body>
 </html>

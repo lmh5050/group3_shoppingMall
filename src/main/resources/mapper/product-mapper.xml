@@ -39,6 +39,13 @@
         SELECT * FROM product
         ORDER BY #{orderOption}
     </select>
+
+    <!-- 원하는 상품만 가져옴 -->
+    <select id="getProductBySearch">
+        SELECT * FROM product
+        WHERE name LIKE CONCAT('%', #{search}, '%')
+    </select>
+
 </mapper>
 
 

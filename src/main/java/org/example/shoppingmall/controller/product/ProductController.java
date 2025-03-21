@@ -60,7 +60,7 @@ public class ProductController {
             @RequestParam(required = false, name = "midCID") String midCID,
             @RequestParam(required = false, name = "subCID") String subCID,
             @RequestParam(required = false, name = "searchProduct") String searchProduct,
-            @RequestParam(required = false, name = "")
+            @RequestParam(required = false, name = "orderOption") String orderOption,
             Model model) {
         // 상품 전체 리스트 가져오기
         ArrayList<ProductDto> products;
@@ -88,6 +88,11 @@ public class ProductController {
         if (subCID != null) {
             // 소분류 상품만 가져오는 서비스
             products = productService.getFilteredProductData(subCID);
+        }
+
+//      카테고리 화면에서 검색하는 경우 -> 카테고리 필터링 & 그 상품의 이름으로 필터링 두번 다 진행
+        if(searchProduct != null) {
+            products = productService.getProductBySearch(searchProduct, products);
         }
 
         model.addAttribute("products", products);

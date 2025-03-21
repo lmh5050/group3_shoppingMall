@@ -17,5 +17,7 @@ public interface ProductRepository {  // Repository
     ArrayList<ProductDetailDto> getProductDetailOptions(String productId);
 
     ArrayList<ProductDto> getProductOrderByOptions(String orderOption);
+
+    ArrayList<ProductDto> getProductBySearch(String search);
 }
 
