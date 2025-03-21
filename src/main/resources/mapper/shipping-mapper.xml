@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.example.shoppingmall.repository.shipping.ManagementRepository">  <!-- 어떤 리포지토리를 볼지 정하는 곳 -->
-    <select id="shippingCompany" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
-        select * from shipping_company
+
+    <select id="test" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
+        select * from test
     </select>
+
+
+    <insert id="insertShipping" parameterType="org.example.shoppingmall.dto.shipping.ShippingDto">
+        INSERT INTO shipping_table (shipping_id, shipping_address, shipping_status, shipping_date)
+        VALUES (#{shippingId}, #{shippingAddress}, #{shippingStatus}, #{shippingDate});
+    </insert>
+
 </mapper>
