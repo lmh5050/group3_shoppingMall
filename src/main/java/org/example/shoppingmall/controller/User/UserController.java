@@ -29,10 +29,31 @@ public class UserController {
         this.emailService = emailService;
     }
 
-    @GetMapping("/user/login") // /test라는 url을 쳤을때 렌더링 되는 api
+    @GetMapping("/user/login") // 로그인 페이지 불러오는 api
     public String getCheck()
     {
         return "user/login";
+    }
+
+
+    @PostMapping("/user/login") //유저 로그인 실제적 기능하는 api
+    @ResponseBody
+    public String checkLoginInfo(@RequestBody UserLoginInfoDto loginInfo, HttpServletResponse response) {
+        response.setContentType("text/html; charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        return "redirect:/user/login";
+    }
+
+    @GetMapping("/user/mypage") // mypage 들어가는 api
+    public String getMypage()
+    {
+        return "user/mypage";
+    }
+
+    @GetMapping("/user/register") //회원가입 페이지 렌더링 하는 api
+    public String getRegister()
+    {
+        return "user/register";
     }
 
     @PostMapping("/user/registerCheck") //아이디 중복 체크 입니다.
@@ -40,12 +61,6 @@ public class UserController {
     public String registerCheck(@RequestBody UserLoginInfoDto loginInfo, HttpServletResponse response) {
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
-
-        // 디버깅용 출력
-        System.out.println(loginInfo.getCustomerId() + " 아이디입니다");
-        System.out.println(loginInfo.getPw() + " 패스워드입니다.");
-        System.out.println("이거탐");
-
         // 아이디 확인
         String status = loginService.getCustomerId(loginInfo.getCustomerId());
         String resdata = "0"; // 기본값 설정
@@ -63,55 +78,29 @@ public class UserController {
         return resdata; // 결과 반환
     }
 
-    @PostMapping("/user/emailSend") //아이디 중복 체크 입니다.
+    @PostMapping("/user/checkNickname") //닉네임 중복 확인하는 api
     @ResponseBody
-    public String emailSend(@RequestBody UserEmailDto email, HttpServletResponse response) {
-        response.setContentType("text/html; charset=UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        // 아이디 확인
-        System.out.print(email + "이메일 입니다.");
-        emailService.sendVerificationEmail(email.getEmail());
-        System.out.println("이거탐");
-
-
-        return "123"; // 결과 반환
+    public String checkNickname(@RequestBody UserInfoDto userInfo) {
+        String nickName = userInfo.getNickname();
+        String result = loginService.checkNickname(nickName);
+        return result;
     }
 
-    @GetMapping("/user/register") // /test라는 url을 쳤을때 렌더링 되는 api
-    public String getRegister()
-    {
-        return "user/register";
-    }
-
-    @PostMapping("/user/login")
-    public String checkLoginInfo(@RequestBody UserLoginInfoDto loginInfo, HttpServletResponse response) {
-        response.setContentType("text/html; charset=UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        System.out.println(loginInfo.getCustomerId() +"아이디입니다");
-        System.out.println(loginInfo.getPw() + "패스워드입니다.");
-        System.out.println("이거탐");
-        return "redirect:/user/login";
-    }
-
-    @GetMapping("/user/mypage") // /test라는 url을 쳤을때 렌더링 되는 api
-    public String getMypage()
-    {
-        return "user/mypage";
-    }
-
-    @PostMapping("/user/register")
+    @PostMapping("/user/register") //회원가입 할때 타는 api
     @ResponseBody
     public String insertUserInfo(@RequestBody InsertUserInfoDto InsertUserInfo) {
         String result = loginService.insertUserInfo(InsertUserInfo);
         return result;
     }
 
-    @PostMapping("/user/checkNickname")
-    @ResponseBody
-    public String checkNickname(@RequestBody UserInfoDto userInfo) {
-        String nickName = userInfo.getNickname();
-        String result = loginService.checkNickname(nickName);
-        return result;
+    @PostMapping("/user/emailSend") //이메일 인증 , 디벨롭 필요 api
+    @ResponseBody //axios json 이용하기 위해서 responseBody 추가
+    public String emailSend(@RequestBody UserEmailDto email, HttpServletResponse response) {
+        response.setContentType("text/html; charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        // 아이디 확인
+        emailService.sendVerificationEmail(email.getEmail());
+        return "123"; // 결과 반환
     }
 
 }
