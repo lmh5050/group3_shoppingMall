@@ -58,6 +58,13 @@
         WHERE code_name = #{addressName}
     </select>
 
+    <select id="userLogin" parameterType="String" resultType="UserLoginInfoDto">
+        SELECT customer_id , pw
+        FROM customer
+        WHERE customer_id = #{customerId}
+    </select>
+
+
 
 
 

@@ -38,10 +38,11 @@ public class UserController {
 
     @PostMapping("/user/login") //유저 로그인 실제적 기능하는 api
     @ResponseBody
-    public String checkLoginInfo(@RequestBody UserLoginInfoDto loginInfo, HttpServletResponse response) {
+    public UserLoginInfoDto checkLoginInfo(@RequestBody UserLoginInfoDto loginInfo, HttpServletResponse response) {
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
-        return "redirect:/user/login";
+        UserLoginInfoDto result = loginService.userLogin(loginInfo);
+        return result;
     }
 
     @GetMapping("/user/mypage") // mypage 들어가는 api

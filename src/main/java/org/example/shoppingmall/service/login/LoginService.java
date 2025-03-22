@@ -2,6 +2,7 @@ package org.example.shoppingmall.service.login;
 
 import org.example.shoppingmall.dto.User.InsertUserInfoDto;
 import org.example.shoppingmall.dto.User.UserInfoDto;
+import org.example.shoppingmall.dto.User.UserLoginInfoDto;
 import org.example.shoppingmall.repository.User.UserRepository;
 import org.example.shoppingmall.service.login.PasswordUtillService;
 import org.springframework.stereotype.Service;
@@ -63,5 +64,27 @@ public class LoginService {
         System.out.println(nickName);
         System.out.println(searchData + "결과값");
         return result;
+    }
+
+    public boolean verifyPassword(String enteredPassword, String storedPassword) {
+        try {
+            // PasswordUtillService의 verifyPassword 메서드를 정적(static) 메서드로 호출
+            return passwordUtillService.verifyPassword(enteredPassword, storedPassword);
+        } catch (NoSuchAlgorithmException e) {
+            // 예외 처리
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public UserLoginInfoDto userLogin(UserLoginInfoDto loginInfo) {
+        UserLoginInfoDto loginInfoData = userRepository.userLogin(loginInfo.getCustomerId());
+        boolean status = false;
+        if(loginInfoData != null) {
+            status = verifyPassword(loginInfo.getPw(), loginInfoData.getPw());
+        }
+        loginInfoData.setStatus(status);
+        System.out.println(status);
+        return loginInfoData;
     }
 }

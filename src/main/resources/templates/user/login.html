@@ -82,6 +82,7 @@
     const login = () => {
         const customerId = document.querySelector('input[name="username"]').value;
         const pw = document.querySelector('input[name="password"]').value;
+
         axios({
             method: "post",
             url: "/user/login",
@@ -94,8 +95,18 @@
             }
         }).then(res => {
             console.log("res", res);
+            if (res.data.status === true) {
+                // 로그인 성공 시 세션에 customerId 저장
+                sessionStorage.setItem('customerId', customerId);
+                alert("로그인 성공");
+                // 마이페이지로 이동
+                window.location.href = "/user/mypage";
+            } else {
+                alert("로그인 실패");
+            }
         }).catch(err => {
             console.log("err", err);
+            alert("서버 오류 발생");
         });
     }
     console.log(document.querySelector('input[name="username"]').value);
