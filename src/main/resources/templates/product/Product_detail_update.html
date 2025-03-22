@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 상세 정보 수정</title>
+</head>
+<body>
+<h1>관리자 - 상품 상세 정보 수정</h1>
+<section>
+    <div>
+        <div>
+<!--            메인 사진 수정 -->
+            <div>
+                <h3>(1) 메인 사진</h3>
+                <img style="width: 400px; height: 500px;" th:src="|/images/product/${product.getProductId()}.png|"  alt=""/>
+                <button type="button">
+                    메인 사진 수정
+                </button>
+            </div>
+            <br>
+<!--            상품 이름 수정 -->
+            <div>
+                <h3>(2) 등록된 상품 이름</h3>
+                <p th:text="${product.getName()}">Shop item template</p>
+                <input type="text">
+                <button type="button">상품 이름 수정</button>
+            </div>
+            <br>
+<!--            상품 가격 수정 -->
+            <div >
+                <h3>(3) 상품 가격</h3>
+                <p th:text="${product.getPrice()}">$40.00</p>
+                <br>
+                <input type="text">
+                <button type="button">상품 가격 수정</button>
+            </div>
+            <br>
+<!--            상품 상세 설명 수정 -->
+            <div >
+                <h3>(4) 상품 상세 설명</h3>
+                <p th:text="${product.getDescription()}">Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium at dolorem quidem modi. Nam sequi consequatur obcaecati excepturi alias magni, accusamus eius blanditiis delectus ipsam minima ea iste laborum vero?</p>
+                <textarea></textarea>
+                <button type="button">상품 상세 설명 수정</button>
+            </div>
+            <br>
+<!--           카테고리 수정  -->
+            <div>
+                <h3>(5) 카테고리</h3>
+                <p th:text="${product.getCategoryId()}"></p>
+                <input type="text">
+                <button type="button">카테고리 수정</button>
+            </div>
+            <br>
+<!--            시즌 수정 -->
+            <div>
+                <h3>(6) 시즌</h3>
+                <p th:text="${product.getSeasonId()}"></p>
+                <input type="text">
+                <button type="button">시즌 수정</button>
+            </div>
+            <br>
+<!--            비고 수정 -->
+            <div>
+                <h3>(7) 비고</h3>
+                <p th:text="${product.getNotes()}"></p>
+                <textarea></textarea>
+                <button type="button">비고 수정</button>
+            </div>
+            <br>
+<!--            성별 수정 -->
+            <div>
+                <h3>(8) 성별</h3>
+                <p th:text="${product.getGender()}"></p>
+                <input type="text">
+                <button type="button">성별 수정</button>
+            </div>
+            <br>
+<!--            핏 정보 수정 -->
+            <div>
+                <h3>(9) 핏</h3>
+                <p th:text="${product.getFit()}"></p>
+                <input type="text">
+                <button type="button">핏 수정</button>
+            </div>
+            <br>
+<!--            촉감 정보 수정 -->
+            <div>
+                <h3>(10) 촉감</h3>
+                <p th:text="${product.getTexture()}"></p>
+                <input type="text">
+                <button type="button">촉감 수정</button>
+            </div>
+            <br>
+<!--            두께 정보 수정 -->
+            <div>
+                <h3>(11) 두께</h3>
+                <p th:text="${product.getThickness()}"></p>
+                <input type="text">
+                <button type="button">두께 수정</button>
+            </div>
+            <br>
+<!--            제조사 수정 -->
+            <div>
+                <h3>(12) 제조사</h3>
+                <p th:text="${product.getManufacturer()}"></p>
+                <input type="text">
+                <button type="button">제조사 수정</button>
+            </div>
+            <br>
+<!--            원산지 수정 -->
+            <div>
+                <h3>(13) 원산지</h3>
+                <p th:text="${product.getOrigin()}"></p>
+                <input type="text">
+                <button type="button">원산지 수정</button>
+            </div>
+            <br>
+<!--            품질 보증 기준 수정 -->
+            <div>
+                <h3>(14) 품질 보증 기준</h3>
+                <p th:text="${product.getQualityAssuranceStandard()}"></p>
+                <input type="text">
+                <button type="button">품질 보증 기준 수정</button>
+            </div>
+            <br>
+<!--            색상 수정 -->
+            <div>
+                <h3>(15) 색상 개수</h3>
+                <p th:text="${product.getColorCount()}"></p>
+                <input type="text">
+                <button type="button">색상 수정</button>
+            </div>
+            <br>
+<!--            사이즈 수정 -->
+            <div>
+                <h3>(16) 사이즈</h3>
+                <p th:text="${product.getSizeCount()}"></p>
+                <input type="text">
+                <button type="button">사이즈 수정</button>
+            </div>
+            <br>
+<!--            상품 상세 정보 진열 수정 (상품 전체 진열 수정은 이전페이지에서 진행)-->
+            <div>
+                <h3>(17) 상세 상품 상태</h3>
+<!--                <p th:text="${product.getCategoryId()}"></p>-->
+                <input type="text">
+                <button type="button">상세 상품 상태 수정</button>
+            </div>
+            <br>
+        </div>
+    </div>
+</section>
+</body>
+</html>
