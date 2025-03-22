@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 - 상품 제고 관리</title>
+</head>
+<body>
+<!--<h1 th:text="${role}">관리자</h1>-->
+<h1>관리자</h1>
+<h2>제고 관리</h2>
+<button type="button" onclick="return addNewProduct()">
+    +상품 추가 등록
+</button>
+<br>
+<section>
+    <br>
+    <div>
+        <div> <!-- row-cols-xl-5로 5개 배치 -->
+            <!-- 2. 만약 쿼리스트링 searchProduct가 없는 경우 경우 : 모든 상품만 보여줘야 함 -->
+                <div th:each="product : ${products}">
+                    <div>
+                        <!-- Product image-->
+                        <img th:src="|/images/product/@{${product.getProductId()}}.png|" alt="Product Image" />
+                        <!-- Product details-->
+                        <div>
+                            <div >
+                                <!-- Product name-->
+                                <h5 th:text="${product.getName()}">Fancy Product</h5>
+                                <!-- Product reviews-->
+                                <div th:if="${product.getRating() != null}">
+                                    <div th:each="star : ${#numbers.sequence(1, product.getRating())}"></div>
+                                </div>
+                                <!-- Product price-->
+                                <span th:text="'$' + ${product.price}">$40.00</span>
+                            </div>
+                        </div>
+                        <!-- Product actions-->
+                        <div >
+                            <select>
+                                <option></option>
+                            </select>
+                            <!--   상품 정보 수정  -->
+                            <div >
+                                <a  th:href="@{'/manager/productInventoryMgmt/updateProductDetail?prdId=' + ${product.getProductId()}}">상품 정보 수정</a>
+                            </div>
+                            <button type="button">
+                                상품 제고 신청
+                            </button>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            <!-- 상품 반복문 끝 -->
+        </div>
+    </div>
+</section>
+<script>
+<!--  새로운 상품 추가하기 위해 이동하는 기능  -->
+    function addNewProduct(){
+
+    }
+</script>
+</body>
+</html>

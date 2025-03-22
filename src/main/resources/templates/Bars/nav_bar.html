@@ -1,26 +1,115 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- FontAwesome 아이콘 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+    <title></title>
 </head>
 <body>
 <section id="header">
     <nav id="nav">
+        <div style="display: flex; align-items: center; gap: 12px; padding: 20px; font-family: 'Pretendard', 'Noto Sans KR', sans-serif;">
+
+            <!-- 검색창 -->
+            <label for="productName">
+                <input type="search" placeholder="Search Product Name"
+                                                    id="productName"
+                                                    style="
+               height: 44px;
+               width: 280px;
+               padding: 0 16px;
+               border: 1px solid #ddd;
+               border-radius: 8px;
+               font-size: 14px;
+               background-color: #f9f9f9;
+               color: #333;
+               outline: none;
+               transition: border-color 0.2s ease-in-out;
+           "
+                                                    onfocus="this.style.borderColor='#111'"
+                                                    onblur="this.style.borderColor='#ddd'"
+            >
+            </label>
+            <!-- 검색 버튼 -->
+            <button type="button" onclick="return searchProductFunction()"
+                    id="button"
+                    style="
+                height: 44px;
+                padding: 0 20px;
+                border: 1px solid #111;
+                background-color: #111;
+                color: #fff;
+                border-radius: 8px;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all 0.2s ease-in-out;
+            "
+                    onmouseover="this.style.backgroundColor='#333'"
+                    onmouseout="this.style.backgroundColor='#111'"
+            >
+                Search
+            </button>
+
+            <!-- 정렬 드롭다운 -->
+            <label style="padding-left: 30px;">
+                <select style="
+            height: 44px;
+            padding: 0 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: #fff;
+            color: #333;
+            cursor: pointer;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill=\'%23333\' height=\'24\' viewBox=\'0 0 24 24\' width=\'24\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px 16px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        " id="sortOptions">
+                    <option th:each="option : ${sortList}" th:value="${option.getProductSortId}" th:text="${option.getExplanation}">정렬 기준</option>
+                </select>
+            </label>
+            <!-- 정렬 확인 버튼 -->
+            <button type="button" onclick="return orderProductFunction()"
+                    id="button-order"
+                    style="
+                height: 44px;
+                padding: 0 20px;
+                border: 1px solid #111;
+                background-color: #111;
+                color: #fff;
+                border-radius: 8px;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all 0.2s ease-in-out;
+            "
+                    onmouseover="this.style.backgroundColor='#333'"
+                    onmouseout="this.style.backgroundColor='#111'"
+            >
+                Check
+            </button>
+        </div>
+
         <ul>
+            <!-- home -->
             <li>
                     <a class="kaqg_main-menu" th:href="@{/}">
                         <i class="fa-solid fa-house-chimney" style="color: white"></i> 홈
                     </a>
             </li>
+            <!-- category -->
             <li>
                 <a class="kaqg_main-menu" href="#">카테고리</a>
+                <div class="dropdown" th:each="majorC : ${categoryList}">
+                    <a th:href="|/category?majorCID=${majorC.categoryId}|" th:text="${majorC.name}">default</a>
+                </div>
             </li>
-
-
             <!-- ▼ 고객센터 메뉴 + 드롭다운 -->
             <li>
                 <a class="kaqg_main-menu" href="#">고객센터</a>
@@ -30,7 +119,7 @@
                     <a th:href="@{/contact}">고객 문의</a>
                 </div>
             </li>
-
+            <!-- 마이페이지 -->
             <li>
                 <a class="kaqg_main-menu" href="#">마이페이지</a>
                 <div class="dropdown">
@@ -41,13 +130,14 @@
                     <a th:href="@{/contact}">1;1 문의 내역</a>
                 </div>
             </li>
-            <li><a class="kaqg_main-menu" th:href="@{/tempearteError}">장바구니</a></li>
-
-            <li th:if="${username == null}">
+            <!-- 장바구니 -->
+            <li>
+                <a class="kaqg_main-menu" th:href="@{/order/cart}">장바구니</a>
+            </li>
+            <!-- 회원 로그인 여부로 구성 -->
+            <li th:if="${username == null}" style="padding-left: 300px;">
                 <a class="kaqg_main-menu" th:href="@{/user/login}">로그인</a>
             </li>
-
-
             <li th:if="${username != null}">
                 <a class="kaqg_main-menu" href="">마이페이지</a>
                 <div class="dropdown">
@@ -58,7 +148,6 @@
                     <a th:href="@{/contact}">1;1 문의 내역</a>
                 </div>
             </li>
-
             <li th:if="${username != null}">
                 <form th:action="@{/logout}" method="post" style="display: inline;">
                     <button type="submit">로그아웃</button>
@@ -67,6 +156,5 @@
         </ul>
     </nav>
 </section>
-
 </body>
 </html>

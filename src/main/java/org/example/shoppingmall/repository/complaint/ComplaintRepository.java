@@ -17,4 +17,10 @@ public interface ComplaintRepository {
 
     //complaintId로 조회
     ComplaintDto findComplaintById(String complaintId);
+
+    //민원 수정 메서드
+    void updateComplaint(ComplaintDto complaintDto);
+
+    //민원 삭제 메서드
+    void deleteComplaint(ComplaintDto complaintId);
 }

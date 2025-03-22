@@ -1,8 +1,11 @@
 package org.example.shoppingmall.controller.User;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import org.apache.catalina.User;
 import org.example.shoppingmall.dto.User.InsertUserInfoDto;
 import org.example.shoppingmall.dto.User.UserEmailDto;
+import org.example.shoppingmall.dto.User.UserInfoDto;
 import org.example.shoppingmall.service.login.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,10 +31,59 @@ public class UserController {
         this.emailService = emailService;
     }
 
-    @GetMapping("/user/login") // /test라는 url을 쳤을때 렌더링 되는 api
+    @GetMapping("/user/login") // 로그인 페이지 불러오는 api
     public String getCheck()
     {
         return "user/login";
+    }
+
+
+    @PostMapping("/user/login") // 유저 로그인 실제적 기능하는 API
+    @ResponseBody
+    public UserLoginInfoDto checkLoginInfo(@RequestBody UserLoginInfoDto loginInfo, HttpServletResponse response, HttpSession session) {
+        // 응답 콘텐츠 타입 설정
+        response.setContentType("text/html; charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
+        // 로그인 서비스 호출
+        UserLoginInfoDto result = loginService.userLogin(loginInfo);
+
+        // 로그인 성공 시 세션에 customerId 저장
+        if (result.isStatus()) {
+            // 로그인 성공 시 customerId를 세션에 저장
+            session.setAttribute("customerId", loginInfo.getCustomerId());
+        }
+
+        return result; // 결과 반환
+    }
+
+    @GetMapping("/user/mypage")
+    public String getMypage(HttpSession session) {
+        // 세션에서 customerId 값을 가져옴
+        String customerId = (String) session.getAttribute("customerId");
+        System.out.println(customerId  + "세션값 가져왔음미다");
+        if (customerId != null) {
+            // customerId가 세션에 있으면 마이페이지를 렌더링
+            return "user/mypage";
+        } else {
+            // 세션에 customerId가 없으면 로그인 페이지로 리다이렉트
+            return "redirect:/login";
+        }
+    }
+
+    @GetMapping("/user/mypage/data")
+    @ResponseBody
+    public UserInfoDto getUserInfoData( HttpSession session) {
+        String customerId = (String) session.getAttribute("customerId");
+        UserInfoDto result = loginService.getCustomerData(customerId);
+        return result;
+    }
+
+
+    @GetMapping("/user/register") //회원가입 페이지 렌더링 하는 api
+    public String getRegister()
+    {
+        return "user/register";
     }
 
     @PostMapping("/user/registerCheck") //아이디 중복 체크 입니다.
@@ -39,12 +91,6 @@ public class UserController {
     public String registerCheck(@RequestBody UserLoginInfoDto loginInfo, HttpServletResponse response) {
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
-
-        // 디버깅용 출력
-        System.out.println(loginInfo.getCustomerId() + " 아이디입니다");
-        System.out.println(loginInfo.getPw() + " 패스워드입니다.");
-        System.out.println("이거탐");
-
         // 아이디 확인
         String status = loginService.getCustomerId(loginInfo.getCustomerId());
         String resdata = "0"; // 기본값 설정
@@ -62,54 +108,29 @@ public class UserController {
         return resdata; // 결과 반환
     }
 
-    @PostMapping("/user/emailSend") //아이디 중복 체크 입니다.
+    @PostMapping("/user/checkNickname") //닉네임 중복 확인하는 api
     @ResponseBody
-    public String emailSend(@RequestBody UserEmailDto email, HttpServletResponse response) {
-        response.setContentType("text/html; charset=UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        // 아이디 확인
-        System.out.print(email + "이메일 입니다.");
-        emailService.sendVerificationEmail(email.getEmail());
-        System.out.println("이거탐");
-
-
-        return "123"; // 결과 반환
+    public String checkNickname(@RequestBody UserInfoDto userInfo) {
+        String nickName = userInfo.getNickname();
+        String result = loginService.checkNickname(nickName);
+        return result;
     }
 
-    @GetMapping("/user/register") // /test라는 url을 쳤을때 렌더링 되는 api
-    public String getRegister()
-    {
-        return "user/register";
-    }
-
-    @PostMapping("/user/login")
-    public String checkLoginInfo(@RequestBody UserLoginInfoDto loginInfo, HttpServletResponse response) {
-        response.setContentType("text/html; charset=UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        System.out.println(loginInfo.getCustomerId() +"아이디입니다");
-        System.out.println(loginInfo.getPw() + "패스워드입니다.");
-        System.out.println("이거탐");
-        return "redirect:/user/login";
-    }
-
-    @GetMapping("/user/mypage") // /test라는 url을 쳤을때 렌더링 되는 api
-    public String getMypage()
-    {
-        return "user/mypage";
-    }
-
-    @PostMapping("/user/register")
+    @PostMapping("/user/register") //회원가입 할때 타는 api
     @ResponseBody
     public String insertUserInfo(@RequestBody InsertUserInfoDto InsertUserInfo) {
         String result = loginService.insertUserInfo(InsertUserInfo);
         return result;
     }
 
-    @PostMapping("/user/checkNickname")
-    @ResponseBody
-    public String checkNickname(@RequestBody String nickName) {
-        String result = loginService.checkNickname(nickName);
-        return result;
+    @PostMapping("/user/emailSend") //이메일 인증 , 디벨롭 필요 api
+    @ResponseBody //axios json 이용하기 위해서 responseBody 추가
+    public String emailSend(@RequestBody UserEmailDto email, HttpServletResponse response) {
+        response.setContentType("text/html; charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        // 아이디 확인
+        emailService.sendVerificationEmail(email.getEmail());
+        return "123"; // 결과 반환
     }
 
 }

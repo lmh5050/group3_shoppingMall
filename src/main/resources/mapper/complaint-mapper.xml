@@ -6,27 +6,9 @@
     <!-- 모든 complaint 목록 조회 -->
     <select id="findAllComplaints" resultType="org.example.shoppingmall.dto.complaint.ComplaintDto">
         SELECT
-            complaint_id,
-            complaint_type_id,
-            refund_method_id,
-            order_detail_id,
-            employee_id,
-            reason,
-            pickup_address,
-            return_address,
-            status,
-            description,
-            request_datetime,
-            received_datetime,
-            end_datetime,
-            comment,
-            return_method,
-            expected_refund_amount,
-            refund_amount,
-            shipping_price,
-            detele_flag,
-            exchange_product_id
+            *
         FROM complaint
+        ORDER BY request_datetime ASC
     </select>
     
     <!-- 민원 저장 -->
@@ -35,28 +17,47 @@
                                complaint_id,
                                complaint_type_id,
                                reason,
+                               pickup_address,
+                               stauts,
                                description,
-                               request_datetime
-        ) VALUES (
+                               request_datetime,
+                               shipping_price
+        )
+        VALUES (
                   #{complaintId},
                   #{complaintTypeId},
                   #{reason},
+                  #{pickupAddress},
+                  #{status},
                   #{description},
-                  #{requestDatetime}
+                  #{requestDatetime},
+                  #{shippingPrice}
                          )
     </insert>
 
 
     <!-- complaintId에 해당하는 민원 상세 정보 조회 -->
     <select id="findComplaintById" resultType="org.example.shoppingmall.dto.complaint.ComplaintDto">
-        SELECT complaint_id,
-               complaint_type_id,
-               order_detail_id,
-               request_datetime,
-               end_datetime,
-               expected_refund_amount,
-               refund_amount
+        SELECT
+            *
         FROM complaint
         WHERE complaint_id = #{complaintId}
     </select>
+
+    <!-- 민원 수정 쿼리 -->
+    <update id="updateComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
+        UPDATE complaint
+        SET
+            reason = #{reason},
+            description = #{description},
+            pickup_address = #{pickupAddress},
+            shipping_price = #{shippingPrice}
+        WHERE complaint_id = #{complaintId}
+    </update>
+
+    <!-- 민원 삭제 쿼리 -->
+    <delete id="deleteComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
+        DELETE FROM complaint WHERE complaint_id = #{complaintId}
+    </delete>
+
 </mapper>

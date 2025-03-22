@@ -14,6 +14,11 @@ public class InsertUserInfoDto {
     private String phoneNumber;
     private Timestamp birth;
     private String recommendId;
+    private String addressId;
+    private String code;
+    private String zipCode;
     private String address;
     private String detailAddress;
+
+
 }

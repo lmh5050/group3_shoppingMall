@@ -5,9 +5,9 @@ import lombok.Data;
 import java.sql.Timestamp;
 @Data
 public class AddressDto {
-    private Integer addressId;
+    private String addressId;
     private String customerId;
-    private Integer code;
+    private String code;
     private String deliveryName;
     private String address;
     private String detailAddress;

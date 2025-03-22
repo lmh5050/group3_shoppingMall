@@ -1,0 +1,68 @@
+.category-nav {
+    position: absolute;
+    /*font-size: 140px;*/
+
+    padding: 100px;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.category {
+    display: grid;
+    grid-auto-flow: column;   /* 행이 아닌 열 방향으로 흐르게 */
+    gap: 20px;
+}
+
+.main-menu {
+    display: block;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    justify-content: center;
+}
+
+.main-menu > li {
+    position: relative;
+    padding: 20px 30px;
+}
+
+.main-menu > li > a {
+    text-decoration: none;
+    color: #222;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+/*.submenu {*/
+/*    display: none;*/
+/*    position: absolute;*/
+/*    top: 60px;*/
+/*    left: 0;*/
+/*    background-color: #fff;*/
+/*    padding: 15px 25px;*/
+/*    border: 1px solid #ddd;*/
+/*    box-shadow: 0 4px 8px rgba(0,0,0,0.05);*/
+/*    white-space: nowrap;*/
+/*    z-index: 1000;*/
+/*}*/
+
+/*.submenu ul {*/
+/*    list-style: none;*/
+/*    padding: 0;*/
+/*    margin: 0;*/
+/*}*/
+
+/*.submenu li {*/
+/*    margin: 10px 0;*/
+/*}*/
+
+/*.submenu li a {*/
+/*    color: #555;*/
+/*    text-decoration: none;*/
+/*    font-size: 14px;*/
+/*}*/
+
+/*.main-menu > li:hover .submenu {*/
+/*    display: block;*/
+/*}*/

@@ -24,12 +24,23 @@
         <p><strong>민원 아이디:</strong> <span th:text="${complaint.complaintId}"></span></p>
         <p><strong>민원 유형:</strong> <span th:text="${complaint.complaintTypeId}"></span></p>
         <p><strong>주문 상세 아이디:</strong> <span th:text="${complaint.orderDetailId}"></span></p>
+        <!-- 회수지, 배송지 null or 빈 문자열이면 안보이게 -->
+        <p th:if="${complaint.pickupAddress != null && complaint.pickupAddress != ''}">
+            <strong>반품 회수지:</strong> <span th:text="${complaint.pickupAddress}"></span>
+        </p>
+        <p th:if="${complaint.returnAddress != null && complaint.returnAddress != ''}">
+            <strong>반품 회수지:</strong> <span th:text="${complaint.returnAddress}"></span>
+        </p>
         <p><strong>신청 날짜:</strong> <span th:text="${complaint.requestDatetime}"></span></p>
+        <p><strong>접수 날짜:</strong> <span th:text="${complaint.receivedDatetime}"></span></p>
         <p><strong>완료 날짜:</strong> <span th:text="${complaint.endDatetime}"></span></p>
+        <p><strong>직원 답변:</strong> <span th:text="${complaint.comment}"></span></p>
         <p><strong>환불 예상 금액:</strong> <span th:text="${complaint.expectedRefundAmount}"></span></p>
         <p><strong>실제 환불 금액:</strong> <span th:text="${complaint.refundAmount}"></span></p>
+        <p><strong>배송비:</strong> <span th:text="${#numbers.formatInteger(complaint.shippingPrice, 0)}"></span></p>
         <!-- 확인 버튼 추가 -->
-        <a class="btn btn-primary" th:href="@{/complaint/list}" role="button">확인</a>
+        <a class="btn btn-primary" th:href="@{/complaint/list}" role="button">고객리스트확인</a>
+        <a class="btn btn-primary" th:href="@{/admin/complaint/list}" role="button">관리자리스트확인</a>
     </div>
 </section>
 <footer>
