@@ -2,6 +2,7 @@ package org.example.shoppingmall.repository.User;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.example.shoppingmall.dto.User.InsertUserInfoDto;
+import org.example.shoppingmall.dto.User.UserInfoDto;
 import org.example.shoppingmall.dto.User.UserLoginInfoDto;
 
 
@@ -13,4 +14,5 @@ public interface UserRepository {
     int checkNickname(String nickName);
     UserLoginInfoDto userLogin(String CustomerId);
     String getAddressCode(String addressName);
+    UserInfoDto getUserData (String customerId);
 }

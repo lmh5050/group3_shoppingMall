@@ -16,7 +16,7 @@ public class LoginService {
     private final UserRepository userRepository;
     private final PasswordUtillService passwordUtillService;
 
-    public LoginService(UserRepository userRepository , PasswordUtillService passwordUtillService) {
+    public LoginService(UserRepository userRepository, PasswordUtillService passwordUtillService) {
         this.userRepository = userRepository;
         this.passwordUtillService = passwordUtillService;
     }
@@ -26,6 +26,7 @@ public class LoginService {
         String testData = userRepository.getCustomerId(customerId);
         return testData;
     }
+
     @Transactional
     public String insertUserInfo(InsertUserInfoDto InsertUserInfo) {
         try {
@@ -36,7 +37,7 @@ public class LoginService {
             // 1. address_id 생성 > ads-customerId-001 > 처음 생성은 전부다 001 값임
             String addressId = "adr" + '-' + InsertUserInfo.getName() + '-' + "000"; //어드레스 아이디 만드는 코드
             // 2. 주소에서 앞에 두개 따와서 코드 테이블 값 확인하고 그거 대응하는 값 넣어주기 code에
-            String addressCode = userRepository.getAddressCode(InsertUserInfo.getAddress().substring(0,2));
+            String addressCode = userRepository.getAddressCode(InsertUserInfo.getAddress().substring(0, 2));
             InsertUserInfo.setCode(addressCode);
             InsertUserInfo.setAddressId(addressId);
             userRepository.insertUserDeliveryInfo(InsertUserInfo);
@@ -53,12 +54,9 @@ public class LoginService {
     public String checkNickname(String nickName) {
         String result = "";
         int searchData = userRepository.checkNickname(nickName);
-        if (searchData == 1)
-        {
+        if (searchData == 1) {
             result = "사용불가";
-        }
-        else
-        {
+        } else {
             result = "사용가능";
         }
         System.out.println(nickName);
@@ -80,11 +78,20 @@ public class LoginService {
     public UserLoginInfoDto userLogin(UserLoginInfoDto loginInfo) {
         UserLoginInfoDto loginInfoData = userRepository.userLogin(loginInfo.getCustomerId());
         boolean status = false;
-        if(loginInfoData != null) {
+        if (loginInfoData != null) {
             status = verifyPassword(loginInfo.getPw(), loginInfoData.getPw());
         }
         loginInfoData.setStatus(status);
         System.out.println(status);
         return loginInfoData;
     }
+
+    public UserInfoDto getCustomerData(String customerId) {
+        UserInfoDto customerData = userRepository.getUserData(customerId);
+        System.out.println(customerData.getAddress());
+        // 주소와 상세 주소 사이에 공백을 추가
+        customerData.setAddress(customerData.getAddress() + " " + customerData.getDetailAddress());
+        return customerData;
+    }
 }
+
