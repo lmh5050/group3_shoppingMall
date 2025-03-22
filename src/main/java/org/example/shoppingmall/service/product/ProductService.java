@@ -1,13 +1,17 @@
 package org.example.shoppingmall.service.product;
 
 import org.example.shoppingmall.dto.User.UserInfoDto;
+import org.example.shoppingmall.dto.product.ProductCategoryDto;
 import org.example.shoppingmall.dto.product.ProductDetailDto;
 import org.example.shoppingmall.dto.product.ProductDto;
+import org.example.shoppingmall.dto.product.ProductSortDto;
 import org.example.shoppingmall.repository.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -71,6 +75,25 @@ public class ProductService {
         }
         System.out.println("filteredProducts = " + filteredProducts);
         return filteredProducts;
+    }
+
+//    정렬 리스트 가져오기
+    public  ArrayList<ProductSortDto> getProductSortOptions() {
+        return productRepository.getProductSortOptions();
+    }
+
+    //    카테고리에서 상품 정렬하기
+    public ArrayList<ProductDto> getCategoryProductWithOrderOption(ArrayList<ProductDto> productDtos, String orderOprion) {
+        return productRepository.getCategoryProductWithOrderOption(this.getProductIdList(productDtos), orderOprion);
+    }
+    
+    // 상품의 아이디만 뽑기
+    private ArrayList<String> getProductIdList(ArrayList<ProductDto> productDto) {
+        ArrayList<String> productIdList = new ArrayList<>();
+        for(ProductDto product : productDto){
+            productIdList.add(product.getProductId());
+        }
+        return productIdList;
     }
 }
 
