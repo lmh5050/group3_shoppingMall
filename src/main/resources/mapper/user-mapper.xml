@@ -18,10 +18,44 @@
              #{phoneNumber}, #{birth}, #{recommendId})
     </insert>
 
+    <insert id="insertUserDeliveryInfo" parameterType="InsertUserInfoDto">
+        INSERT INTO address
+        (address_id,
+         customer_id,
+         code,
+         delivery_name,
+         address,
+         detail_address,
+         zip_code,
+         status,
+         receive_people,
+         receive_phone_number,
+         active_flag
+         )
+        VALUES
+            (#{addressId},
+             #{customerId},
+             #{code},
+             '기본',
+             #{address},
+             #{detailAddress},
+             #{zipCode},
+             0 ,
+             #{name},
+             #{phoneNumber},
+             1)
+    </insert>
+
     <select id="checkNickname" parameterType="String" resultType="int">
         SELECT COUNT(*)
         FROM customer
         WHERE nickname = #{nickName}
+    </select>
+
+    <select id="getAddressCode" parameterType="String" resultType="String">
+        SELECT code_no
+        FROM code_detail
+        WHERE code_name = #{addressName}
     </select>
 
 

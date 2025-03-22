@@ -6,17 +6,18 @@
 </head>
 <body>
 <form action="/order/order" method="post">
-    <h2>주문서</h2>
+    <h1>주문서</h1>
+    <h3>주문번호: <input type="text" id="showOrderId" th:value="${showOrderId}" readonly></h3>
     <!-- 배송지 설정 -->
-    <div id="shipping">
+   <!-- <div id="shipping">
         <h2>배송지</h2>
-        <p><span th:text="${address.receivePeople}" name="recipient" required></span>
-            <span th:if="${address.status == 1}" style="background-color: lightgray; color: black; font-size: 12px; padding: 3px 6px; border-radius: 5px;">기본배송지</span>
-            <button onclick="location.href='/order/changeAddress'">배송지 변경</button>
-        </p>
-        <p><span th:text="${address.address}" name="shipping_address_basic" required></span>
-        <span th:text="${address.detailAddress}" name="shipping_address_detail" required></span></p>
-        <p><span th:text="${address.receivePhoneNumber}" name="recipient_contact" required></span></p>
+        <div><span th:text="${address.receivePeople}" name="recipient" required></span>
+            <span th:text="${address.status == 1} ? '기본배송지' : '추가배송지'" style="background-color: lightgray; color: black; font-size: 12px; padding: 3px 6px; border-radius: 5px;"></span>
+            <button onclick="location.href='/order/changeAddress'">배송지 변경</button><br>
+            <span th:text="${address.address}" name="shipping_address_basic" required></span>
+            <span th:text="${address.detailAddress}" name="shipping_address_detail" required></span><br>
+            <span th:text="${address.receivePhoneNumber}" type="tel" name="recipient_contact" required></span>
+        </div>
 
         <label for="deliveryRequest"></label>
         <select id="deliveryRequest" name="deliveryRequest" onchange="checkCustomOption()">
@@ -40,45 +41,72 @@
             }
         </script>
     </div>
-
+-->
     <div id="productInfo">
         <h2>상품정보</h2>
-        <div>상품명 <span th:text="${productInfo.name}"></span></div>
-        <div>색상: <span th:text="${productInfo.color}">0원</span></div>
-        <div>사이즈: <span th:text="${productInfo.size}">0원</span></div>
-        <div>상품 금액: <span th:text="${productInfo.price}">0원</span></div>
+        <!-- <h3>주문번호: <input type="text" id="serialNumbers" th:value="${serialNumbersd}" readonly></h3>-->
+        <div th:each="product : ${productInfo}">
+            <div>주문일련번호: <span th:text="${product.orderDetailId}"></span></div>
+            <div><img th:src="@{${product.imageUrl}}" style="width: 100px; height: 100px;" alt="상품 이미지"></div>
+            <div>상품명 <span th:text="${product.name}"></span></div>
+            <div>색상: <span th:text="${product.color}"></span></div>
+            <div>사이즈: <span th:text="${product.size}"></span></div>
+            <div>수량: <input type="number" name="quantity" th:value="${product.quantity}" min="1"></div>
+            <div>상품 금액: <span th:text="${product.price}"></span></div>
+            <div>총 상품 금액: <span th:text="${product.getTotalPrice}"></span></div>
+        </div>
     </div>
-<!--    <table>-->
-<!--        <thead>-->
-<!--        <tr>-->
-<!--            <th>상품명</th>-->
-<!--            <th>가격</th>-->
-<!--            <th>사이즈</th>-->
-<!--            <th>색상</th>-->
-<!--            <th>수량</th>-->
-<!--            <th>총 금액</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--        <tr th:each="orderDetail : ${orderDetailList}">-->
-<!--            <td th:text="${orderDetail.productName}"></td>-->
-<!--            <td th:text="${orderDetail.price}"></td>-->
-<!--            <td th:text="${orderDetail.size}"></td>-->
-<!--            <td th:text="${orderDetail.color}"></td>-->
-<!--            <td th:text="${orderDetail.quantity}"></td>-->
-<!--            <td th:text="${orderDetail.totalProductAmount}"></td>-->
-<!--        </tr>-->
-<!--        </tbody>-->
-<!--    </table>-->
 
-    <!-- 결제 금액 -->
+    <!--<div id="productInfo">
+        <h2>상품정보</h2>
+        <div th:each="product, iterStat : ${productInfo}">
+            <div>주문일련번호: <span th:text="${product.orderDetailId}"></span></div>
+            <div><img th:src="@{${product.imageUrl}}" style="width: 100px; height: 100px;" alt="상품 이미지"></div>
+            <div>상품명 <span th:text="${product.name}"></span></div>
+            <div>색상: <span th:text="${product.color}"></span></div>
+            <div>사이즈: <span th:text="${product.size}"></span></div>
+            <div>수량:
+                <input type="number" name="productInfo[${iterStat.index}].quantity" th:value="${product.quantity}" min="1">
+            </div>
+            <div>상품 금액: <span th:text="${product.price}"></span></div>
+            <div>총 상품 금액: <span th:text="${product.totalPrice}"></span></div>
+
+            &lt;!&ndash; 상품 ID &ndash;&gt;
+            <input type="hidden" name="productInfo[${iterStat.index}].productId" th:value="${product.productId}">
+            <input type="hidden" name="productInfo[${iterStat.index}].productDetailId" th:value="${product.productDetailId}">
+        </div>
+    </div>-->
+<!--    <div id="productInfo">
+        <h2>상품정보</h2>
+        &lt;!&ndash; OrderProductsDto를 기준으로 반복문을 사용 &ndash;&gt;
+        <div th:each="orderProduct : ${orderProductsDto.productInfo}">
+            <div>주문일련번호: <span th:text="${orderProduct.orderDetailId}"></span></div>
+            <div><img th:src="@{${orderProduct.imageUrl}}" style="width: 100px; height: 100px;" alt="상품 이미지"></div>
+            <div>상품명 <span th:text="${orderProduct.name}"></span></div>
+            <div>색상: <span th:text="${orderProduct.color}"></span></div>
+            <div>사이즈: <span th:text="${orderProduct.size}"></span></div>
+            <div>수량: <input type="number" name="quantity" th:value="${orderProduct.quantity}" min="1"></div>
+            <div>상품 금액: <span th:text="${orderProduct.price}"></span></div>
+            <div>총 상품 금액: <span th:text="${orderProduct.totalPrice}"></span></div>
+        </div>
+    </div>-->
+
+
+
+
+<!--    &lt;!&ndash; 결제 금액 &ndash;&gt;
     <div id="paymentInfo">
-        <h4>결제 금액</h4>
-        <div>총 상품 금액: <span th:text="${totalAmount}">0원</span></div>
-        <div>할인 금액: <span th:text="${discountAmount}">0원</span></div>
-        <div>배송비: <span th:text="${shippingFee}">0원</span></div>
-        <div>최종 결제 금액: <span th:text="${finalAmount}">0원</span></div>
-    </div>
+        <h2>결제 금액</h2>
+        <div th:with="totalPrice=${#aggregates.sum(productInfo.![price * quantity])},
+                      shippingCost=${address.islandOrMountain == 1 ? 6000 : 0},
+                      finalAmount=${totalPrice + shippingCost}">
+
+            <div>총 주문 금액: <span th:text="${totalPrice} + '원'">0원</span></div>
+            <div>총 할인 금액: 0원</div>
+            <div>배송비: <span th:text="${shippingCost == 6000 ? '6000원' : '무료배송'}"></span></div>
+            <div>최종 결제 금액: <span th:text="${finalAmount} + '원'">0원</span></div>
+        </div>
+    </div>-->
 
     <!-- 결제 방법 선택 -->
     <div id="paymentMethod">

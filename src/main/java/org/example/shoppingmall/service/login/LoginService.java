@@ -25,13 +25,20 @@ public class LoginService {
         String testData = userRepository.getCustomerId(customerId);
         return testData;
     }
-
+    @Transactional
     public String insertUserInfo(InsertUserInfoDto InsertUserInfo) {
         try {
             String encryptedPassword = passwordUtillService.encryptPassword(InsertUserInfo.getPw());
             InsertUserInfo.setPw(encryptedPassword);  // 암호화된 비밀번호와 Salt를 설정
-            System.out.println(InsertUserInfo.getNickName() + "닉네임 이름이름");
             userRepository.insertUserInfo(InsertUserInfo);
+            //여기서 부터 이제 insertUserInfo 필요한 값 생성
+            // 1. address_id 생성 > ads-customerId-001 > 처음 생성은 전부다 001 값임
+            String addressId = "adr" + '-' + InsertUserInfo.getName() + '-' + "000"; //어드레스 아이디 만드는 코드
+            // 2. 주소에서 앞에 두개 따와서 코드 테이블 값 확인하고 그거 대응하는 값 넣어주기 code에
+            String addressCode = userRepository.getAddressCode(InsertUserInfo.getAddress().substring(0,2));
+            InsertUserInfo.setCode(addressCode);
+            InsertUserInfo.setAddressId(addressId);
+            userRepository.insertUserDeliveryInfo(InsertUserInfo);
             return "success";
 
         } catch (NoSuchAlgorithmException e) {

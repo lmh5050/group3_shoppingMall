@@ -2,25 +2,26 @@ package org.example.shoppingmall.repository.order;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.example.shoppingmall.dto.order.AddressDto;
-import org.example.shoppingmall.dto.order.OrderDetailDto;
 import org.example.shoppingmall.dto.order.OrderDto;
 import org.example.shoppingmall.dto.order.ProductInfoDto;
-import org.example.shoppingmall.dto.product.ProductDto;
-import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 
 @Mapper
-@Repository
 public interface OrderRepository {
 
-    // 주문 저장
-    void saveOrder(OrderDto orderDto);
+    //주문번호 생성
+    Long generateOrderId();
 
     //기본배송지 가져오기
     AddressDto findDefaultAddressByCustomerId(String customerId);
 
-    ProductInfoDto findProductInfoByProductDetailId(String productDetailId);
+    //상품정보가져오기
+    List<ProductInfoDto> findProductInfoByProductDetailId(Map<String, Object> params);
+
 
 
 
@@ -28,5 +29,6 @@ public interface OrderRepository {
     List<OrderDto> findAllOrders();
 
     // 주문 ID로 주문 상세 조회
-    OrderDto findOrderById(String orderId);*/
+    OrderDto findOrderById(String orderId);
+    */
 }
