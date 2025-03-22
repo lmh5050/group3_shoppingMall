@@ -69,6 +69,4 @@ public class ProductCategoryService {
         }
         return false;
     }
-
-
 }

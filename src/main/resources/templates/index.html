@@ -76,6 +76,14 @@
             <!-- 상품 반복문 끝 -->
         </div>
     </div>
+
+<!--  정렬 버튼  -->
+    <label>
+        <select>
+            <option>sjdjaslkjdkasdjlaskd</option>
+        </select>
+    </label>
+
 </section>
 
 <footer>
@@ -96,6 +104,30 @@
             url.searchParams.set('searchProduct', pdName);
         } else {
             url.searchParams.append('searchProduct', pdName);
+        }
+
+        window.location.href = url.toString();
+    }
+
+//     정렬 하는 기능
+    function orderProductFunction(){
+        const sortSelect = document.getElementById("sortOptions");
+
+        // 선택된 value (예: "like_count")
+        const selectedValue = sortSelect.value;
+
+        let url = new URL(window.location.href);
+        if (!selectedValue) {
+            if (url.toString().includes('orderOption'))
+                url.searchParams.delete('orderOption');
+            window.location.href = url.toString();
+            return;
+        }
+
+        if (url.toString().includes('orderOption')){
+            url.searchParams.set('orderOption', selectedValue);
+        } else {
+            url.searchParams.append('orderOption', selectedValue);
         }
 
         window.location.href = url.toString();

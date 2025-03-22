@@ -3,6 +3,7 @@ package org.example.shoppingmall.controller.product;
 import org.example.shoppingmall.dto.product.ProductCategoryDto;
 import org.example.shoppingmall.dto.product.ProductDetailDto;
 import org.example.shoppingmall.dto.product.ProductDto;
+import org.example.shoppingmall.dto.product.ProductSortDto;
 import org.example.shoppingmall.service.product.ProductCategoryService;
 import org.example.shoppingmall.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +28,25 @@ public class ProductController {
 
     //home
     @GetMapping("/")
-    public String home(Model model) {
-        ArrayList<ProductDto> products = productService.getProductData();
+    public String home(
+            @RequestParam(required = false, name = "orderOption") String orderOption,
+            Model model) {
+        ArrayList<ProductDto> products;
+
+        // 정렬 순서를 정한 경우
+        if (orderOption  != null){
+            products = productService.getProductOrderByOptions(orderOption);
+        } else {
+            products = productService.getProductData();
+        }
+
         model.addAttribute("products", products);
 
         ArrayList<ProductCategoryDto> list = productCategoryService.getMajorCategoryByPId();
         model.addAttribute("categoryList", list);
 
+        ArrayList<ProductSortDto> sortList =  productService.getProductSortOptions();
+        model.addAttribute("sortList", sortList);
         return "index";
     }
 
@@ -61,8 +74,12 @@ public class ProductController {
             @RequestParam(required = false, name = "midCID") String midCID,
             @RequestParam(required = false, name = "subCID") String subCID,
             @RequestParam(required = false, name = "searchProduct") String searchProduct,
-            @RequestParam(required = false, name = "")
+            @RequestParam(required = false, name = "orderOption") String orderOption,
             Model model) {
+//        정렬 방법 리스트 가져오기
+        ArrayList<ProductSortDto> sortList =  productService.getProductSortOptions();
+        model.addAttribute("sortList", sortList);
+
         // 상품 전체 리스트 가져오기
         ArrayList<ProductDto> products;
 
@@ -89,6 +106,16 @@ public class ProductController {
         if (subCID != null) {
             // 소분류 상품만 가져오는 서비스
             products = productService.getFilteredProductData(subCID);
+        }
+
+//      카테고리 화면에서 검색하는 경우 -> 카테고리 필터링 & 그 상품의 이름으로 필터링 두번 다 진행
+        if(searchProduct != null) {
+            products = productService.getProductBySearch(searchProduct, products);
+        }
+
+//        카테고리 화면에서 정렬하는 경우
+        if(orderOption != null && !products.isEmpty()) {
+            products = productService.getCategoryProductWithOrderOption(products, orderOption);
         }
 
         model.addAttribute("products", products);
