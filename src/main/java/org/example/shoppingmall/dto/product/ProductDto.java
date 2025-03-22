@@ -4,12 +4,13 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Comparator;
 import java.util.Date;
 
 @Setter
 @Getter
 @Data
-public class ProductDto {  //상품 DTO
+public class ProductDto{  //DTO
 
     private String productId;
     private int sellerId;
@@ -42,5 +43,4 @@ public class ProductDto {  //상품 DTO
     private int colorCount;
     private int sizeCount;
     private boolean activeFlag;
-
 }

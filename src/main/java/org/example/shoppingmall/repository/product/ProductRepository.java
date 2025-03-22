@@ -3,6 +3,7 @@ package org.example.shoppingmall.repository.product;
 import org.apache.ibatis.annotations.Mapper;
 import org.example.shoppingmall.dto.product.ProductDetailDto;
 import org.example.shoppingmall.dto.product.ProductDto;
+import org.example.shoppingmall.dto.product.ProductSortDto;
 
 import java.util.ArrayList;
 
@@ -17,5 +18,11 @@ public interface ProductRepository {  // Repository
     ArrayList<ProductDetailDto> getProductDetailOptions(String productId);
 
     ArrayList<ProductDto> getProductOrderByOptions(String orderOption);
+
+    ArrayList<ProductDto> getProductBySearch(String search);
+
+    ArrayList<ProductSortDto> getProductSortOptions();
+
+    ArrayList<ProductDto> getCategoryProductWithOrderOption(ArrayList<String> productIdList, String order);
 }
 
