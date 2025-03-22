@@ -5,41 +5,78 @@
     <!-- 주문 정보 저장 -->
     <insert id="insertOrder">
         INSERT INTO orders (
-            order_id, customer_id, order_status, 
-            total_order_amount, total_quantity, total_type_cnt
+            order_id, customer_id, order_status, total_discount_amount,
+            total_order_amount, total_quantity
         )
         VALUES (
-            #{orderId}, #{customerId}, #{orderStatus},
-            #{totalOrderAmount}, #{totalQuantity}, #{totalTypeCnt}
+            #{orderId}, #{customerId}, #{orderStatus}, #{totalDiscountAmount},
+            #{totalOrderAmount}, #{totalQuantity}
         )
     </insert>
 
     <!-- 주문 상세 정보 저장 -->
     <insert id="insertOrderDetail">
         INSERT INTO order_detail (
-            serial_number, order_id, product_id, product_name,
-            size, quantity, price, discount_amount,
-            product_price, product_total_price
+            order_id, serial_number, product_detail_id, product_name,
+            size, color, quantity, price, discount_amount,
+            product_price, product_total_price, status
         )
         VALUES (
-            #{orderDetailId}, #{orderId}, #{productId}, #{productName},
-            #{size}, #{quantity}, #{price}, #{discountAmount},
-            #{productPrice}, #{productTotalPrice}
+            #{orderId}, #{serialNumber}, #{productDetailId}, #{productName},
+            #{size}, #{color}, #{quantity}, #{price}, #{discountAmount},
+            #{productPrice}, #{productTotalPrice}, #{status}
         )
     </insert>
 
     <!-- 결제 정보 저장 -->
     <insert id="insertPayment">
         INSERT INTO payment (
-            payment_id, order_id, payment_method_id,
-            installment, card_number,
-            bank_deposit, cash_receipt_type, cash_receipt_number
+            payment_id, order_id, payment_method_id, payment_code,
+            status, total_amount, tax_amount, discount_amount,
+            payment_datetime, failure_reason, card_number, installment, 
+            bank_deposit, cash_receipt_type, cash_receipt_number, account_deposit
         )
         VALUES (
-            #{paymentId}, #{orderId}, #{paymentMethod},
-            #{cardInstallment}, #{cardNumber},
-            #{cashBankName}, #{cashReceiptType}, #{cashReceiptNumber}
+            #{paymentId}, #{orderId}, #{paymentMethodId}, #{paymentCode},
+            #{status}, #{totalAmount}, #{taxAmount}, #{discountAmount},
+            #{paymentDatetime}, #{failureReason}, #{cardNumber}, #{cardInstallment},
+            #{cashBankName}, #{cashReceiptType}, #{cashReceiptNumber}, #{accountDeposit}
         )
     </insert>
+
+    <!-- 마지막 결제 ID 조회 -->
+    <select id="getLastPaymentId" resultType="String">
+        SELECT payment_id 
+        FROM payment 
+        ORDER BY payment_id DESC 
+        LIMIT 1
+    </select>
+
+    <!-- 주문 정보 조회 -->
+    <select id="getOrder" parameterType="Integer" resultType="org.example.shoppingmall.dto.payment.PaymentOrderDto">
+        SELECT order_id, customer_id, order_status, 
+               total_discount_amount, total_order_amount, total_quantity
+        FROM orders
+        WHERE order_id = #{orderId}
+    </select>
+
+    <!-- 주문 상세 정보 조회 -->
+    <select id="getOrderDetails" parameterType="Integer" resultType="org.example.shoppingmall.dto.payment.PaymentOrderDetailDto">
+        SELECT order_id, serial_number as orderDetailId, product_detail_id as productId, 
+               product_name, size, color, quantity, price, discount_amount,
+               product_price, product_total_price, status
+        FROM order_detail
+        WHERE order_id = #{orderId}
+    </select>
+
+    <!-- 결제 정보 조회 -->
+    <select id="getPayment" parameterType="Integer" resultType="org.example.shoppingmall.dto.payment.PaymentDto">
+        SELECT payment_id, order_id, payment_method_id, payment_code,
+               status, total_amount, tax_amount, discount_amount,
+               payment_datetime, failure_reason, card_number, installment as cardInstallment,
+               bank_deposit as cashBankName, cash_receipt_type, cash_receipt_number
+        FROM payment
+        WHERE order_id = #{orderId}
+    </select>
 
 </mapper>

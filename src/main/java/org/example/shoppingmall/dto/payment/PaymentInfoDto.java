@@ -17,9 +17,10 @@ public class PaymentInfoDto {
     private Integer orderId;
     private String customerId;
     private String orderStatus;
+    private Integer totalDiscountAmount;
     private Integer totalOrderAmount;
     private Integer totalQuantity;
-    private Integer totalTypeCnt;
+    // 주문 상세 정보
     private List<PaymentOrderDetailDto> orderDetailList;
 
     // 결제 정보

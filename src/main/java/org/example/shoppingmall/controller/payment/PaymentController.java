@@ -18,7 +18,7 @@ public class PaymentController {
     // 결제버튼이 보이는 페이지
     @GetMapping("/page")
     public String paymentPage(Model model){
-        model.addAttribute("orderId", "테스트");
+        model.addAttribute("orderId", 10001);
         model.addAttribute("totalOrderAmount", 30000);
         return "payment/payment";
     }
@@ -32,11 +32,15 @@ public class PaymentController {
     // 결제하기
     @PostMapping
     public ResponseEntity<String> postPayment(@RequestBody PaymentInfoDto paymentInfoDto) {
-        try {
-            paymentService.processPayment(paymentInfoDto);
-            return ResponseEntity.ok("결제가 완료되었습니다.");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("결제 처리 중 오류가 발생했습니다: " + e.getMessage());
-        }
+        paymentService.processPayment(paymentInfoDto);
+        return ResponseEntity.ok("결제가 완료되었습니다.");
+    }
+
+    // 영수증 조회 팝업
+    @GetMapping("/receipt/{orderId}")
+    public String viewReceipt(@PathVariable Integer orderId, Model model) {
+        PaymentInfoDto receipt = paymentService.getReceipt(orderId);
+        model.addAttribute("receipt", receipt);
+        return "payment/receipt";
     }
 }

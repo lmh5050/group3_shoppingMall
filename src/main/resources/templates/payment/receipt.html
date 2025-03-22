@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>결제 영수증</title>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .receipt-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        .receipt-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .info-label {
+            color: #666;
+        }
+        .info-value {
+            font-weight: 500;
+        }
+        .product-list {
+            margin: 15px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        .total-amount {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 15px;
+        }
+        .payment-info {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-close {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .btn-close:hover {
+            background-color: #e0e0e0;
+        }
+        .btn-print {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-print:hover {
+            background-color: #45a049;
+        }
+        @media print {
+            .button-container {
+                display: none;
+            }
+            body {
+                background-color: white;
+            }
+            .receipt-container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-container">
+        <div class="receipt-header">
+            <div class="receipt-title">결제 영수증</div>
+            <div th:text="${#temporals.format(receipt.payment.paymentDatetime, 'yyyy-MM-dd HH:mm:ss')}"></div>
+        </div>
+
+        <div class="info-row">
+            <span class="info-label">주문번호</span>
+            <span class="info-value" th:text="${receipt.orderId}"></span>
+        </div>
+
+        <div class="product-list">
+            <div th:each="detail : ${receipt.orderDetailList}" class="info-row">
+                <span th:text="${detail.productName}"></span>
+                <span th:text="${#numbers.formatInteger(detail.productTotalPrice, 0, 'COMMA') + '원'}"></span>
+            </div>
+        </div>
+
+        <div class="payment-info">
+            <div class="info-row">
+                <span class="info-label">상품금액</span>
+                <span class="info-value" th:text="${#numbers.formatInteger(receipt.totalOrderAmount, 0, 'COMMA') + '원'}"></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">할인금액</span>
+                <span class="info-value" th:text="${#numbers.formatInteger(receipt.totalDiscountAmount, 0, 'COMMA') + '원'}"></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">결제방법</span>
+                <span class="info-value" th:text="${receipt.paymentMethod}"></span>
+            </div>
+            <div class="info-row" th:if="${receipt.paymentMethod == '신용/체크카드'}">
+                <span class="info-label">카드번호</span>
+                <span class="info-value" th:text="${receipt.cardNumber}"></span>
+            </div>
+            <div class="info-row" th:if="${receipt.paymentMethod == '가상계좌'}">
+                <span class="info-label">입금계좌</span>
+                <span class="info-value" th:text="${receipt.cashBankName}"></span>
+            </div>
+        </div>
+
+        <div class="total-amount">
+            <div class="info-row">
+                <span class="info-label">최종 결제금액</span>
+                <span class="info-value" th:text="${#numbers.formatInteger(receipt.totalOrderAmount, 0, 'COMMA') + '원'}"></span>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="btn btn-close" onclick="window.close()">닫기</button>
+        </div>
+    </div>
+</body>
+</html> 

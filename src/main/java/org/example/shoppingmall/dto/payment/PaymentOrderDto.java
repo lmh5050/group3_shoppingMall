@@ -15,7 +15,7 @@ public class PaymentOrderDto {
     private Integer orderId;
     private String customerId;
     private String orderStatus;
+    private Integer totalDiscountAmount;
     private Integer totalOrderAmount;
     private Integer totalQuantity;
-    private Integer totalTypeCnt;
 } 
