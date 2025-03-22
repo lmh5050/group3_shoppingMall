@@ -16,6 +16,12 @@ public interface PaymentRepository {
     // 결제 정보 저장
     void insertPayment(PaymentDto paymentDto);
 
+    // 결제 정보 업데이트
+    void updatePayment(PaymentDto paymentDto);
+
+    // 주문번호로 마지막 결제 정보 조회
+    PaymentDto findLastPaymentByOrderId(Integer orderId);
+
     // 마지막 결제 ID 조회
     String getLastPaymentId();
 
@@ -27,4 +33,7 @@ public interface PaymentRepository {
 
     // 결제 정보 조회
     PaymentDto getPayment(Integer orderId);
+
+    // 고객 이름 조회
+    String findCustomerNameById(String customerId);
 }

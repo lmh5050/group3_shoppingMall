@@ -79,4 +79,34 @@
         WHERE order_id = #{orderId}
     </select>
 
+    <!-- 주문번호로 마지막 결제 정보 조회 -->
+    <select id="findLastPaymentByOrderId" parameterType="Integer" resultType="org.example.shoppingmall.dto.payment.PaymentDto">
+        SELECT *
+        FROM payment
+        WHERE order_id = #{orderId}
+        ORDER BY payment_datetime DESC
+        LIMIT 1
+    </select>
+
+    <!-- 결제 정보 업데이트 -->
+    <update id="updatePayment" parameterType="org.example.shoppingmall.dto.payment.PaymentDto">
+        UPDATE payment
+        <set>
+            <if test="paymentCode != null">payment_code = #{paymentCode},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="paymentDatetime != null">payment_datetime = #{paymentDatetime},</if>
+            <if test="failureReason != null">failure_reason = #{failureReason},</if>
+            <if test="cardNumber != null">card_number = #{cardNumber},</if>
+            <if test="cardInstallment != null">installment = #{cardInstallment},</if>
+        </set>
+        WHERE payment_id = #{paymentId}
+    </update>
+
+    <!-- 고객 이름 조회 -->
+    <select id="findCustomerNameById" resultType="String">
+        SELECT name
+        FROM customer
+        WHERE customer_id = #{customerId}
+    </select>
+
 </mapper>
