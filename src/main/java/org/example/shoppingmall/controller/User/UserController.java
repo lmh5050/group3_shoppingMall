@@ -2,6 +2,7 @@ package org.example.shoppingmall.controller.User;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.apache.catalina.User;
 import org.example.shoppingmall.dto.User.InsertUserInfoDto;
 import org.example.shoppingmall.dto.User.UserEmailDto;
 import org.example.shoppingmall.dto.User.UserInfoDto;
@@ -69,6 +70,15 @@ public class UserController {
             return "redirect:/login";
         }
     }
+
+    @GetMapping("/user/mypage/data")
+    @ResponseBody
+    public UserInfoDto getUserInfoData( HttpSession session) {
+        String customerId = (String) session.getAttribute("customerId");
+        UserInfoDto result = loginService.getCustomerData(customerId);
+        return result;
+    }
+
 
     @GetMapping("/user/register") //회원가입 페이지 렌더링 하는 api
     public String getRegister()
