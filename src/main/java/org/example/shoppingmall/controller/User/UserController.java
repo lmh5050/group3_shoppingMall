@@ -1,6 +1,7 @@
 package org.example.shoppingmall.controller.User;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.example.shoppingmall.dto.User.InsertUserInfoDto;
 import org.example.shoppingmall.dto.User.UserEmailDto;
 import org.example.shoppingmall.dto.User.UserInfoDto;
@@ -36,19 +37,37 @@ public class UserController {
     }
 
 
-    @PostMapping("/user/login") //유저 로그인 실제적 기능하는 api
+    @PostMapping("/user/login") // 유저 로그인 실제적 기능하는 API
     @ResponseBody
-    public UserLoginInfoDto checkLoginInfo(@RequestBody UserLoginInfoDto loginInfo, HttpServletResponse response) {
+    public UserLoginInfoDto checkLoginInfo(@RequestBody UserLoginInfoDto loginInfo, HttpServletResponse response, HttpSession session) {
+        // 응답 콘텐츠 타입 설정
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
+
+        // 로그인 서비스 호출
         UserLoginInfoDto result = loginService.userLogin(loginInfo);
-        return result;
+
+        // 로그인 성공 시 세션에 customerId 저장
+        if (result.isStatus()) {
+            // 로그인 성공 시 customerId를 세션에 저장
+            session.setAttribute("customerId", loginInfo.getCustomerId());
+        }
+
+        return result; // 결과 반환
     }
 
-    @GetMapping("/user/mypage") // mypage 들어가는 api
-    public String getMypage()
-    {
-        return "user/mypage";
+    @GetMapping("/user/mypage")
+    public String getMypage(HttpSession session) {
+        // 세션에서 customerId 값을 가져옴
+        String customerId = (String) session.getAttribute("customerId");
+        System.out.println(customerId  + "세션값 가져왔음미다");
+        if (customerId != null) {
+            // customerId가 세션에 있으면 마이페이지를 렌더링
+            return "user/mypage";
+        } else {
+            // 세션에 customerId가 없으면 로그인 페이지로 리다이렉트
+            return "redirect:/login";
+        }
     }
 
     @GetMapping("/user/register") //회원가입 페이지 렌더링 하는 api
