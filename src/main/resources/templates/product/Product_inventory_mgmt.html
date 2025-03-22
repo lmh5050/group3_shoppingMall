@@ -37,8 +37,13 @@
                         <!-- Product actions-->
                         <div >
                             <select>
-                                <option></option>
+                                <option>상품 진열 상태</option>
+                                <option>진열</option>
+                                <option>진열 중지</option>
                             </select>
+                            <button type="button">
+                                수정 완료
+                            </button>
                             <!--   상품 정보 수정  -->
                             <div >
                                 <a  th:href="@{'/manager/productInventoryMgmt/updateProductDetail?prdId=' + ${product.getProductId()}}">상품 정보 수정</a>
