@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.shoppingmall.repository.order.OrderListRepository">
+    <!--고객별 주문 목록 가져오기-->
+    <select id="findOrderListByCustomerId" parameterType="String" resultType="OrderListDto">
+        SELECT
+            o.created_at,
+            o.order_id,
+            o.order_status,
+            od.product_name,
+            od.size,
+            od.color,
+            od.quantity,
+            od.product_total_price,
+            pdi.product_id
+        FROM orders o JOIN order_detail od
+                           ON o.order_id = od.order_id
+                      JOIN product_detail pd
+                           ON od.product_detail_id = pd.product_detail_id
+                      JOIN product_description__image pdi
+                           ON pd.product_id = pdi.product_id
+        WHERE o.customer_id = #{customer_id}
+          AND o.active_flag = 1;
+    </select>
+
+    <!--특정 주문에 대한 주문 상세 정보 가져오기-->
+    <select id="findOrderDetailByOrderId" parameterType="Long" resultType="OrderDetailDto">
+        SELECT DISTINCT
+            o.created_at,
+            o.order_id,
+            o.order_status,
+            o.total_order_amount,
+            o.total_discount_amount,
+            p.discount_amount,
+            p.total_amount,
+            p.bank_deposit,
+            p.account_deposit,
+            pm.name,
+            s.basic_address,
+            s.detail_address,
+            s.receive_people,
+            s.receive_phone_number,
+            s.shipping_price,
+            od.serial_number,
+            od.product_name,
+            od.size,
+            od.color,
+            od.quantity,
+            od.product_total_price,
+            pdi.product_id
+        FROM orders o JOIN payment p
+                           ON o.order_id = p.order_id
+                      JOIN payment_method pm
+                           ON p.payment_method_id = pm.payment_method_id
+                      JOIN shipping s
+                           ON o.order_id = s.order_id
+                      JOIN order_detail od
+                           ON o.order_id = od.order_id
+                      JOIN product_detail pd
+                           ON od.product_detail_id = pd.product_detail_id
+                      JOIN product_description__image pdi
+                           ON pd.product_id = pdi.product_id
+        WHERE o.order_id = #{order_id}
+          AND o.active_flag = 1;
+    </select>
+
+</mapper>
