@@ -43,6 +43,9 @@ public class ReceiptService {
                 .totalDiscountAmount(order.getTotalDiscountAmount())
                 .finalAmount(order.getTotalOrderAmount() - order.getTotalDiscountAmount())
                 .paymentMethod(paymentMethod)
+                .paymentStatus(payment.getStatus())
+                .accountDeposit(payment.getAccountDeposit())
+                .bankDeposit(payment.getCashBankName())
                 .build();
     }
 }

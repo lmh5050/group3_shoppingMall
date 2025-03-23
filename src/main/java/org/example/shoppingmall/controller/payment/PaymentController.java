@@ -21,7 +21,7 @@ public class PaymentController {
     // 결제버튼이 보이는 페이지
     @GetMapping("/page")
     public String paymentPage(Model model){
-        model.addAttribute("orderId", 100020);
+        model.addAttribute("orderId", 100025);
         model.addAttribute("totalOrderAmount", 30000);
         return "payment/payment";
     }

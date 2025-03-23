@@ -6,11 +6,11 @@
     <insert id="insertOrder">
         INSERT INTO orders (
             order_id, customer_id, order_status, total_discount_amount,
-            total_order_amount, total_quantity
+            total_order_amount, total_quantity, order_datetime
         )
         VALUES (
             #{orderId}, #{customerId}, #{orderStatus}, #{totalDiscountAmount},
-            #{totalOrderAmount}, #{totalQuantity}
+            #{totalOrderAmount}, #{totalQuantity}, #{orderDatetime}
         )
     </insert>
 
@@ -74,7 +74,7 @@
         SELECT payment_id, order_id, payment_method_id, payment_code,
                status, total_amount, tax_amount, discount_amount,
                payment_datetime, failure_reason, card_number, installment as cardInstallment,
-               bank_deposit as cashBankName, cash_receipt_type, cash_receipt_number
+               bank_deposit as cashBankName, account_deposit, cash_receipt_type, cash_receipt_number
         FROM payment
         WHERE order_id = #{orderId}
     </select>
@@ -108,5 +108,86 @@
         FROM customer
         WHERE customer_id = #{customerId}
     </select>
+
+    <!-- 결제 이력 저장 -->
+    <insert id="insertPaymentHistory">
+        INSERT INTO payment_history (
+            payment_id,
+            order_id,
+            payment_method_id,
+            payment_code,
+            status,
+            total_amount,
+            tax_amount,
+            discount_amount,
+            payment_datetime,
+            failure_reason,
+            card_number,
+            installment,
+            bank_deposit,
+            cash_receipt_type,
+            cash_receipt_number,
+            account_deposit
+        ) VALUES (
+            #{paymentId},
+            #{orderId},
+            #{paymentMethodId},
+            #{paymentCode},
+            #{status},
+            #{totalAmount},
+            #{taxAmount},
+            #{discountAmount},
+            #{paymentDatetime},
+            #{failureReason},
+            #{cardNumber},
+            #{cardInstallment},
+            #{cashBankName},
+            #{cashReceiptType},
+            #{cashReceiptNumber},
+            #{accountDeposit}
+        )
+    </insert>
+
+    <!-- 주문 이력 저장 -->
+    <insert id="insertOrderHistory">
+        INSERT INTO order_history (
+            order_id, customer_id, order_status, total_discount_amount,
+            total_order_amount, total_quantity, order_datetime
+        )
+        VALUES (
+            #{orderId}, #{customerId}, #{orderStatus}, #{totalDiscountAmount},
+            #{totalOrderAmount}, #{totalQuantity}, #{orderDatetime}
+        )
+    </insert>
+
+    <insert id="insertOrderDetailHistory">
+        INSERT INTO order_detail_history (
+            order_id,
+            serial_number,
+            product_detail_id,
+            product_name,
+            size,
+            color,
+            quantity,
+            price,
+            discount_amount,
+            product_price,
+            product_total_price,
+            status
+        ) VALUES (
+            #{orderId},
+            #{serialNumber},
+            #{productDetailId},
+            #{productName},
+            #{size},
+            #{color},
+            #{quantity},
+            #{price},
+            #{discountAmount},
+            #{productPrice},
+            #{productTotalPrice},
+            #{status}
+        )
+    </insert>
 
 </mapper>

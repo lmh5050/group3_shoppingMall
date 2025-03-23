@@ -37,49 +37,60 @@ public class PaymentService {
 
     // 새로운 결제 처리
     private void processNewPayment(PaymentInfoDto paymentInfoDto) {
+        LocalDateTime now = LocalDateTime.now();  // 현재 시간을 변수로 저장
+
         if (paymentInfoDto.getPaymentMethod().equals("가상계좌") || paymentInfoDto.getCardNumber() == rightCardNumber) {
-            saveOrder(paymentInfoDto);
+            // 결제 정보 저장
+            savePayment(paymentInfoDto, now);
+            // 주문 관련 정보 저장
+            saveOrder(paymentInfoDto, now);
             saveOrderDetails(paymentInfoDto);
-            savePayment(paymentInfoDto);
         } else {
-            savePayment(paymentInfoDto);
+            // 실패하는 경우 결제 정보만 저장
+            savePayment(paymentInfoDto, now);
         }
     }
 
     // 결제 재시도 처리
     private void retryPayment(PaymentInfoDto paymentInfoDto, PaymentDto existingPayment) {
+        LocalDateTime now = LocalDateTime.now();
+
         if (paymentInfoDto.getCardNumber() == rightCardNumber) {
-            // 기존 결제 정보 상태 업데이트
-            PaymentDto updatedPayment = PaymentDto.builder()
-                    .paymentId(existingPayment.getPaymentId())
+            // 기존 결제 정보를 기반으로 필요한 필드만 업데이트
+            PaymentDto updatedPayment = existingPayment.toBuilder()
                     .paymentCode(UUID.randomUUID().toString())
                     .status("MA01003")  // 결제 완료로 상태 변경
-                    .paymentDatetime(LocalDateTime.now())
+                    .paymentDatetime(now)
                     .failureReason("결제 재시도 성공")
                     .cardNumber(paymentInfoDto.getCardNumber())
                     .cardInstallment(paymentInfoDto.getCardInstallment())
                     .build();
             
+            // 결제 정보 업데이트
             paymentRepository.updatePayment(updatedPayment);
+            // 결제 이력 저장
+            paymentRepository.insertPaymentHistory(updatedPayment);
             
-            // 주문 정보와 주문 상세 정보 저장
-            saveOrder(paymentInfoDto);
+            // 주문 관련 정보 저장
+            saveOrder(paymentInfoDto, now);
             saveOrderDetails(paymentInfoDto);
         } else {
-            // 재시도 실패 시 상태만 업데이트
-            PaymentDto failedPayment = PaymentDto.builder()
-                    .paymentId(existingPayment.getPaymentId())
+            // 재시도 실패 시 상태 관련 필드만 업데이트
+            PaymentDto failedPayment = existingPayment.toBuilder()
                     .status("MA01005")  // 결제 실패
-                    .paymentDatetime(LocalDateTime.now())
+                    .paymentDatetime(now)
                     .failureReason("카드 결제 실패")
                     .build();
             
+            // 결제 정보 업데이트
             paymentRepository.updatePayment(failedPayment);
+            // 결제 이력 저장
+            paymentRepository.insertPaymentHistory(failedPayment);
         }
     }
 
     // 결제 성공 - 주문 정보 저장
-    private void saveOrder(PaymentInfoDto paymentInfoDto) {
+    private void saveOrder(PaymentInfoDto paymentInfoDto, LocalDateTime orderDatetime) {
         String status;
         // 결제 방법에 따른 처리
         if (paymentInfoDto.getPaymentMethod().equals("신용/체크카드")) {
@@ -95,8 +106,13 @@ public class PaymentService {
                 .totalDiscountAmount(paymentInfoDto.getTotalDiscountAmount())
                 .totalOrderAmount(paymentInfoDto.getTotalOrderAmount())
                 .totalQuantity(paymentInfoDto.getTotalQuantity())
+                .orderDatetime(orderDatetime)  // 전달받은 시간 설정
                 .build();
+        
+        // 주문 정보 저장
         paymentRepository.insertOrder(orderDto);
+        // 주문 이력 저장
+        paymentRepository.insertOrderHistory(orderDto);
     }
 
     // 결제 성공 - 주문상세 정보 저장
@@ -113,12 +129,16 @@ public class PaymentService {
                 .orderId(paymentInfoDto.getOrderId())
                 .status(status)  // 주문 상태
                 .build();
+            
+            // 주문 상세 정보 저장
             paymentRepository.insertOrderDetail(newDetailDto);
+            // 주문 상세 이력 저장
+            paymentRepository.insertOrderDetailHistory(newDetailDto);
         }
     }
 
     // 결제 정보 저장
-    private void savePayment(PaymentInfoDto paymentInfoDto) {
+    private void savePayment(PaymentInfoDto paymentInfoDto, LocalDateTime paymentDatetime) {
         String lastPaymentId = paymentRepository.getLastPaymentId();
         String newPaymentId;
         Integer paymentMethod;
@@ -157,7 +177,7 @@ public class PaymentService {
                 .totalAmount(paymentInfoDto.getTotalOrderAmount())
                 .taxAmount(0)
                 .discountAmount(0)
-                .paymentDatetime(LocalDateTime.now())
+                .paymentDatetime(paymentDatetime)           // 전달받은 시간 사용
                 .failureReason(failureReason)
                 .cardNumber(paymentInfoDto.getCardNumber())
                 .cardInstallment(paymentInfoDto.getCardInstallment())
@@ -166,7 +186,11 @@ public class PaymentService {
                 .cashReceiptNumber(paymentInfoDto.getCashReceiptNumber())
                 .accountDeposit(accountDeposit)              // 가상계좌 번호
                 .build();
+        
+        // 결제 정보 저장
         paymentRepository.insertPayment(paymentDto);
+        // 결제 이력 저장
+        paymentRepository.insertPaymentHistory(paymentDto);
     }
 
     // 가상계좌 번호 생성 메서드

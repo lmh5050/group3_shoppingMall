@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,4 +20,5 @@ public class PaymentOrderDto {
     private Integer totalDiscountAmount;
     private Integer totalOrderAmount;
     private Integer totalQuantity;
+    private LocalDateTime orderDatetime;
 } 

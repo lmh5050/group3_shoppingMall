@@ -36,4 +36,13 @@ public interface PaymentRepository {
 
     // 고객 이름 조회
     String findCustomerNameById(String customerId);
+
+    // 결제 히스토리 저장
+    void insertPaymentHistory(PaymentDto paymentDto);
+
+    // 주문 이력 저장
+    void insertOrderHistory(PaymentOrderDto orderDto);
+
+    // 주문 상세 이력 저장
+    void insertOrderDetailHistory(PaymentOrderDetailDto orderDetailDto);
 }

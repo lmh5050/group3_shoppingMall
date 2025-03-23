@@ -26,5 +26,8 @@ public class ReceiptDto {
     private Integer totalOrderAmount;   
     private Integer totalDiscountAmount;
     private Integer finalAmount;        
-    private String paymentMethod;                 
+    private String paymentMethod;              
+    private String paymentStatus;   
+    private String accountDeposit;
+    private String bankDeposit;
 }
