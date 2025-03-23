@@ -6,4 +6,5 @@ import lombok.Data;
 public class UserLoginInfoDto {
     private String customerId;  // 고객 아이디
     private String pw;  // 비밀번호
+    private boolean status;
 }

@@ -59,9 +59,50 @@
     </select>
 
 
+    <select id="userLogin" parameterType="String" resultType="UserLoginInfoDto">
+        SELECT customer_id , pw
+        FROM customer
+        WHERE customer_id = #{customerId}
+    </select>
 
 
-
-
+    <select id="getUserData" parameterType="String" resultType="UserInfoDto">
+        SELECT
+            c.customer_id,
+            c.customer_feature,
+            c.name,
+            c.nickname,
+            c.sex,
+            c.phone_number,
+            c.email,
+            c.birth,
+            c.job,
+            c.weight,
+            c.profile_img,
+            c.personal_color,
+            c.out_date,
+            c.out_comment,
+            c.note,
+            c.register_root,
+            c.recommend_id,
+            c.recent_access_ip,
+            c.pw_modify_date,
+            c.pw,
+            c.provider_id,
+            c.allocated_account_number,
+            c.bank,
+            c.active_flag,
+            c.delete_flag,
+            c.created_datetime,
+            c.connect_at,
+            a.address,
+            a.detail_address-- 주소가 들어있는 컬럼
+        FROM
+            customer c
+                LEFT JOIN
+            address a ON c.customer_id = a.customer_id  -- 'address' 테이블과 'customer' 테이블을 조인
+        WHERE
+            c.customer_id = #{customerId}
+    </select>
 
 </mapper>

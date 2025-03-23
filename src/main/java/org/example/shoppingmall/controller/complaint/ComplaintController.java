@@ -60,13 +60,12 @@ public class ComplaintController {
     //수정버튼으로 이동 후 수정하고 나서 complaint/list로 이동
     @PostMapping("/complaint/update")
     public String updateComplaint(@RequestParam("complaintId") String complaintId,
-                                  @RequestParam("complaintType") String complaintType,
                                   @RequestParam("complaintTitle") String complaintTitle,
                                   @RequestParam("complaintText") String complaintText,
                                   @RequestParam("pickupAddress") String pickupAddress) {
 
         // 수정된 데이터를 저장하는 서비스 호출
-        complaintService.updateComplaint(complaintId, complaintType, complaintTitle, complaintText, pickupAddress);
+        complaintService.updateComplaint(complaintId, complaintTitle, complaintText, pickupAddress);
 
         return "redirect:/complaint/list"; // 수정 후 목록 페이지로 이동
     }

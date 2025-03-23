@@ -25,26 +25,49 @@ public class ComplaintService {
         return complaintRepository.findAllComplaints();
     }
 
-    // 숫자로만 이루어진 UUID 생성 메서드
-    private String generateNumericUUID() {
-        String uuid = UUID.randomUUID().toString().replaceAll("[^0-9]", ""); // 숫자만 남기기
-        return uuid.substring(0, 8); // 길이 : 8자리
+    // UUID 생성 메서드
+    private String createNumericUUID(String complaintType) {
+
+        //유형따라 다른 접두사 추가
+        String typeCode ="";
+
+        switch (complaintType.toLowerCase()) {
+            case "cancel":
+                typeCode = "CA";
+                break;
+            case "refund":
+                typeCode = "RE";
+                break;
+            case "exchange":
+                typeCode = "EX";
+                break;
+        }
+
+        //숫자만 포함
+        String uuid = UUID.randomUUID().toString().replaceAll("[^0-9]", "");
+        // 8자리 숫자만 가져오기
+        String shortUUID = uuid.substring(0, 8);
+
+        return typeCode + "-" + shortUUID;
+    }
+
+    // 배송비 설정 메서드 (취소 0원, 환불-교환 5000원)
+    private double applyShippingPrice(String complaintType) {
+        if ("refund".equals(complaintType) || "exchange".equals(complaintType)) {
+            return 5000;
+        }
+        return 0;
     }
     
     //민원 저장
     public void saveComplaint(String complaintType, String complaintTitle, String complaintText,String pickupAddress) {
         // 숫자로만 이루어진 complaint_id 생성
-        String complaintId = generateNumericUUID();
+        String complaintId = createNumericUUID(complaintType);
 
-        // 현재 시간을 request_datetime에 넣기 위해 LocalDateTime 사용
+        // 현재 시간을 request_datetime 으로 넣기 위해 LocalDateTime 사용
         LocalDateTime currentDateTime = LocalDateTime.now();
 
-        // 배송비 설정 (취소 = 0원, 환불/교환 = 5000원)
-        double shippingPrice = 0;
-        if ("refund".equals(complaintType) || "exchange".equals(complaintType)) {
-            shippingPrice = 5000;
-        }
-
+        double shippingPrice = applyShippingPrice(complaintType);
 
         // ComplaintDto 객체에 값 설정
         ComplaintDto complaintDto = new ComplaintDto();
@@ -66,21 +89,13 @@ public class ComplaintService {
     }
 
     //민원 수정 메서드
-    public void updateComplaint(String complaintId, String complaintType, String complaintTitle, String complaintText, String pickupAddress) {
-        // 배송비 설정 (취소 = 0원, 환불/교환 = 5000원)
-        double shippingPrice = 0;
-        if ("refund".equals(complaintType) || "exchange".equals(complaintType)) {
-            shippingPrice = 5000;
-        }
+    public void updateComplaint(String complaintId, String complaintTitle, String complaintText, String pickupAddress) {
 
         ComplaintDto complaintDto = new ComplaintDto();
         complaintDto.setComplaintId(complaintId);
-        complaintDto.setComplaintTypeId(complaintType);
         complaintDto.setReason(complaintTitle);
         complaintDto.setPickupAddress(pickupAddress);
         complaintDto.setDescription(complaintText);
-        complaintDto.setShippingPrice(shippingPrice);
-
 
         // Repository를 통해 데이터 업데이트
         complaintRepository.updateComplaint(complaintDto);

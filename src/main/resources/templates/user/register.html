@@ -207,9 +207,9 @@
             phoneNumber,
             birth,
             zipCode,
-            recommendId: recommendId || null,
-            address,
-            detailAddress
+            recommendId: recommendId || null, // 추천인은 nullable
+            address: address,
+            detailAddress : detailAddress
         };
 
         axios.post('/user/register', data)

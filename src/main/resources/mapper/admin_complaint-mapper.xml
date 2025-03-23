@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 고객 민원 조회 -->
+<mapper namespace="org.example.shoppingmall.repository.complaint.AdminComplaintRepository">
+
+    <select id="findCustomerComplaints" resultType="org.example.shoppingmall.dto.complaint.ComplaintDto">
+        SELECT
+            *
+        FROM  complaint
+        ORDER BY request_datetime ASC
+    </select>
+
+    <select id="findCustomerComplaintById" resultType="org.example.shoppingmall.dto.complaint.ComplaintDto">
+        SELECT
+            *
+        FROM complaint
+        WHERE complaint_id = #{complaintId}
+    </select>
+
+    <update id="responseCustomerComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
+        UPDATE complaint
+        SET
+        received_datetime = #{receivedDatetime},
+        comment = #{comment}
+        WHERE complaint_id = #{complaintId}
+    </update>
+
+    <delete id="deleteCustomerComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
+        DELETE FROM complaint WHERE complaint_id = #{complaintId}
+    </delete>
+
+</mapper>
