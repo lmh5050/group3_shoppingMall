@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>배송 정보</title>
+
+</head>
+<body>
+
+<div th:each="shipping : ${shippingList}" class="shipping-info">
+    <div>
+        <label>배송번호:</label>
+        <span th:text="${shipping.shippingId}">배송번호</span>
+    </div>
+    <div>
+        <label>주문상세번호:</label>
+        <span th:text="${shipping.orderDetailId}">주문상세번호</span>
+    </div>
+    <div>
+        <label>배송사번호:</label>
+        <span th:text="${shipping.shippingCompanyId}">배송사번호</span>
+    </div>
+    <div>
+        <label>운송장번호:</label>
+        <span th:text="${shipping.trackingNumber}">운송장번호</span>
+    </div>
+    <div>
+        <label>배송상태:</label>
+        <span th:text="${shipping.status}">배송상태</span>
+    </div>
+    <div>
+        <label>배송지주소:</label>
+        <span th:text="${shipping.address}">배송지주소</span>
+    </div>
+    <div>
+        <label>배송일시:</label>
+        <span th:text="${shipping.shippingDatetime}">배송일시</span>
+    </div>
+    <div>
+        <label>배송 예정일시:</label>
+        <span th:text="${shipping.expectedDatetime}">배송 예정일시</span>
+    </div>
+    <div>
+        <label>배송 완료 일시:</label>
+        <span th:text="${shipping.endDatetime}">배송 완료 일시</span>
+    </div>
+    <div>
+        <label>공급사:</label>
+        <span th:text="${shipping.supplier}">공급사</span>
+    </div>
+    <div>
+        <label>비고:</label>
+        <span th:text="${shipping.note}">비고</span>
+    </div>
+    <div>
+        <label>지연사유:</label>
+        <span th:text="${shipping.delayReason}">지연사유</span>
+    </div>
+    <div>
+        <label>설명:</label>
+        <span th:text="${shipping.description}">설명</span>
+    </div>
+    <div>
+        <label>배송비:</label>
+        <span th:text="${shipping.shippingPrice}">배송비</span>
+    </div>
+    <div>
+        <label>지역:</label>
+        <span th:text="${shipping.region}">지역</span>
+    </div>
+    <div>
+        <label>(수거)업체기사명:</label>
+        <span th:text="${shipping.deliveryName}">(수거)업체기사명</span>
+    </div>
+    <div>
+        <label>(수거)업체기사님번호:</label>
+        <span th:text="${shipping.deliveryNumber}">(수거)업체기사님번호</span>
+    </div>
+    <div>
+        <label>업체수거일시:</label>
+        <span th:text="${shipping.deliveryDatetime}">업체수거일시</span>
+    </div>
+    <div>
+        <label>반품지주소:</label>
+        <span th:text="${shipping.returnAddress}">반품지주소</span>
+    </div>
+    <div>
+        <label>반품지전화번호:</label>
+        <span th:text="${shipping.returnNumber}">반품지전화번호</span>
+    </div>
+    <div>
+        <label>반품지:</label>
+        <span th:text="${shipping.returnName}">반품지</span>
+    </div>
+    <div>
+        <label>생성일:</label>
+        <span th:text="${shipping.createdAt}">생성일</span>
+    </div>
+    <div>
+        <label>변경일:</label>
+        <span th:text="${shipping.updatedAt}">변경일</span>
+    </div>
+</div>
+
+<!-- 버튼 추가 -->
+<div>
+    <head>
+
+    <button class="btn" onclick="location.href='/shipping/list'">목록</button>
+    <button class="btn" onclick="location.href='/update/{{shipping.shippingId}}'">수정</button>
+</div>
+</body>
+</html>
