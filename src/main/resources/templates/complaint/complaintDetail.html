@@ -23,6 +23,7 @@
         <h2>민원 상세</h2>
         <p><strong>민원 아이디:</strong> <span th:text="${complaint.complaintId}"></span></p>
         <p><strong>민원 유형:</strong> <span th:text="${complaint.complaintTypeId}"></span></p>
+        <p><strong>민원 상태:</strong> <span th:text="${complaint.status}"></span></p>
         <p><strong>주문 상세 아이디:</strong> <span th:text="${complaint.orderDetailId}"></span></p>
         <!-- 회수지, 배송지 null or 빈 문자열이면 안보이게 -->
         <p th:if="${complaint.pickupAddress != null && complaint.pickupAddress != ''}">
