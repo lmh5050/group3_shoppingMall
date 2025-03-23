@@ -16,8 +16,12 @@ public class ComplaintService {
     @Autowired
     private ComplaintRepository complaintRepository;
 
-    public ComplaintService(ComplaintRepository complaintRepository) {
+    @Autowired
+    private ComplaintStatusService complaintStatusService;
+
+    public ComplaintService(ComplaintRepository complaintRepository, ComplaintStatusService complaintStatusService) {
         this.complaintRepository = complaintRepository;
+        this.complaintStatusService = complaintStatusService;
     }
 
     // 모든 complaint 목록 조회
@@ -58,7 +62,8 @@ public class ComplaintService {
         }
         return 0;
     }
-    
+
+
     //민원 저장
     public void saveComplaint(String complaintType, String complaintTitle, String complaintText,String pickupAddress) {
         // 숫자로만 이루어진 complaint_id 생성
@@ -68,6 +73,8 @@ public class ComplaintService {
         LocalDateTime currentDateTime = LocalDateTime.now();
 
         double shippingPrice = applyShippingPrice(complaintType);
+        
+        String status = complaintStatusService.applyComplaintStatusToRequest(complaintType);
 
         // ComplaintDto 객체에 값 설정
         ComplaintDto complaintDto = new ComplaintDto();
@@ -75,6 +82,7 @@ public class ComplaintService {
         complaintDto.setComplaintTypeId(complaintType);
         complaintDto.setReason(complaintTitle);     // complaintTitle을 reason에 설정
         complaintDto.setPickupAddress(pickupAddress);
+        complaintDto.setStatus(status);
         complaintDto.setDescription(complaintText); // complaintText를 description에 설정
         complaintDto.setRequestDatetime(Timestamp.valueOf(currentDateTime)); // 현재 시간 넣기
         complaintDto.setShippingPrice(shippingPrice);
@@ -101,10 +109,17 @@ public class ComplaintService {
         complaintRepository.updateComplaint(complaintDto);
     }
 
-    //민원 삭제 메서드
-    public void deleteComplaint(String complaintId) {
+    //민원 삭제 플래그 활성화 메서드
+    public void deleteComplaint(String complaintId, String complaintType) {
+        //deleteFlag 활성화 변수
+        Byte onDeleteFlag = 1;
+
+        String status = complaintStatusService.applyComplaintStatusToDelete(complaintType);
+
         ComplaintDto complaintDto = new ComplaintDto();
         complaintDto.setComplaintId(complaintId);
+        complaintDto.setDeleteFlag(onDeleteFlag);
+        complaintDto.setStatus(status);
 
         complaintRepository.deleteComplaint(complaintDto);
     }

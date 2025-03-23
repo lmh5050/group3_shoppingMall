@@ -21,13 +21,17 @@
     <update id="responseCustomerComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
         UPDATE complaint
         SET
-        received_datetime = #{receivedDatetime},
+        status = #{status},
+        end_datetime = #{endDatetime},
         comment = #{comment}
         WHERE complaint_id = #{complaintId}
     </update>
 
-    <delete id="deleteCustomerComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
-        DELETE FROM complaint WHERE complaint_id = #{complaintId}
-    </delete>
+    <update id="deleteCustomerComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
+        UPDATE complaint
+        SET
+            delete_flag = #{deleteFlag}
+        WHERE complaint_id = #{complaintId}
+    </update>
 
 </mapper>
