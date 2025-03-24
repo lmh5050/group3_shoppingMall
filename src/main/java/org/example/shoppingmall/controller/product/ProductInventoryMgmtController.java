@@ -1,14 +1,15 @@
 package org.example.shoppingmall.controller.product;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.example.shoppingmall.dto.product.ProductDto;
+import org.example.shoppingmall.dto.product.ProductStatusDto;
 import org.example.shoppingmall.service.CodeDetailService;
 import org.example.shoppingmall.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
@@ -34,6 +35,17 @@ public class ProductInventoryMgmtController {
 
         return "/product/Product_inventory_mgmt";
     }
+
+//    관리자 - 관리자가 상품의 진열 상태를 변경할 때
+    @PostMapping("/productInventoryMgmt")
+    @ResponseBody
+    public ResponseEntity<Boolean> changeProductStatus(
+            @RequestBody ProductStatusDto productStatusDto, Model model) {
+        // 상품의 상태를 변경
+        productService.setProductStatus(productStatusDto.getProductId(), productStatusDto.getSelectedOption());
+        return ResponseEntity.ok(true);
+    }
+
 
 //    관리자 - 상품 정보 수정 화면
     @GetMapping("/productInventoryMgmt/updateProductDetail")

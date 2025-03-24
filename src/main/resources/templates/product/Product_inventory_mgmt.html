@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>관리자 - 상품 제고 관리</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <!--<h1 th:text="${role}">관리자</h1>-->
@@ -36,14 +37,19 @@
                         </div>
                         <!-- Product actions-->
                         <div >
-                            <select>
-                                <option>상품 진열 상태</option>
-                                <option>진열</option>
-                                <option>진열 중지</option>
-                            </select>
-                            <button type="button">
-                                수정 완료
-                            </button>
+                            <form>
+                                <select>
+                                    <option th:text="${product.getStatus()}">상품 진열 상태</option>
+                                    <option id="display" th:if="${!product.getStatus().equals('display')}">display</option>
+                                    <option id="stop-display" th:if="${!product.getStatus().equals('stop-display')}">stop-display</option>
+                                    <option id="sold-out" th:if="${!product.getStatus().equals('sold-out')}">sold-out</option>
+                                </select>
+                                <button type="button"
+                                        th:attr="data-id=${product.productId}"
+                                        onclick="return changeProductDisplayStatus(this)">
+                                    상태 변경
+                                </button>
+                            </form>
                             <!--   상품 정보 수정  -->
                             <div >
                                 <a  th:href="@{'/manager/productInventoryMgmt/updateProductDetail?prdId=' + ${product.getProductId()}}">상품 정보 수정</a>
@@ -63,6 +69,48 @@
 <!--  새로운 상품 추가하기 위해 이동하는 기능  -->
     function addNewProduct(){
 
+    }
+
+//     상품의 진열 상태를 변경하는 기능
+    function changeProductDisplayStatus(button){
+        const form = button.closest('form'); // 버튼이 속한 form 찾기
+        const select = form.querySelector("select"); // form 안의 select 요소
+        const selectedOption = select.options[select.selectedIndex]; // 선택된 option
+        const selectedText = selectedOption.text; // 예: "진열"
+        const productId = button.getAttribute("data-id");
+
+        if (selectedText === "상품 진열 상태"){
+            alert("변경할 상태를 선택해 주세요");
+            return false;
+        }
+
+        const confirmMessage = `상품 ID ${productId}의 진열 상태를 [${selectedText}]로 변경하시겠습니까?`;
+        const confirmed = confirm(confirmMessage);
+
+        if (confirmed) {
+            axios({
+                method: "post",
+                url: "/manager/productInventoryMgmt",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: {
+                    productId : productId,
+                    selectedOption : selectedOption.value
+                }
+            }).then(res => {
+                console.log("res", res);
+                if (res.data === true) {
+                    alert("변경 성공");
+
+                } else {
+                    alert("변경 실패");
+                }
+            }).catch(err => {
+                console.log("err", err);
+                alert("서버 오류 발생");
+            });
+        }
     }
 </script>
 </body>

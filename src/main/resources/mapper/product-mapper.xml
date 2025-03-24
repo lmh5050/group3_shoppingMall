@@ -61,6 +61,13 @@
         </foreach>
         ORDER BY ${order} DESC
     </select>
+
+<!--  상품의 진열 상태를 변경  -->
+    <update id="setProductStatus">
+        UPDATE product
+        SET status = #{status}
+        WHERE product_id = #{productId}
+    </update>
 </mapper>
 
 

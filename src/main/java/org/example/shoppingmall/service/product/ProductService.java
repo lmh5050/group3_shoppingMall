@@ -95,6 +95,25 @@ public class ProductService {
         }
         return productIdList;
     }
+
+    // 상품의 상태 변경
+    public void setProductStatus(String productId, String status) {
+        // 유효성 검사
+        if(!isValidStatus(productId, status)){
+            return;
+        }
+        productRepository.setProductStatus(productId, status);
+    }
+
+    private boolean isValidStatus(String productId, String status) {
+        if(status == null || status.equals("")){
+            return false;
+        }
+        return switch (status) {
+            case "display", "stop-display", "sold-out" -> true;
+            default -> false;
+        };
+    }
 }
 
 
