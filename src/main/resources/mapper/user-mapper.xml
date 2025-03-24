@@ -78,6 +78,7 @@
             c.birth,
             c.job,
             c.weight,
+            c.height,
             c.profile_img,
             c.personal_color,
             c.out_date,
@@ -105,4 +106,78 @@
             c.customer_id = #{customerId}
     </select>
 
+    <update id="modifyUserInfo" parameterType="UserInfoDto">
+        UPDATE customer
+        <set>
+            <if test="customerFeature != null and customerFeature != ''">
+                customer_feature = #{customerFeature},
+            </if>
+            <if test="sex != null and sex != ''">
+                sex = #{sex},
+            </if>
+            <if test="phoneNumber != null and phoneNumber != ''">
+                phone_number = #{phoneNumber},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="birth != null and birth != ''">
+                birth = #{birth},
+            </if>
+            <if test="job != null and job != ''">
+                job = #{job},
+            </if>
+            <if test="weight != null">
+                weight = #{weight},
+            </if>
+            <if test="height != null">
+                height = #{height},
+            </if>
+            <if test="personalColor != null and personalColor != ''">
+                personal_color = #{personalColor},
+            </if>
+            <if test="outDate != null">
+                out_date = #{outDate},
+            </if>
+            <if test="outComment != null and outComment != ''">
+                out_comment = #{outComment},
+            </if>
+            <if test="note != null and note != ''">
+                note = #{note},
+            </if>
+            <if test="registerRoot != null and registerRoot != ''">
+                register_root = #{registerRoot},
+            </if>
+            <if test="recommendId != null and recommendId != ''">
+                recommend_id = #{recommendId},
+            </if>
+            <if test="recentAccessIp != null and recentAccessIp != ''">
+                recent_access_ip = #{recentAccessIp},
+            </if>
+            <if test="pwModifyDate != null">
+                pw_modify_date = #{pwModifyDate},
+            </if>
+            <if test="providerId != null and providerId != ''">
+                provider_id = #{providerId},
+            </if>
+            <if test="allocatedAccountNumber != null and allocatedAccountNumber != ''">
+                allocated_account_number = #{allocatedAccountNumber},
+            </if>
+            <if test="bank != null and bank != ''">
+                bank = #{bank},
+            </if>
+        </set>
+        WHERE customer_id = #{customerId}
+    </update>
+
+
+
+
+    <update id="uploadProfileImage" parameterType="UserInfoDto">
+        UPDATE customer
+        SET
+            profile_img = #{profileImg}
+            WHERE
+                customer_id = #{customerId}
+    </update>
 </mapper>

@@ -88,10 +88,20 @@ public class LoginService {
 
     public UserInfoDto getCustomerData(String customerId) {
         UserInfoDto customerData = userRepository.getUserData(customerId);
-        System.out.println(customerData.getAddress());
-        // 주소와 상세 주소 사이에 공백을 추가
-        customerData.setAddress(customerData.getAddress() + " " + customerData.getDetailAddress());
         return customerData;
     }
+
+    public void uploadProfileImage(UserInfoDto filePath) {
+        userRepository.uploadProfileImage(filePath);
+        return ;
+    }
+
+    public void modifyUserInfo(UserInfoDto userInfo) {
+        userInfo.sanitize();
+        userRepository.modifyUserInfo(userInfo);
+        return ;
+    }
+
+
 }
 

@@ -7,19 +7,29 @@ import java.sql.Timestamp;
 
 @Data
 public class OrderDetailDto {
-    private Long orderId;          // 주문번호
-    private Integer serialNumber;     // 주문일련번호
-    private String productId;        // 상품번호
-    private String productName;      // 상품명
-    private String size;             // 사이즈
-    private String color;            // 색상
-    private Integer quantity;        // 수량
-    private BigDecimal price;        // 단가
-    private BigDecimal discountAmount;  // 상품 할인 금액
-    private BigDecimal productPrice;    // 상품 가격(단가-상품할인)
-    private BigDecimal productTotalPrice; // 상품 총 가격(상품가격*수량)
-    private Integer status;          // 주문 상태
-    private Boolean activeFlag;      // 활성 여부
-    private Timestamp createdAt;     // 생성일시
-    private Timestamp updatedAt;     // 수정일시
+    private Timestamp createdAt;
+    private Long orderId;
+    private String orderStatus;
+    private BigDecimal totalOrderAmount; //전체상품총금액
+    private BigDecimal totalDiscountAmount; //상품총할인
+    private BigDecimal discountAmount; //결제할인
+    private BigDecimal totalAmount; //최종결제금액
+    private String bankDeposit;
+    private String accountDeposit;
+    private String name; //결제수단명
+    private String basicAddress;
+    private String detailAddress;
+    private String receivePeople;
+    private String receivePhoneNumber;
+    private BigDecimal shippingPrice; //배송비
+    private Long serialNumber;
+    private String productName;
+    private String size;
+    private String color;
+    private Integer quantity;
+    private String productTotalPrice;
+    private String productId;
+    public String getImageUrl() {
+        return "/images/product/" + this.productId + ".png";
+    }
 }

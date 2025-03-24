@@ -23,9 +23,22 @@
             margin-top: 50px;
         }
         .input-group {
+            display: flex;
+            align-items: center; /* 세로 가운데 정렬 */
+            justify-content: center; /* 가로 가운데 정렬 */
             margin-bottom: 20px;
         }
+
+        .input-group label {
+            width: 150px; /* 라벨의 고정 너비 설정 (필요에 따라 조정) */
+            text-align: right; /* 텍스트 오른쪽 정렬 */
+            margin-right: 10px; /* 입력 필드와의 간격 */
+        }
+
         .input-group input {
+            flex: 1; /* 남은 공간을 input이 채우게 함 */
+            min-width: 250px; /* 입력 필드 최소 너비 설정 */
+            padding: 10px;
             border-radius: 0.25rem;
         }
         .section-title {
@@ -52,9 +65,12 @@
         }
         .profile-section {
             background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 50px; /* 내부 여백을 늘림 */
+            border-radius: 16px; /* 모서리 둥글기 조정 */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 80%; /* 너비를 더 크게 설정 */
+            max-width: 900px; /* 최대 너비 설정 */
+            margin: 0 auto; /* 가운데 정렬 */
         }
         .profile-section input {
             font-size: 16px;
@@ -67,6 +83,24 @@
             font-weight: bold;
             color: #007bff;
         }
+        /* 이미지 미리보기 스타일 */
+        .image-preview {
+            margin-top: 10px;
+            max-width: 200px;
+            max-height: 200px;
+            object-fit: cover;
+            display: block; /* 이미지를 블록 요소로 설정 */
+            margin-left: auto; /* 왼쪽 자동 마진 */
+            margin-right: auto; /* 오른쪽 자동 마진 */
+            margin-bottom : 20px;
+        }
+
+        .small-input {
+            width: 100%; /* 입력 필드가 너무 좁아지지 않게 설정 */
+            max-width: 400px; /* 최대 너비 설정 */
+            padding: 6px 10px; /* 패딩 조정 */
+            font-size: 14px; /* 폰트 크기 조정 */
+        }
     </style>
 </head>
 <body>
@@ -75,67 +109,101 @@
 
 <section class="py-5">
     <div class="container">
-        <div class="profile-header text-center">
-            <h2>My Page</h2>
-            <p>Update your profile information</p>
-        </div>
         <div class="profile-section">
-            <!-- 아이디 입력 + 중복 확인 버튼 -->
+            <!-- 이미지 미리보기 -->
+            <img id="imagePreview" class="image-preview" src="" alt="프로필 이미지 미리보기" style="display:none;" />
+            <!-- 이미지 등록 입력 필드 추가 -->
             <div class="input-group">
-                <label for="customerId" class="form-label">아이디</label>
-                <input class="form-control" type="text" id="customerId" placeholder="아이디" />
+                <label for="profileImage" class="form-label">프로필 이미지</label> : &nbsp;
+                <input class="form-control" type="file" id="profileImage" onchange="autoUploadFile(event) , previewImage(event)" /> <!-- 파일 선택 시 자동 업로드 -->
+            </div>
+            <!-- 기존 필드들 -->
+            <div class="input-group">
+                <label for="customerId" class="form-label">아이디</label> : &nbsp;
+                <input class="form-control" type="text" id="customerId" placeholder="아이디" disabled/>
             </div>
             <div class="input-group">
-                <label for="height" class="form-label">키</label>
+                <label for="height" class="form-label">키</label> : &nbsp;
                 <input class="form-control" type="text" id="height" placeholder="키" />
             </div>
             <div class="input-group">
-                <label for="pw" class="form-label">비밀번호</label>
-                <input class="form-control" type="password" id="pw" placeholder="비밀번호" />
-            </div>
-            <div class="input-group">
-                <label for="weight" class="form-label">몸무게</label>
+                <label for="weight" class="form-label">몸무게</label> : &nbsp;
                 <input class="form-control" type="text" id="weight" placeholder="몸무게" />
             </div>
             <div class="input-group">
-                <label for="email" class="form-label">이메일</label>
+                <label for="email" class="form-label">이메일</label> : &nbsp;
                 <input class="form-control" type="email" id="email" placeholder="이메일" />
             </div>
             <div class="input-group">
-                <label for="personalColor" class="form-label">퍼스널 컬러</label>
+                <label for="personalColor" class="form-label">퍼스널 컬러</label> : &nbsp;
                 <input class="form-control" type="text" id="personalColor" placeholder="퍼스널 컬러" />
             </div>
             <div class="input-group">
-                <label for="address" class="form-label">주소</label>
-                <input class="form-control" type="text" id="address" placeholder="주소" />
-            </div>
-            <div class="input-group">
-                <label for="registerRoot" class="form-label">가입 경로</label>
+                <label for="registerRoot" class="form-label">가입 경로</label> : &nbsp;
                 <input class="form-control" type="text" id="registerRoot" placeholder="가입 경로" />
             </div>
             <div class="input-group">
-                <label for="phoneNumber" class="form-label">전화번호</label>
+                <label for="phoneNumber" class="form-label">전화번호</label> : &nbsp;
                 <input class="form-control" type="text" id="phoneNumber" placeholder="전화번호" />
             </div>
             <div class="input-group">
-                <label for="shippingAddress" class="form-label">배송지 주소</label>
-                <input class="form-control" type="text" id="shippingAddress" placeholder="배송지 주소" />
+                <label for="address" class="form-label">주소</label> : &nbsp;
+                <input id="address" class="form-control" type="text" placeholder="배송지 주소" disabled />
             </div>
             <div class="input-group">
-                <label for="recommendId" class="form-label">추천인</label>
+                <label for="detailAddress" class="form-label">상세 주소</label> : &nbsp;
+                <input id="detailAddress" class="form-control" type="text" placeholder="상세 주소" disabled />
+            </div>
+            <div class="input-group">
+                <label for="recommendId" class="form-label">추천인</label> : &nbsp;
                 <input class="form-control" type="text" id="recommendId" placeholder="추천인" />
             </div>
-            <div class="input-group">
-                <label for="recentAccessIp" class="form-label">최근 접속 아이피</label>
-                <input class="form-control" type="text" id="recentAccessIp" placeholder="최근 접속 아이피" />
-            </div>
-
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addressModal">
+                배송지 관리
+            </button>
             <div class="d-flex justify-content-between mt-4">
-                <button class="btn btn-secondary">취소</button>
-                <button class="btn btn-primary">수정 완료</button>
+                <button class="btn btn-primary" onclick="registerModifySubmit()">수정 완료</button>
+            </div>
+            <!-- 배송지 관리 모달 -->
+            <!-- 배송지 관리 모달 -->
+            <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg"> <!-- modal-xl → modal-lg -->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addressModalLabel">배송지 관리</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addressForm" th:action="@{/address/save}" method="post">
+                                <div class="mb-3">
+                                    <label for="address" class="form-label">주소</label>
+                                    <input type="text" class="form-control small-input" id="address" name="address" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="detailAddress" class="form-label">상세 주소</label>
+                                    <input type="text" class="form-control small-input" id="detailAddress" name="detailAddress" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="zipCode" class="form-label">우편번호</label>
+                                    <input type="text" class="form-control small-input" id="zipCode" name="zipCode" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="receivePeople" class="form-label">받는 사람</label>
+                                    <input type="text" class="form-control small-input" id="receivePeople" name="receivePeople" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="receivePhoneNumber" class="form-label">연락처</label>
+                                    <input type="text" class="form-control small-input" id="receivePhoneNumber" name="receivePhoneNumber" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">저장</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
 </section>
 
 <footer>
@@ -148,32 +216,181 @@
 <script th:src="@{/js/homejs/homeScripts.js}"></script>
 
 <script>
+    // 이미지 미리보기 함수
+    function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function() {
+            var imagePreview = document.getElementById('imagePreview');
+            imagePreview.style.display = 'block'; // 이미지를 표시
+            imagePreview.src = reader.result;  // 읽어들인 이미지 데이터를 표시
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         axios.get('/user/mypage/data')  // 서버에서 사용자 데이터를 가져옵니다.
             .then(function (response) {
                 console.log('Data fetched:', response.data);
-
                 var data = response.data; // 응답 데이터
-
+                var fullImageUrl = '/images/user/' + data.profileImg;  // 상대 경로를 절대 경로로 변경
+                // 이미지 URL이 있으면 이미지 미리보기 업데이트
+                var imagePreview = document.getElementById('imagePreview');
+                if (data.profileImg) {
+                    imagePreview.style.display = 'block'; // 이미지를 표시
+                    imagePreview.src = fullImageUrl;  // 이미지 URL 설정
+                }
                 // 각 input 필드에 데이터 바인딩
                 document.getElementById('customerId').value = data.customerId || '';
                 document.getElementById('height').value = data.height || '';
-                document.getElementById('pw').value = data.pw || '';
                 document.getElementById('weight').value = data.weight || '';
                 document.getElementById('email').value = data.email || '';
                 document.getElementById('personalColor').value = data.personalColor || '';
                 document.getElementById('address').value = data.address || '';
+                document.getElementById('detailAddress').value = data.detailAddress || '';
                 document.getElementById('registerRoot').value = data.registerRoot || '';
                 document.getElementById('phoneNumber').value = data.phoneNumber || '';
-                document.getElementById('shippingAddress').value = data.shippingAddress || '';
                 document.getElementById('recommendId').value = data.recommendId || '';
-                document.getElementById('recentAccessIp').value = data.recentAccessIp || '';
                 // 다른 필드들도 필요에 따라 추가해주세요
             })
             .catch(function (error) {
                 console.error('Error fetching data:', error);
             });
     });
+
+    const registerModifySubmit = () => {
+        const customerId = document.querySelector('#customerId').value.trim();
+        const height = document.querySelector('#height').value.trim();
+        const weight = document.querySelector('#weight').value.trim();
+        const email = document.querySelector('#email').value.trim();
+        const personalColor = document.querySelector('#personalColor').value.trim();
+        const address = document.querySelector('#address').value.trim();
+        const registerRoot = document.querySelector('#registerRoot').value.trim();
+        const phoneNumber = document.querySelector('#phoneNumber').value.trim();
+        const recommendId = document.querySelector('#recommendId').value.trim();
+
+
+        // JSON 객체로 데이터 준비
+        const requestData = {
+            customerId: customerId,
+            height: height,
+            weight: weight,
+            email: email,
+            personalColor: personalColor,
+            address: address,
+            registerRoot: registerRoot,
+            phoneNumber: phoneNumber,
+            recommendId: recommendId || null // 추천인은 nullable
+        };
+
+        // 데이터 서버로 전송 (JSON 형식)
+        axios.post('/user/modify', requestData, {
+            headers: {
+                'Content-Type': 'application/json' // JSON 형식으로 요청 전송
+            }
+        })
+            .then(res => {
+                if (res.data === 'success') {
+                    alert('회원 정보 수정이 완료되었습니다.');
+                    window.location.href = '/user/mypage'; // 수정 후 마이페이지로 리다이렉트
+                } else {
+                    alert('일단 됬습니다.정보 수정에 실패하였습니다.');
+                    window.location.href = '/user/mypage'; // 수정 후 마이페이지로 리다이렉트
+                }
+            })
+            .catch(err => {
+                console.error('정보 수정 실패:', err);
+                alert('정보 수정 중 오류가 발생했습니다.');
+            });
+    };
+
+
+    // 이미지 파일 선택 시 서버로 즉시 업로드하는 함수
+    function autoUploadFile(event) {
+        const file = event.target.files[0]; // 선택된 파일 가져오기
+
+        if (file) {
+            const formData = new FormData();
+            formData.append('profileImage', file);
+
+            // 서버로 파일 업로드 요청
+            axios.post('/user/uploadProfileImage', formData)
+                .then(response => {
+                    if (response.data === 'success') {
+                        alert('프로필 이미지가 업로드되었습니다.');
+                        // 미리보기 이미지 업데이트
+                        const imagePreview = document.getElementById('imagePreview');
+                        imagePreview.src = URL.createObjectURL(file);  // 미리보기 이미지 업데이트
+                        imagePreview.style.display = 'block';  // 이미지 미리보기 표시
+                    } else {
+                        alert('이미지 업로드 실패');
+                    }
+                })
+                .catch(error => {
+                    console.error('이미지 업로드 오류:', error);
+                    alert('이미지 업로드 중 오류가 발생했습니다.');
+                });
+        } else {
+            alert('업로드할 파일을 선택해주세요.');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const addressModal = document.getElementById('addressModal');
+        const addressListContainer = document.getElementById('addressList');
+
+        addressModal.addEventListener('show.bs.modal', function () {
+            axios.get('/user/address')
+                .then(response => {
+                    console.log('Address data fetched:', response.data);
+                    const data = response.data;
+
+                    // 기존 리스트 초기화
+                    addressListContainer.innerHTML = '';
+
+                    data.forEach(address => {
+                        // 동적으로 HTML 생성
+                        const addressItem = `
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h5 class="card-title">${address.receivePeople} (${address.receivePhoneNumber})</h5>
+                                <p class="card-text">
+                                    ${address.address} ${address.detailAddress} (${address.zipCode})
+                                </p>
+                                <button class="btn btn-primary select-btn" data-id="${address.id}">선택</button>
+                            </div>
+                        </div>
+                    `;
+                        addressListContainer.innerHTML += addressItem;
+                    });
+
+                    // 선택 버튼 이벤트 리스너 추가
+                    const selectButtons = document.querySelectorAll('.select-btn');
+                    selectButtons.forEach(button => {
+                        button.addEventListener('click', function () {
+                            const id = this.getAttribute('data-id');
+                            const selectedAddress = data.find(addr => addr.id == id);
+
+                            // 선택된 값 입력 필드에 반영
+                            document.getElementById('address').value = selectedAddress.address;
+                            document.getElementById('detailAddress').value = selectedAddress.detailAddress;
+                            document.getElementById('zipCode').value = selectedAddress.zipCode;
+                            document.getElementById('receivePeople').value = selectedAddress.receivePeople;
+                            document.getElementById('receivePhoneNumber').value = selectedAddress.receivePhoneNumber;
+
+                            // 모달 닫기
+                            const modal = bootstrap.Modal.getInstance(addressModal);
+                            modal.hide();
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching address data:', error);
+                    alert('주소 데이터를 불러오는 중 오류가 발생했습니다.');
+                });
+        });
+    });
+
+
 </script>
 
 </body>
