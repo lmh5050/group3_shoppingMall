@@ -1,21 +1,114 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/Bars.css}">
+<link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">
 <head>
-    <meta charset="UTF-8">
-    <title>orderList</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>주문 목록</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .main-content {
+      width: 50%;
+      margin: auto;
+    }
+    .search-box {
+      margin-bottom: 10px;
+      padding: 5px;
+      width: 100%;
+      font-size: 16px;
+    }
+    .order-group {
+      border: 1px solid #ddd;
+      margin-bottom: 20px;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    .order-header {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .order-items {
+      margin-top: 10px;
+    }
+    .order-item {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+    .order-item img {
+      width: 50px;
+      height: 50px;
+      margin-right: 10px;
+    }
+    .order-actions {
+      margin-top: 10px;
+    }
+    .btn {
+      background-color: #ddd;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      margin-right: 5px;
+    }
+  </style>
+  <script>
+    function searchOrders() {
+      let input = document.getElementById("search").value.toLowerCase();
+      let orderGroups = document.querySelectorAll(".order-group");
+
+      orderGroups.forEach(group => {
+        let text = group.innerText.toLowerCase();
+        if (text.includes(input)) {
+          group.style.display = "";
+        } else {
+          group.style.display = "none";
+        }
+      });
+    }
+  </script>
 </head>
 <body>
-<h3>주문 목록</h3>
+<div class="main-content">
+  <h2>주문 목록</h2>
 
-<th:block th:each="order : ${orders}">
-  <div>
-    <p>주문 ID: <span th:text="${order.orderId}">주문 ID</span></p>
-    <p>주문 날짜: <span th:text="${order.orderDatetime}">주문 날짜</span></p>
-    <p>주문 상태: <span th:text="${order.orderStatus}">주문 상태</span></p>
-    <p>결제 금액: <span th:text="${order.finalAmount}">결제 금액</span>원</p>
-    <a th:href="@{/order/detail/{id}(id=${order.orderId})}">상세 보기</a>
-  </div>
-</th:block>
+  <!-- 검색 입력창 -->
+  <input type="text" id="search" class="search-box" placeholder="주문번호, 상품명" onkeyup="searchOrders()">
 
+  <th:block th:each="entry : ${groupedOrders}">
+    <div class="order-group">
+      <div class="order-header">
+        <span th:text="${#dates.format(entry.value[0].createdAt, 'yyyy. MM. dd')}">2025. 3. 11</span>
+        (주문번호: <span th:text="${entry.value[0].orderId}">9775170</span>)
+        <a th:href="@{/order/detail(orderId=${entry.value[0].orderId})}" class="btn">주문 상세보기</a>
+      </div>
+
+      <div class="order-items">
+        <th:block th:each="order : ${entry.value}">
+          <div class="order-item">
+            <img th:src="@{${order.imageUrl}}" alt="상품 이미지">
+            <div>
+              <p><span th:text="${order.productName}">상품명</span>
+              <span th:text=" ' / ' + ${order.color}">1</span></p>
+              <p><span th:text="${order.size}">1</span>
+              <span th:text="' / '+${order.quantity} +'개'">1</span></p>
+              <p>₩ <span th:text="${#numbers.formatInteger(order.productTotalPrice, 0, 'COMMA')}">100</span></p>
+
+            </div>
+          </div>
+        </th:block>
+      </div>
+
+      <div class="order-actions">
+        <button class="btn">배송조회</button>
+        <button class="btn" onclick="location.href='/complaint'">교환/반품 신청</button>
+        <button class="btn">리뷰 작성하기</button>
+      </div>
+    </div>
+  </th:block>
+</div>
 </body>
 </html>

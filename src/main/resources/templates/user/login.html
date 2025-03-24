@@ -96,9 +96,9 @@
         }).then(res => {
             console.log("res", res);
             if (res.data.status === true) {
+                // 로그인 성공 시 세션에 customerId 저장
+                sessionStorage.setItem('customerId', customerId);
                 alert("로그인 성공");
-
-
                 // 마이페이지로 이동
                 window.location.href = "/user/mypage";
             } else {
@@ -108,8 +108,8 @@
             console.log("err", err);
             alert("서버 오류 발생");
         });
-    console.log(document.querySelector('input[name="username"]').value);
     }
+    console.log(document.querySelector('input[name="username"]').value);
 </script>
 
 </body>

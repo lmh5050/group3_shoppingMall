@@ -6,13 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class PaymentInfoDto {
+public class PaymentOrderDto {
     // 주문 정보
     private Integer orderId;
     private String customerId;
@@ -20,15 +20,5 @@ public class PaymentInfoDto {
     private Integer totalDiscountAmount;
     private Integer totalOrderAmount;
     private Integer totalQuantity;
-    // 주문 상세 정보
-    private List<PaymentOrderDetailDto> orderDetailList;
-
-    // 결제 정보
-    private String paymentMethod;
-    private Integer cardType;
-    private Integer cardInstallment;
-    private Integer cardNumber;
-    private String cashBankName;
-    private Integer cashReceiptType;
-    private Integer cashReceiptNumber;
-}
+    private LocalDateTime orderDatetime;
+} 
