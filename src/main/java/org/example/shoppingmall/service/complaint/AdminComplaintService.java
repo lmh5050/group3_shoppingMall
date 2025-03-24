@@ -30,6 +30,19 @@ public class AdminComplaintService {
         return adminComplaintRepository.findCustomerComplaintById(complaintId);
     }
 
+    // 고객 민원 접수
+    public void receivedCustomerComplaint(String complaintId, String complaintType) {
+        String status = complaintStatusService.applyComplaintStatusToReceived(complaintType);
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        ComplaintDto complaintDto = new ComplaintDto();
+        complaintDto.setComplaintId(complaintId);
+        complaintDto.setStatus(status);
+        complaintDto.setReceivedDatetime(Timestamp.valueOf(currentDateTime));
+
+        adminComplaintRepository.receivedCustomerComplaint(complaintDto);
+    }
 
     //고객 민원 답변
     public void responseCustomerComplaint(String complaintId, String comment, String complaintResponseType, String complaintType) {

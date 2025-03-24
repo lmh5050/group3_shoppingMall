@@ -13,7 +13,12 @@ public interface AdminComplaintRepository {
 
     ComplaintDto findCustomerComplaintById(String complaintId);
 
+    //고객 민원 접수
+    void receivedCustomerComplaint(ComplaintDto complaintDto);
+
+    //고객 민원 답변
     void responseCustomerComplaint(ComplaintDto complaintDto);
 
+    //고객 민원 삭제
     void deleteCustomerComplaint(ComplaintDto complaintDto);
 }
