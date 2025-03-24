@@ -5,6 +5,7 @@ import org.example.shoppingmall.dto.order.*;
 import org.example.shoppingmall.service.order.OrderListService;
 import org.example.shoppingmall.service.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,9 @@ public class OrderController {
                             @RequestParam("productDetailId") List<String> productDetailId,
                             @RequestParam("quantity") List<Integer> quantity,
                             Model model) {
+        //주문번호 표시
+        Long showOrderId = orderService.getOrderId();
+        model.addAttribute("showOrderId", showOrderId);
 
         //기본배송지 가져오기
         AddressDto address = orderService.getDefaultAddress(customerId);
@@ -35,19 +39,32 @@ public class OrderController {
 
 
         //주문상품정보 가져오기
-        List<ProductInfoDto> productInfo = orderService.getProductInfoByProductDetailId(productDetailId, quantity);
+        List<ProductInfoDto> productInfo =
+                orderService.getProductInfoByProductDetailId(productDetailId, quantity);
         model.addAttribute("productInfo", productInfo);
         return "order/orderForm";
 
     }
 
     @PostMapping("/order")
-    public String test(@ModelAttribute("productInfo") ProductInfoDto productInfoDto,
-                       HttpSession session, Model model) {
+    public String showOrder(@ModelAttribute("productInfo") ProductInfoDto productInfoDto,
+                            HttpSession session, Model model) {
+
+        String customerId = (String)session.getAttribute("customerId");
+        model.addAttribute("customerId", customerId);
+        System.out.println("customerId = " + customerId);
+
+        if (customerId == null) {
+            return "redirect:/user/login";
+        }
 
         //주문번호 표시
         Long showOrderId = orderService.getOrderId();
         model.addAttribute("showOrderId", showOrderId);
+
+        //기본배송지 가져오기
+        AddressDto address = orderService.getDefaultAddress(customerId);
+        model.addAttribute("address", address);
 
         //상품정보 표시
         List<String> productDetailId = new ArrayList<>();
@@ -60,17 +77,34 @@ public class OrderController {
                         productDetailId,
                         quantity);
         model.addAttribute("productInfo", productInfo);
-
-
         return "order/orderForm";
     }
 
     //주문목록
-    @RequestMapping(value = "/list", method = {RequestMethod.GET, RequestMethod.POST})
-    public String showOrderList(@RequestParam(value = "customerId", required = false) String customerId,
+    @GetMapping(value = "/list")
+    public String showOrderList(@RequestParam(value = "customerId") String customerId,
                                 Model model) {
+
+        List<OrderListDto> orders = orderListService.getOrderListByCustomerId(customerId);
+
+        // 주문번호별로 그룹화
+        Map<Integer, List<OrderListDto>> groupedOrders = orders.stream()
+                .collect(Collectors.groupingBy(OrderListDto::getOrderId));
+
+        model.addAttribute("groupedOrders", groupedOrders);
+        System.out.println("groupedOrders = " + groupedOrders);
+        return "order/orderList";
+    }
+
+    //주문목록
+    @PostMapping(value = "/list")
+    public String showOrderList(HttpSession session, Model model) {
+        String customerId = (String)session.getAttribute("customerId");
+        model.addAttribute("customerId", customerId);
+        System.out.println("customerId = " + customerId);
+
         if (customerId == null) {
-            return "user/login";
+            return "redirect:/user/login";
         }
 
         List<OrderListDto> orders = orderListService.getOrderListByCustomerId(customerId);
@@ -95,7 +129,15 @@ public class OrderController {
         model.addAttribute("groupedOrderDetails", groupedOrderDetails);
         System.out.println("groupedOrderDetails = " + groupedOrderDetails);
         return "order/orderDetail";
-
-
     }
+
+    @PostMapping("/delete/{orderId}")
+    @ResponseBody
+    public ResponseEntity<String> deleteOrder(@PathVariable Long orderId) {
+        orderListService.deleteOrder(orderId);
+        System.out.println("orderId = " + orderId);
+        return ResponseEntity.ok("삭제 완료");
+    }
+
+
 }

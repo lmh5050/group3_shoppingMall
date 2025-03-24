@@ -9,6 +9,8 @@ import java.util.List;
 @Mapper
 public interface OrderListRepository {
     List<OrderListDto> findOrderListByCustomerId(String customerId);
-   /* OrderDetailDto findOrderDetailByOrderId(Long orderId);*/
     List<OrderDetailDto> findOrderDetailByOrderId(Long orderId);
+
+    void deleteOrder(Long orderId);
+    void deleteShipping(Long orderId);
 }
