@@ -9,14 +9,16 @@ import org.example.shoppingmall.dto.User.UserInfoDto;
 import org.example.shoppingmall.service.login.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import org.example.shoppingmall.dto.User.UserLoginInfoDto;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.example.shoppingmall.service.login.EmailService;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.UUID;
 
 @Controller
 public class UserController {
@@ -123,6 +125,61 @@ public class UserController {
         return result;
     }
 
+    @PostMapping("/user/modify") //회원 정보 수정하는 api
+    @ResponseBody //axios json 이용하기 위해서 responseBody 추가
+    public void modifyUserInfo(@RequestBody UserInfoDto userInfo) {
+
+        // 아이디 확인
+        loginService.modifyUserInfo(userInfo);
+        return ; // 결과 반환
+    }
+
+    @PostMapping("/user/uploadProfileImage")
+    @ResponseBody
+    public String uploadProfileImage(@RequestParam("profileImage") MultipartFile file,
+                                     HttpSession session) {
+        try {
+            // 파일 처리 로직
+            String fileName = file.getOriginalFilename();
+            if (fileName == null) {
+                return "error"; // 파일 이름이 없는 경우 처리
+            }
+
+            // 파일 이름 중복 방지 (예: UUID 사용)
+            String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
+
+            // 절대 경로로 파일을 저장할 경로 설정
+            String uploadDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/User/";
+            File dir = new File(uploadDirectory);
+            if (!dir.exists()) {
+                dir.mkdirs(); // 경로가 없으면 생성
+            }
+
+            // 파일을 해당 경로에 저장
+            File destFile = new File(uploadDirectory, uniqueFileName);
+            file.transferTo(destFile);
+
+            // 세션에서 customerId를 가져오기
+            String customerId = (String) session.getAttribute("customerId");
+            if (customerId == null) {
+                return "error"; // 세션에 customerId가 없는 경우 처리
+            }
+
+            // 사용자 정보에 프로필 이미지 경로 저장
+            UserInfoDto userinfo = new UserInfoDto();
+            userinfo.setProfileImg(uniqueFileName);
+            userinfo.setCustomerId(customerId);
+
+            // 프로필 이미지 업로드 처리
+            loginService.uploadProfileImage(userinfo);
+
+            return "success"; // 업로드 성공 시 반환할 값
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "error"; // 실패 시 반환할 값
+        }
+    }
+
     @PostMapping("/user/emailSend") //이메일 인증 , 디벨롭 필요 api
     @ResponseBody //axios json 이용하기 위해서 responseBody 추가
     public String emailSend(@RequestBody UserEmailDto email, HttpServletResponse response) {
@@ -132,5 +189,7 @@ public class UserController {
         emailService.sendVerificationEmail(email.getEmail());
         return "123"; // 결과 반환
     }
+
+
 
 }

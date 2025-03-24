@@ -15,4 +15,7 @@ public interface UserRepository {
     UserLoginInfoDto userLogin(String CustomerId);
     String getAddressCode(String addressName);
     UserInfoDto getUserData (String customerId);
+    void modifyUserInfo(UserInfoDto userInfoDto);
+    void uploadProfileImage (UserInfoDto userinfo);
+
 }
