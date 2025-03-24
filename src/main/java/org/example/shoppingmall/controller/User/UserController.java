@@ -149,7 +149,7 @@ public class UserController {
             String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
 
             // 절대 경로로 파일을 저장할 경로 설정
-            String uploadDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/User/";
+            String uploadDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/user/";
             File dir = new File(uploadDirectory);
             if (!dir.exists()) {
                 dir.mkdirs(); // 경로가 없으면 생성
@@ -179,6 +179,15 @@ public class UserController {
             return "error"; // 실패 시 반환할 값
         }
     }
+
+    @GetMapping("/user/address/{customerId}") // 유저 주소 불러오는 api
+    @ResponseBody
+    public String getUserAddress(@PathVariable String customerId)
+    {
+        return "user/register";
+    }
+
+
 
     @PostMapping("/user/emailSend") //이메일 인증 , 디벨롭 필요 api
     @ResponseBody //axios json 이용하기 위해서 responseBody 추가
