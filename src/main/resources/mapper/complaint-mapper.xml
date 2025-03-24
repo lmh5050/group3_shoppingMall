@@ -18,7 +18,7 @@
                                complaint_type_id,
                                reason,
                                pickup_address,
-                               stauts,
+                               status,
                                description,
                                request_datetime,
                                shipping_price
@@ -56,8 +56,12 @@
     </update>
 
     <!-- 민원 삭제 쿼리 -->
-    <delete id="deleteComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
-        DELETE FROM complaint WHERE complaint_id = #{complaintId}
-    </delete>
+    <update id="deleteComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
+        UPDATE complaint
+        SET
+            delete_flag = #{deleteFlag},
+            status = #{status}
+        WHERE complaint_id = #{complaintId}
+    </update>
 
 </mapper>

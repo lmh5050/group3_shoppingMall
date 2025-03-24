@@ -19,6 +19,7 @@ public class AdminComplaintController {
         this.adminComplaintService = adminComplaintService;
     }
 
+    //관리자 민원 리스트 페이지
     @GetMapping("/admin/complaint/list")
     public String customerComplaintList(Model model) {
         List<ComplaintDto> complaints = adminComplaintService.getCustomerComplaints();
@@ -34,12 +35,24 @@ public class AdminComplaintController {
         return "complaint/adminComplaintForm";
     }
 
+    //고객 민원 접수
+    @PostMapping("/admin/complaint/receive/{complaintId}")
+    public String receivedCustomerComplaint(@PathVariable("complaintId") String complaintId,
+                                            @RequestParam("complaintType") String complaintType) {
+
+        adminComplaintService.receivedCustomerComplaint(complaintId, complaintType);
+
+        return "redirect:/admin/complaint/list";
+    }
+
     //고객 민원 답변
     @PostMapping("/admin/complaint/response/{complaintId}")
     public String responseCustomerComplaint(@PathVariable("complaintId") String complaintId,
-                                            @RequestParam("comment") String comment) {
+                                            @RequestParam("comment") String comment,
+                                            @RequestParam("complaintResponseType") String complaintResponseType,
+                                            @RequestParam("complaintType") String complaintType) {
 
-        adminComplaintService.responseCustomerComplaint(complaintId, comment);
+        adminComplaintService.responseCustomerComplaint(complaintId, comment, complaintResponseType, complaintType);
 
         return "redirect:/admin/complaint/list";
     }
@@ -50,8 +63,11 @@ public class AdminComplaintController {
         return "complaint/adminComplaintForm";
     }
 
+    // 고객 민원 삭제
     @PostMapping("/admin/complaint/delete/{complaintId}")
     public String deleteCustomerComplaint(@PathVariable("complaintId") String complaintId) {
+        adminComplaintService.getCustomerComplaintById(complaintId);
+
         adminComplaintService.deleteCustomerComplaint(complaintId);
 
         return "redirect:/admin/complaint/list";
