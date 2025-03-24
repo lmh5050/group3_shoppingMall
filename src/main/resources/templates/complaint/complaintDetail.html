@@ -35,6 +35,7 @@
         <p><strong>신청 날짜:</strong> <span th:text="${complaint.requestDatetime}"></span></p>
         <p><strong>접수 날짜:</strong> <span th:text="${complaint.receivedDatetime}"></span></p>
         <p><strong>완료 날짜:</strong> <span th:text="${complaint.endDatetime}"></span></p>
+        <p><strong>민원 내용:</strong> <span th:text="${complaint.description}"></span></p>
         <p><strong>직원 답변:</strong> <span th:text="${complaint.comment}"></span></p>
         <p><strong>환불 예상 금액:</strong> <span th:text="${complaint.expectedRefundAmount}"></span></p>
         <p><strong>실제 환불 금액:</strong> <span th:text="${complaint.refundAmount}"></span></p>

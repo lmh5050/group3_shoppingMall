@@ -4,6 +4,7 @@
 <!-- 고객 민원 조회 -->
 <mapper namespace="org.example.shoppingmall.repository.complaint.AdminComplaintRepository">
 
+    <!-- 모든 민원 찾기 -->
     <select id="findCustomerComplaints" resultType="org.example.shoppingmall.dto.complaint.ComplaintDto">
         SELECT
             *
@@ -11,6 +12,7 @@
         ORDER BY request_datetime ASC
     </select>
 
+    <!-- 특정 민원 찾기 -->
     <select id="findCustomerComplaintById" resultType="org.example.shoppingmall.dto.complaint.ComplaintDto">
         SELECT
             *
@@ -18,6 +20,16 @@
         WHERE complaint_id = #{complaintId}
     </select>
 
+    <!-- 민원 접수 시 데이터 수정 -->
+    <update id="receivedCustomerComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
+        UPDATE complaint
+        SET
+            status = #{status},
+            received_datetime = #{receivedDatetime}
+        WHERE complaint_id = #{complaintId}
+    </update>
+
+    <!-- 민원 답변 시 데이터 수정 -->
     <update id="responseCustomerComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
         UPDATE complaint
         SET
@@ -27,6 +39,7 @@
         WHERE complaint_id = #{complaintId}
     </update>
 
+    <!-- 민원 삭제 시 데이터 수정 -->
     <update id="deleteCustomerComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
         UPDATE complaint
         SET

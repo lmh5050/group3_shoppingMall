@@ -13,7 +13,7 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link th:href="@{/css/homecss/homeStyles.css}" rel="stylesheet" />
 </head>
-<div th:replace="Bars/nav_bar :: nav"></div>
+<div th:replace="~{Bars/nav_bar :: nav}"></div>
 <body>
 <!-- Header-->
 <header>
@@ -47,10 +47,12 @@
                         <td th:text="${complaint.reason}"></td>
                         <td>
                             <a class="btn btn-primary btn-sm" th:href="@{'/complaint/detail/' + ${complaint.complaintId}}">확인</a>
-                            <a class="btn btn-warning btn-sm" th:href="@{'/complaint/edit/' + ${complaint.complaintId}}">수정</a>
-                            <!-- 삭제 버튼 (POST 방식) -->
-                            <form th:action="@{'/complaint/delete/' + ${complaint.complaintId}}" method="post" style="display:inline;" onsubmit="return confirmDelete();">
-                                <!-- complaintType 도 같이 전달해야해서 hidden이용해 같이 전달 -->
+                            <!-- 상태가 신청일때만 수정버튼 보이게 -->
+                            <a class="btn btn-warning btn-sm"
+                               th:if="${#strings.contains(complaint.status, '신청')}"
+                               th:href="@{'/complaint/edit/' + ${complaint.complaintId}}">수정</a>
+                            <!-- 삭제 버튼 (POST 방식), 접수상태이면 안 보이게 -->
+                            <form th:if="${!#strings.contains(complaint.status, '접수')}" th:action="@{'/complaint/delete/' + ${complaint.complaintId}}" method="post" style="display:inline;" onsubmit="return confirmDelete();">
                                 <input type="hidden" name="complaintType" value="cancel">
                                 <button type="submit" class="btn btn-danger btn-sm">삭제</button>
                             </form>
@@ -81,11 +83,13 @@
                         <td th:text="${complaint.reason}"></td>
                         <td>
                             <a class="btn btn-primary btn-sm" th:href="@{'/complaint/detail/' + ${complaint.complaintId}}">확인</a>
-                            <a class="btn btn-warning btn-sm" th:href="@{'/complaint/edit/' + ${complaint.complaintId}}">수정</a>
-                            <!-- 삭제 버튼 (POST 방식) -->
-                            <form th:action="@{'/complaint/delete/' + ${complaint.complaintId}}" method="post" style="display:inline;" onsubmit="return confirmDelete();">
-                                <!-- complaintType 도 같이 전달해야해서 hidden 이용해 같이 전달 -->
-                                <input type="hidden" name="complaintType" value="refund">
+                            <!-- 상태가 신청일때만 수정버튼 보이게 -->
+                            <a class="btn btn-warning btn-sm"
+                               th:if="${#strings.contains(complaint.status, '신청')}"
+                               th:href="@{'/complaint/edit/' + ${complaint.complaintId}}">수정</a>
+                            <!-- 삭제 버튼 (POST 방식), 접수상태이면 안 보이게 -->
+                            <form th:if="${!#strings.contains(complaint.status, '접수')}" th:action="@{'/complaint/delete/' + ${complaint.complaintId}}" method="post" style="display:inline;" onsubmit="return confirmDelete();">
+                                <input type="hidden" name="complaintType" value="cancel">
                                 <button type="submit" class="btn btn-danger btn-sm">삭제</button>
                             </form>
                         </td>
@@ -115,11 +119,13 @@
                         <td th:text="${complaint.reason}"></td>
                         <td>
                             <a class="btn btn-primary btn-sm" th:href="@{'/complaint/detail/' + ${complaint.complaintId}}">확인</a>
-                            <a class="btn btn-warning btn-sm" th:href="@{'/complaint/edit/' + ${complaint.complaintId}}">수정</a>
-                            <!-- 삭제 버튼 (POST 방식) -->
-                            <form th:action="@{'/complaint/delete/' + ${complaint.complaintId}}" method="post" style="display:inline;" onsubmit="return confirmDelete();">
-                                <!-- complaintType 도 같이 전달해야해서 hidden이용해 같이 전달 -->
-                                <input type="hidden" name="complaintType" value="exchange">
+                            <!-- 상태가 신청일때만 수정버튼 보이게 -->
+                            <a class="btn btn-warning btn-sm"
+                               th:if="${#strings.contains(complaint.status, '신청')}"
+                               th:href="@{'/complaint/edit/' + ${complaint.complaintId}}">수정</a>
+                            <!-- 삭제 버튼 (POST 방식), 접수상태이면 안 보이게 -->
+                            <form th:if="${!#strings.contains(complaint.status, '접수')}" th:action="@{'/complaint/delete/' + ${complaint.complaintId}}" method="post" style="display:inline;" onsubmit="return confirmDelete();">
+                                <input type="hidden" name="complaintType" value="cancel">
                                 <button type="submit" class="btn btn-danger btn-sm">삭제</button>
                             </form>
                         </td>
@@ -133,7 +139,7 @@
 
 <!-- Footer-->
 <footer>
-    <div th:replace="Bars/footer :: #footer"></div>
+    <div th:replace="~{Bars/footer :: #footer}"></div>
 </footer>
 
 <!-- Bootstrap core JS-->

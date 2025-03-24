@@ -14,7 +14,7 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link th:href="@{/css/homecss/homeStyles.css}" rel="stylesheet" />
 </head>
-<div th:replace="Bars/nav_bar :: nav"></div>
+<div th:replace="~{Bars/nav_bar :: nav}"></div>
 <body>
 
 <!-- Header-->
@@ -70,7 +70,7 @@
 
 <!-- Footer-->
 <footer>
-    <div th:replace="Bars/footer :: #footer"></div>
+    <div th:replace="~{Bars/footer :: #footer}"></div>
 </footer>
 
 <!-- Bootstrap core JS-->
