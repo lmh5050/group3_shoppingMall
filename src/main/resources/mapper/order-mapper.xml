@@ -15,6 +15,7 @@
         FROM address
         WHERE customer_id = #{customer_id}
           AND status = 1
+          AND active_flag = 1;
     </select>
 
     <!-- 상품상세id로 상품정보 가져오기 -->
@@ -35,6 +36,70 @@
         </foreach>
     </select>
 
+
+
+    <!-- 고객별 주문 목록 가져오기
+    <select id="findOrderListByCustomerId" parameterType="String" resultType="orderListDto">
+        SELECT
+            o.create_at,
+            o.order_status,
+            od.product_name,
+            od.size,
+            od.color,
+            od.product_total_price
+            pdi.product_id
+        FROM orders o JOIN order_detail od
+        ON o.order_id = od.order_id
+        JOIN product_detail pd
+        ON od.product_detail_id = pd.product_detail_id
+        JOIN product_description_image pdi
+        ON pd.product_id = pdi.product_id
+        WHERE o.customer_id = #{customer_id}
+    </select>
+ -->
+    <!-- 특정 주문에 대한 주문 상세 정보 가져오기
+    <select id="findOrderDetailsByOrderId" parameterType="String" resultType="order">
+        SELECT o.order_id
+        FROM
+        WHERE
+    </select>
+ -->
+
+
+<!--
+    <select id="findProductInfoByProductDetailId" parameterType="Map" resultMap="OrderProductsDtoResultMap">
+        SELECT
+        pd.product_id,
+        pd.product_detail_id,
+        pd.color,
+        pd.size,
+        p.name,
+        p.price,
+        &#45;&#45; quantity를 동적으로 처리
+        <foreach item="qty" collection="quantity" open="(" close=")" separator=",">
+            #{qty}
+        </foreach> AS quantity
+        FROM product_detail AS pd
+        INNER JOIN product AS p
+        ON pd.product_id = p.product_id
+        WHERE pd.product_detail_id IN
+        <foreach item="id" collection="productDetailId" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <resultMap id="OrderProductsDtoResultMap" type="OrderProductsDto">
+        <association property="productInfo" javaType="java.util.List">
+            <result column="product_detail_id" property="orderDetailId"/>
+            <result column="product_id" property="productId"/>
+            <result column="name" property="name"/>
+            <result column="color" property="color"/>
+            <result column="size" property="size"/>
+            <result column="price" property="price"/>
+            <result column="quantity" property="quantity"/>
+        </association>
+    </resultMap>
+-->
 
     <!--  &lt;!&ndash; 주문상세번호 매기기 &ndash;&gt;
     <select id="generateSerialNumber" resultType="Integer">
