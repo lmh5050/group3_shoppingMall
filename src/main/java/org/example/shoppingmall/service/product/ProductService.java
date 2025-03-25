@@ -1,26 +1,23 @@
 package org.example.shoppingmall.service.product;
 
 import org.example.shoppingmall.dto.User.UserInfoDto;
-import org.example.shoppingmall.dto.product.ProductCategoryDto;
-import org.example.shoppingmall.dto.product.ProductDetailDto;
-import org.example.shoppingmall.dto.product.ProductDto;
-import org.example.shoppingmall.dto.product.ProductSortDto;
+import org.example.shoppingmall.dto.product.*;
+import org.example.shoppingmall.repository.product.ProductDetailRepository;
 import org.example.shoppingmall.repository.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final ProductDetailRepository productDetailRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository,  ProductDetailRepository productDetailRepository) {
         this.productRepository = productRepository;
+        this.productDetailRepository = productDetailRepository;
     }
 
     // 모든 상품 리스트를 가져옴
@@ -113,6 +110,29 @@ public class ProductService {
             case "display", "stop-display", "sold-out" -> true;
             default -> false;
         };
+    }
+
+//    상세 정보를 중복 없이 가져옴
+    public HashSet<String> getProductDetailOption(String productId, String option) {
+        ArrayList<ProductDetailDto> productDtos = this.getProductDetailOptions(productId);
+        HashSet<String> filteredProducts = new HashSet<>();
+
+        if(option.equals("color")){
+            for(ProductDetailDto productDetail : productDtos){
+                filteredProducts.add(productDetail.getColor());
+            }
+        }else if(option.equals("size")){
+            for(ProductDetailDto productDetail : productDtos){
+                filteredProducts.add(productDetail.getSize());
+            }
+        }
+
+        return filteredProducts;
+    }
+
+    // 변경사항 저장하기
+    public void setProductInfo(ProductUpdateDto productUpdateDto) {
+        productRepository.setProductInfo(productUpdateDto);
     }
 }
 

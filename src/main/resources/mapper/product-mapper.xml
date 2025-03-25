@@ -68,6 +68,27 @@
         SET status = #{status}
         WHERE product_id = #{productId}
     </update>
+
+<!--  상품의 세부 정보를 변경  -->
+    <update id="setProductInfo">
+        UPDATE product
+            SET
+            name = #{productName},
+            price = #{productPrice},
+            description = #{productDescription},
+            category_id = #{productCategoryId},
+            season_id = #{productSessionId},
+            notes = #{productNotes},
+            gender = #{productGender},
+            fit = #{productFit},
+            texture = #{productTexture},
+            thickness = #{productThickness},
+            manufacturer = #{productManufacturer},
+            origin = #{productOrigin},
+            quality_assurance_standard = #{productQualityAssuranceStandard}
+        WHERE product_id = #{productId}
+    </update>
+
 </mapper>
 
 

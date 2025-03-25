@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.shoppingmall.repository.product.ProductDetailRepository">  <!-- 어떤 리포지토리를 볼지 정하는 곳 -->
+<!--  상품의 상세 정보를 가져옴  -->
+    <select id="getProductDetailByProductId">
+        SELECT * FROM product_detail
+        WHERE product_id = #{productId}
+    </select>
+
+</mapper>
