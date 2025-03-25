@@ -3,20 +3,20 @@ package org.example.shoppingmall.controller.User;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.apache.catalina.User;
-import org.example.shoppingmall.dto.User.InsertUserInfoDto;
-import org.example.shoppingmall.dto.User.UserEmailDto;
-import org.example.shoppingmall.dto.User.UserInfoDto;
+import org.example.shoppingmall.dto.User.*;
+import org.example.shoppingmall.dto.order.AddressDto;
 import org.example.shoppingmall.service.login.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.example.shoppingmall.dto.User.UserLoginInfoDto;
 import org.example.shoppingmall.service.login.EmailService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -188,13 +188,58 @@ public class UserController {
     }
 
 
-    @GetMapping("/user/address/{customerId}") // 유저 주소 불러오는 api
-    @ResponseBody
-    public String getUserAddress(@PathVariable String customerId)
-    {
-        return "user/register";
+    @GetMapping("/user/addressmanage")
+    public String getUserAddress(HttpSession session, Model model) {
+        String customerId = (String) session.getAttribute("customerId");
+        if (customerId == null) {
+            return "error"; // 세션에 customerId가 없는 경우 처리
+        }
+        model.addAttribute("customerId", customerId); // customerId 값을 모델에 추가
+        return "user/addressmanage"; // user/addressmanage.html 템플릿 반환
     }
 
+
+    @GetMapping("/user/addressmanage/{customerId}")
+    @ResponseBody
+    public List<UserAddressDto> getUserAddressInfo(@PathVariable String customerId) {
+        List<UserAddressDto> userinfo = loginService.getUserAddressInfo(customerId);
+        return userinfo;
+    }
+
+    @PostMapping("/user/addressmanage")
+    @ResponseBody
+    public String insertUserAddressInfo(@RequestBody UserAddressDto UserAddress ,
+                                                HttpSession session) {
+        String customerId = (String) session.getAttribute("customerId");
+        UserAddress.setCustomerId(customerId);
+        loginService.insertUserAddressInfo(UserAddress);
+        return "success";
+    }
+
+    @PostMapping("/user/addressmanage/select")
+    @ResponseBody
+    public String updateDefaultDelivery(@RequestBody UserAddressDto UserAddress ,
+                                        HttpSession session) {
+        String customerId = (String) session.getAttribute("customerId");
+        UserAddress.setCustomerId(customerId);
+        loginService.updateDefaultDelivery(UserAddress);
+        return "success";
+    }
+
+    @PostMapping("/user/addressmanage/update")
+    @ResponseBody
+    public void updateAddressManage(@RequestBody UserAddressDto UserAddress ,
+                                        HttpSession session) {
+        String customerId = (String) session.getAttribute("customerId");
+        UserAddress.setCustomerId(customerId);
+        loginService.updateAddressManage(UserAddress);
+    }
+
+    @PostMapping("/user/addressmanage/delete")
+    @ResponseBody
+    public void deleteAddress(@RequestBody UserAddressDto UserAddress ) {
+        loginService.deleteAddress(UserAddress);
+    }
 
 
     @PostMapping("/user/emailSend") //이메일 인증 , 디벨롭 필요 api
@@ -206,7 +251,5 @@ public class UserController {
         emailService.sendVerificationEmail(email.getEmail());
         return "123"; // 결과 반환
     }
-
-
 
 }
