@@ -9,7 +9,6 @@
     <!-- Bootstrap icons-->
     <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css}" rel="stylesheet" />
     <!-- Core theme CSS (includes Bootstrap)-->
-    <link th:href="@{/css/homecss/homeStyles.css}" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/Bars.css}">
     <link rel="stylesheet" th:href="@{/css/Login.css}">
     <link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">
@@ -232,7 +231,7 @@
             .then(function (response) {
                 console.log('Data fetched:', response.data);
                 var data = response.data; // 응답 데이터
-                var fullImageUrl = `${window.location.origin}/images/user/${data.profileImg}`;
+                var fullImageUrl = `/images/user/${data.profileImg}`;
 
                 // 이미지 URL이 있으면 이미지 미리보기 업데이트
                 var imagePreview = document.getElementById('imagePreview');

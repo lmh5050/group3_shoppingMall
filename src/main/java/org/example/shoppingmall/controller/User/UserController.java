@@ -139,31 +139,38 @@ public class UserController {
     public String uploadProfileImage(@RequestParam("profileImage") MultipartFile file,
                                      HttpSession session) {
         try {
-            // 파일 처리 로직
+            // 파일 이름 확인
             String fileName = file.getOriginalFilename();
-            if (fileName == null) {
+            if (fileName == null || fileName.isEmpty()) {
                 return "error"; // 파일 이름이 없는 경우 처리
             }
 
-            // 파일 이름 중복 방지 (예: UUID 사용)
-            String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
-
-            // 절대 경로로 파일을 저장할 경로 설정
-            String uploadDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/user/";
-            File dir = new File(uploadDirectory);
-            if (!dir.exists()) {
-                dir.mkdirs(); // 경로가 없으면 생성
+            // MIME 타입 체크 (PNG만 허용)
+            String contentType = file.getContentType();
+            if (!"image/png".equals(contentType)) {
+                return "error"; // PNG가 아닌 경우 에러 처리
             }
 
-            // 파일을 해당 경로에 저장
-            File destFile = new File(uploadDirectory, uniqueFileName);
-            file.transferTo(destFile);
-
-            // 세션에서 customerId를 가져오기
+            // 세션에서 customerId 가져오기
             String customerId = (String) session.getAttribute("customerId");
             if (customerId == null) {
                 return "error"; // 세션에 customerId가 없는 경우 처리
             }
+
+            // 파일 이름 중복 방지 + 원본 확장자 유지
+            String extension = fileName.substring(fileName.lastIndexOf("."));
+            String uniqueFileName = UUID.randomUUID().toString() + "_" + customerId + extension;
+
+            // 파일 저장 경로 설정
+            String uploadDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/user/";
+            File dir = new File(uploadDirectory);
+            if (!dir.exists()) {
+                dir.mkdirs(); // 경로 없으면 생성
+            }
+
+            // 파일 저장
+            File destFile = new File(uploadDirectory, uniqueFileName);
+            file.transferTo(destFile);
 
             // 사용자 정보에 프로필 이미지 경로 저장
             UserInfoDto userinfo = new UserInfoDto();
@@ -179,6 +186,7 @@ public class UserController {
             return "error"; // 실패 시 반환할 값
         }
     }
+
 
     @GetMapping("/user/address/{customerId}") // 유저 주소 불러오는 api
     @ResponseBody
