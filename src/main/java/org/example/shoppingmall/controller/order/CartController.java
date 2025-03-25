@@ -23,11 +23,15 @@ public class CartController {
     public CartController(CartService cartService) {
         this.cartService = cartService;
     }
-
     @GetMapping("/cart/{id}")
     public String showCart(@PathVariable String id, Model model , HttpSession session) {
         // 경로 변수 'id'를 사용하여 필요한 로직 처리
+<<<<<<< HEAD
         String customerId = (String) session.getAttribute("customerId");
+=======
+        System.out.println("customerId: " + id); // 콘솔에 출력하거나 로직에 활용
+        id = "admin";
+>>>>>>> b251de21632fd2ac35232f2c55c3216add818bfd
         // "order/cart" 페이지를 반환
         model.addAttribute("customerId", customerId);
         // "order/cart" 페이지를 반환

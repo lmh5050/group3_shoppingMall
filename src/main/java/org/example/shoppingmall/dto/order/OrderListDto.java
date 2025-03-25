@@ -15,6 +15,7 @@ public class OrderListDto {
     private Integer quantity;
     private String productTotalPrice;
     private String productId;
+    private String codeName;
 
     public String getImageUrl() {
         return "/images/product/" + this.productId + ".png";
