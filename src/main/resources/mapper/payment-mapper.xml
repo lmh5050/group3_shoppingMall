@@ -38,7 +38,7 @@
         )
         VALUES (
             #{paymentId}, #{orderId}, #{paymentMethodId}, #{paymentCode},
-            #{status}, #{totalAmount}, #{taxAmount}, #{discountAmount},
+            #{status}, #{finalAmount}, #{taxAmount}, #{discountAmount},
             #{paymentDatetime}, #{failureReason}, #{cardNumber}, #{cardInstallment},
             #{cashBankName}, #{cashReceiptType}, #{cashReceiptNumber}, #{accountDeposit}
         )
@@ -134,7 +134,7 @@
             #{paymentMethodId},
             #{paymentCode},
             #{status},
-            #{totalAmount},
+            #{finalAmount},
             #{taxAmount},
             #{discountAmount},
             #{paymentDatetime},

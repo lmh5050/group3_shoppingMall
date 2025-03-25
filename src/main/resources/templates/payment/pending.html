@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>결제 대기건 관리</title>
@@ -9,25 +10,29 @@
             margin: 20px;
             background-color: #f5f5f5;
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             background-color: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
+
         h2 {
             color: #333;
             margin-bottom: 20px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            table-layout: fixed;
         }
-        th, td {
+
+        th,
+        td {
             padding: 15px;
             text-align: center;
             border-bottom: 1px solid #ddd;
@@ -35,6 +40,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         th {
             background-color: #f8f9fa;
             font-weight: 600;
@@ -42,23 +48,22 @@
             border-top: 2px solid #dee2e6;
             border-bottom: 2px solid #dee2e6;
         }
-        tr:hover {
+
+        tr:hover,
+        tr:nth-child(even) {
             background-color: #f8f9fa;
         }
-        th:nth-child(1), td:nth-child(1) { width: 12%; }
-        th:nth-child(2), td:nth-child(2) { width: 12%; }
-        th:nth-child(3), td:nth-child(3) { width: 15%; }
-        th:nth-child(4), td:nth-child(4) { width: 30%; }
-        th:nth-child(5), td:nth-child(5) { width: 18%; }
-        th:nth-child(6), td:nth-child(6) { width: 13%; }
+
         .amount {
             font-weight: 500;
             color: #495057;
         }
+
         .datetime {
             color: #666;
             font-size: 0.95em;
         }
+
         .status {
             color: #fff;
             font-weight: 500;
@@ -69,13 +74,19 @@
             border: none;
             cursor: pointer;
         }
-        /* 상태별 색상 */
-        .status.pending { background-color: #ffc107; }    /* 결제 대기(노란색) */
-        .status.completed { background-color: #28a745; }    /* 결제 완료(초록색) */
-        .status.cancelled { background-color: #dc3545; }    /* 결제 취소(빨간색) */
-        tr:nth-child(even) {
-            background-color: #fcfcfc;
+
+        .status.pending {
+            background-color: #ffc107;
         }
+
+        .status.completed {
+            background-color: #28a745;
+        }
+
+        .status.cancelled {
+            background-color: #dc3545;
+        }
+
         .status-select {
             margin-top: 8px;
             display: flex;
@@ -83,12 +94,45 @@
             align-items: center;
             gap: 8px;
         }
-        select, .update-btn {
+
+        select,
+        .update-btn {
             padding: 5px 10px;
             font-size: 0.9em;
         }
+
+        th:nth-child(1),
+        td:nth-child(1) {
+            width: 12%;
+        }
+
+        th:nth-child(2),
+        td:nth-child(2) {
+            width: 12%;
+        }
+
+        th:nth-child(3),
+        td:nth-child(3) {
+            width: 15%;
+        }
+
+        th:nth-child(4),
+        td:nth-child(4) {
+            width: 30%;
+        }
+
+        th:nth-child(5),
+        td:nth-child(5) {
+            width: 18%;
+        }
+
+        th:nth-child(6),
+        td:nth-child(6) {
+            width: 13%;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h2>가상계좌 결제 관리</h2>
@@ -112,24 +156,26 @@
                         <span th:text="${payment.cashBankName}"></span>
                         <span th:text="${payment.accountDeposit}"></span>
                     </td>
-                    <td class="datetime" th:text="${#temporals.format(payment.paymentDatetime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td class="datetime" th:text="${#temporals.format(payment.paymentDatetime, 'yyyy-MM-dd HH:mm:ss')}">
+                    </td>
                     <td>
-                        <!-- 모든 상태에 대해 버튼과 드롭다운 UI 표시 -->
-                        <button type="button"
-                                class="status"
-                                th:classappend="${payment.status == 'MA01002' ? ' pending' : (payment.status == 'MA01003' ? ' completed' : ' cancelled')}"
-                                th:attr="data-payment-id=${payment.paymentId}"
-                                onclick="toggleStatusSelect(this)">
-                            <span th:text="${payment.status == 'MA01002' ? '결제 대기' : (payment.status == 'MA01003' ? '결제 완료' : '결제 취소')}">상태</span>
+                        <button type="button" class="status"
+                            th:classappend="${payment.status == 'MA01002' ? ' pending' : (payment.status == 'MA01003' ? ' completed' : ' cancelled')}"
+                            th:attr="data-payment-id=${payment.paymentId}" onclick="toggleStatusSelect(this)">
+                            <span
+                                th:text="${payment.status == 'MA01002' ? '결제 대기' : (payment.status == 'MA01003' ? '결제 완료' : '결제 취소')}"></span>
                         </button>
-                        <div th:id="'statusSelectContainer_' + ${payment.paymentId}" class="status-select" style="display: none;">
+                        <div th:id="'statusSelectContainer_' + ${payment.paymentId}" class="status-select"
+                            style="display: none;">
                             <select th:id="'statusSelect_' + ${payment.paymentId}">
-                                <!-- 옵션 순서: 결제 완료, 결제 취소, 결제 대기 -->
                                 <option value="MA01003" th:selected="${payment.status == 'MA01003'}">결제 완료</option>
                                 <option value="MA01004" th:selected="${payment.status == 'MA01004'}">결제 취소</option>
                                 <option value="MA01002" th:selected="${payment.status == 'MA01002'}">결제 대기</option>
                             </select>
-                            <button type="button" th:attr="data-payment-id=${payment.paymentId}" class="update-btn">변경</button>
+                            <button type="button" class="update-btn"
+                                th:attr="data-payment-id=${payment.paymentId}, data-order-id=${payment.orderId}">
+                                변경
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -138,46 +184,35 @@
     </div>
 
     <script>
-        // 상태 버튼 클릭 시 해당 행의 드롭다운 UI 토글
         function toggleStatusSelect(button) {
             const paymentId = button.getAttribute('data-payment-id');
             const container = document.getElementById("statusSelectContainer_" + paymentId);
-            if (container.style.display === "none" || container.style.display === "") {
-                container.style.display = "flex";
-            } else {
-                container.style.display = "none";
-            }
+            container.style.display = container.style.display === "none" ? "flex" : "none";
         }
 
-        // 변경 버튼 클릭 이벤트 등록
-        document.querySelectorAll('.update-btn').forEach(function(button) {
-            button.addEventListener('click', function() {
+        document.querySelectorAll('.update-btn').forEach(button => {
+            button.addEventListener('click', function () {
                 const paymentId = this.getAttribute('data-payment-id');
-                const selectElement = document.getElementById("statusSelect_" + paymentId);
-                const newStatus = selectElement.value;
+                const orderId = this.getAttribute('data-order-id');
+                const newStatus = document.getElementById("statusSelect_" + paymentId).value;
 
-                fetch(`/admin/payment/update`, {
+                fetch('/admin/payment/update', {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ paymentId: paymentId, status: newStatus })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ paymentId, orderId, status: newStatus })
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('상태가 변경되었습니다.');
-                        location.reload();
-                    } else {
-                        alert('상태 변경에 실패했습니다.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('상태 변경에 오류가 발생했습니다.');
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.success ? '상태가 변경되었습니다.' : '상태 변경에 실패했습니다.');
+                        if (data.success) location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('상태 변경에 오류가 발생했습니다.');
+                    });
             });
         });
     </script>
 </body>
+
 </html>

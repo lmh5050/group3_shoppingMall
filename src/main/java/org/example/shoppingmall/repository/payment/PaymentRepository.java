@@ -37,6 +37,9 @@ public interface PaymentRepository {
     // 고객 이름 조회
     String findCustomerNameById(String customerId);
 
+    // 결제 대기 건 조회
+    List<PaymentPendingDto> getPendingPayments();
+
     // 결제 히스토리 저장
     void insertPaymentHistory(PaymentDto paymentDto);
 
@@ -45,9 +48,6 @@ public interface PaymentRepository {
 
     // 주문 상세 이력 저장
     void insertOrderDetailHistory(PaymentOrderDetailDto orderDetailDto);
-
-    // 결제 대기 건 조회
-    List<PaymentPendingDto> getPendingPayments();
 
     // 결제 상태 변경
     void updatePaymentStatus(PaymentPendingDto paymentPendingDto);
