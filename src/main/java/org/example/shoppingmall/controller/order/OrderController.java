@@ -10,9 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -25,8 +23,7 @@ public class OrderController {
 
     // 주문서 페이지
     @GetMapping("/order/order")
-    public String showOrder(
-                            @RequestParam("productDetailId") List<String> productDetailId,
+    public String showOrder(@RequestParam("productDetailId") List<String> productDetailId,
                             @RequestParam("quantity") List<Integer> quantity,
                             HttpSession session, Model model) {
 
@@ -46,7 +43,14 @@ public class OrderController {
         //주문상품정보 가져오기
         List<ProductInfoDto> productInfo =
                 orderService.getProductInfoByProductDetailId(productDetailId, quantity);
+
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        for (ProductInfoDto product : productInfo) {
+            totalAmount = totalAmount.add(product.getTotalPrice());
+        }
+
         model.addAttribute("productInfo", productInfo);
+        model.addAttribute("totalAmount", totalAmount);
         return "order/orderForm";
 
     }
@@ -102,17 +106,30 @@ public class OrderController {
             return "redirect:/user/login";
         }
 
+        // 주문 목록을 가져온다
         List<OrderListDto> orders = orderListService.getOrderListByCustomerId(customerId);
 
         // 주문번호별로 그룹화
         Map<Integer, List<OrderListDto>> groupedOrders = orders.stream()
                 .collect(Collectors.groupingBy(OrderListDto::getOrderId));
 
-        model.addAttribute("groupedOrders", groupedOrders);
-        System.out.println("groupedOrders = " + groupedOrders);
+        // Map 자체에서 정렬 (내림차순)
+        Map<Integer, List<OrderListDto>> sortedGroupedOrders = groupedOrders.entrySet().stream()
+                .sorted((entry1, entry2) -> Integer.compare(entry2.getKey(), entry1.getKey()))  // 내림차순 정렬
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,  // 충돌을 처리하는 방식 (이 경우, 충돌이 발생하지 않음)
+                        LinkedHashMap::new // 정렬된 순서를 유지하는 LinkedHashMap 사용
+                ));
+
+        // 정렬된 groupedOrders를 모델에 추가
+        model.addAttribute("groupedOrders", sortedGroupedOrders);
+        System.out.println("sortedGroupedOrders = " + sortedGroupedOrders);
 
         return "order/orderList";
     }
+
 
     //주문상세
     @RequestMapping("/order/detail")
@@ -130,7 +147,6 @@ public class OrderController {
     }
 
     //주문내역삭제
-
     @GetMapping("/order/delete/{orderId}")
     public String deleteOrder(@PathVariable Long orderId, HttpSession session, Model model) {
 
@@ -139,7 +155,7 @@ public class OrderController {
             orderListService.deleteOrder(orderId, customerId);  // 서비스 호출
             model.addAttribute("message", "주문이 삭제되었습니다.");
         } else {
-            model.addAttribute("message", "로그인이 필요합니다.");
+            return "redirect:/user/login";
         }
         return "redirect:/order/list";  // 주문 목록 페이지로 리디렉션
     }

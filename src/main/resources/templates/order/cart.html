@@ -164,7 +164,7 @@
                 // selectedItems를 sessionStorage에 저장
                 sessionStorage.setItem('selectedItems', JSON.stringify(selectedItems));
                 // 주문 상품의 정보로 파라미터 생성 (예시: customerId, productDetailId, quantity)
-                const customerId = 'ktq1548';  // 예시: 실제 customerId를 가져와야 함
+                const customerId = 'admin';  // 예시: 실제 customerId를 가져와야 함
                 const productDetailId = selectedItems.map(item => item.productDetailId).join(',');
                 const quantity = selectedItems.map(item => item.quantity).join(',');
 

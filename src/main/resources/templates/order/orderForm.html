@@ -169,7 +169,7 @@
             <div>상품명 <span th:text="${product.name}"></span></div>
             <div>색상: <span th:text="${product.color}"></span></div>
             <div>사이즈: <span th:text="${product.size}"></span></div>
-            <div>수량: <input type="number" name="quantity" th:value="${product.quantity}" min="1"></div>
+            <div>수량: <span th:text="${product.quantity}" min="1"></span></div>
             <div>상품 금액: <span th:text="${product.price}"></span></div>
             <div>총 상품 금액: <span th:text="${product.getTotalPrice}"></span></div>
         </div>
@@ -221,13 +221,13 @@
                     size = children[4].querySelector('span').textContent.trim();
                 }
                 if (children.length >= 6) {
-                    quantity = parseInt(children[5].querySelector('input').value) || 0;
+                    quantity = parseInt(children[5].querySelector('span').textContent) || 0;
                 }
                 if (children.length >= 7) {
                     price = parseFloat(children[6].querySelector('span').textContent.replace(/[^0-9.-]+/g,"")) || 0;
                 }
                 if (children.length >= 8) {
-                    productTotalPrice = parseFloat(children[7].querySelector('span').textContent.replace(/[^0-9.-]+/g,"")) * quantity || 0;
+                    productTotalPrice = parseFloat(price * quantity) || 0;
                 }
 
                 totalOrderAmount += productTotalPrice;
