@@ -174,7 +174,7 @@ public class PaymentService {
                 .paymentMethodId(paymentMethod)     
                 .paymentCode(UUID.randomUUID().toString())   // UUID를 paymentCode로 저장
                 .status(status)                              // 결제 상태
-                .totalAmount(paymentInfoDto.getTotalOrderAmount())
+                .finalAmount(paymentInfoDto.getTotalOrderAmount())
                 .taxAmount(0)
                 .discountAmount(0)
                 .paymentDatetime(paymentDatetime)           // 전달받은 시간 사용
