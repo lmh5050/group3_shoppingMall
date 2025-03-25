@@ -15,7 +15,6 @@ public class ProductInfoDto {
     private Integer quantity;
     private BigDecimal discount;
     private Integer orderDetailId;
-    private BigDecimal totalPrice;
 
 
 

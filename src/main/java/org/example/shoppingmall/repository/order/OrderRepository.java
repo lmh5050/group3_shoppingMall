@@ -22,13 +22,4 @@ public interface OrderRepository {
     //상품정보가져오기
     List<ProductInfoDto> findProductInfoByProductDetailId(Map<String, Object> params);
 
-
-
-
-    /*// 전체 주문 목록 조회
-    List<OrderDto> findAllOrders();
-
-    // 주문 ID로 주문 상세 조회
-    OrderDto findOrderById(String orderId);
-    */
 }
