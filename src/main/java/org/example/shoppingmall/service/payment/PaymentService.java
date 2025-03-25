@@ -197,4 +197,9 @@ public class PaymentService {
     private String generateVirtualAccount() {
         return "1002" + String.format("%010d", (int)(Math.random() * 10000000000L));
     }
+
+    // 결제 대기 건 조회
+    public List<PaymentPendingDto> getPendingPayments() {
+        return paymentRepository.getPendingPayments();
+    }
 }

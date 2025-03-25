@@ -6,7 +6,7 @@
     <insert id="insertOrder">
         INSERT INTO orders (
             order_id, customer_id, order_status, total_discount_amount,
-            total_order_amount, total_quantity, order_datetime
+            total_amount, total_quantity, order_datetime
         )
         VALUES (
             #{orderId}, #{customerId}, #{orderStatus}, #{totalDiscountAmount},
@@ -32,7 +32,7 @@
     <insert id="insertPayment">
         INSERT INTO payment (
             payment_id, order_id, payment_method_id, payment_code,
-            status, total_amount, tax_amount, discount_amount,
+            status, final_amount, tax_amount, discount_amount,
             payment_datetime, failure_reason, card_number, installment, 
             bank_deposit, cash_receipt_type, cash_receipt_number, account_deposit
         )
@@ -55,7 +55,7 @@
     <!-- 주문 정보 조회 -->
     <select id="getOrder" parameterType="Integer" resultType="org.example.shoppingmall.dto.payment.PaymentOrderDto">
         SELECT order_id, customer_id, order_status, 
-               total_discount_amount, total_order_amount, total_quantity
+               total_discount_amount, total_amount as totalOrderAmount, total_quantity, order_datetime
         FROM orders
         WHERE order_id = #{orderId}
     </select>
@@ -72,7 +72,7 @@
     <!-- 결제 정보 조회 -->
     <select id="getPayment" parameterType="Integer" resultType="org.example.shoppingmall.dto.payment.PaymentDto">
         SELECT payment_id, order_id, payment_method_id, payment_code,
-               status, total_amount, tax_amount, discount_amount,
+               status, final_amount, tax_amount, discount_amount,
                payment_datetime, failure_reason, card_number, installment as cardInstallment,
                bank_deposit as cashBankName, account_deposit, cash_receipt_type, cash_receipt_number
         FROM payment
@@ -117,7 +117,7 @@
             payment_method_id,
             payment_code,
             status,
-            total_amount,
+            final_amount,
             tax_amount,
             discount_amount,
             payment_datetime,
@@ -152,7 +152,7 @@
     <insert id="insertOrderHistory">
         INSERT INTO order_history (
             order_id, customer_id, order_status, total_discount_amount,
-            total_order_amount, total_quantity, order_datetime
+            total_amount, total_quantity, order_datetime
         )
         VALUES (
             #{orderId}, #{customerId}, #{orderStatus}, #{totalDiscountAmount},
@@ -189,5 +189,31 @@
             #{status}
         )
     </insert>
+
+    <!-- 결제 대기 건 조회 -->
+    <select id="getPendingPayments" resultType="org.example.shoppingmall.dto.payment.PaymentPendingDto">
+        SELECT 
+            p.payment_id as paymentId,
+            p.order_id as orderId,
+            o.customer_id as customerId,
+            c.name as customerName,
+            p.final_amount as finalAmount,
+            o.order_datetime as paymentDatetime,
+            p.account_deposit as accountDeposit,
+            p.bank_deposit as cashBankName,
+            p.status as status
+        FROM payment p
+        JOIN orders o ON p.order_id = o.order_id
+        JOIN customer c ON o.customer_id = c.customer_id
+        WHERE p.payment_method_id = 1 and p.active_flag = 1  -- 가상계좌 결제
+        ORDER BY p.payment_datetime DESC
+    </select>
+
+    <!-- 결제 상태 변경 -->
+    <update id="updatePaymentStatus" parameterType="org.example.shoppingmall.dto.payment.PaymentPendingDto">
+        UPDATE payment
+        SET status = #{status}
+        WHERE payment_id = #{paymentId}
+    </update>
 
 </mapper>
