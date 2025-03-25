@@ -45,36 +45,11 @@ public class OrderService {
             productInfoList.get(i).setQuantity(quantity.get(i));  // 순차적으로 quantity 설정
         }
 
-        // 주문 일련번호 부여
+    /*    // 주문 일련번호 부여
         for (int i = 0; i < productInfoList.size(); i++) {
             productInfoList.get(i).setOrderDetailId(i + 1);  // 순차적으로 번호를 부여
-        }
+        }*/
 
         return productInfoList;
     }
-
-   /* public List<ProductInfoDto> getProductInfoByProductDetailId(List<String> productDetailId, List<Integer> quantity) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("productDetailId", productDetailId);
-        params.put("quantity", quantity);
-        return orderRepository.findProductInfoByProductDetailId(params);
-    }*/
-
-
-
-
-
- /*   // 주문 목록 조회
-    public List<OrderDto> getAllOrders() {
-        return orderRepository.findAllOrders();
-    }
-
-    // 주문 상세 조회
-    public OrderDto getOrderDetail(String orderId) {
-        return orderRepository.findOrderById(orderId);
-    }*/
-
-
-
-
 }

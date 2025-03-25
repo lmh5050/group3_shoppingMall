@@ -10,10 +10,10 @@ public class OrderDetailDto {
     private Timestamp createdAt;
     private Long orderId;
     private String orderStatus;
-    private BigDecimal totalOrderAmount; //전체상품총금액
+    private BigDecimal totalAmount; //전체상품총금액
     private BigDecimal totalDiscountAmount; //상품총할인
     private BigDecimal discountAmount; //결제할인
-    private BigDecimal totalAmount; //최종결제금액
+    private BigDecimal finalAmount; //최종결제금액
     private String bankDeposit;
     private String accountDeposit;
     private String name; //결제수단명
