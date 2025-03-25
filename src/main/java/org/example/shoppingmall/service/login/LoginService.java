@@ -1,6 +1,7 @@
 package org.example.shoppingmall.service.login;
 
 import org.example.shoppingmall.dto.User.InsertUserInfoDto;
+import org.example.shoppingmall.dto.User.UserAddressDto;
 import org.example.shoppingmall.dto.User.UserInfoDto;
 import org.example.shoppingmall.dto.User.UserLoginInfoDto;
 import org.example.shoppingmall.repository.User.UserRepository;
@@ -35,7 +36,7 @@ public class LoginService {
             userRepository.insertUserInfo(InsertUserInfo);
             //여기서 부터 이제 insertUserInfo 필요한 값 생성
             // 1. address_id 생성 > ads-customerId-001 > 처음 생성은 전부다 001 값임
-            String addressId = "adr" + '-' + InsertUserInfo.getName() + '-' + "000"; //어드레스 아이디 만드는 코드
+            String addressId = "adr" + '-' + InsertUserInfo.getCustomerId() + '-' + "000"; //어드레스 아이디 만드는 코드
             // 2. 주소에서 앞에 두개 따와서 코드 테이블 값 확인하고 그거 대응하는 값 넣어주기 code에
             String addressCode = userRepository.getAddressCode(InsertUserInfo.getAddress().substring(0, 2));
             InsertUserInfo.setCode(addressCode);
@@ -101,6 +102,71 @@ public class LoginService {
         userRepository.modifyUserInfo(userInfo);
         return ;
     }
+
+    public List<UserAddressDto> getUserAddressInfo(String customerId) {
+        List<UserAddressDto> userAddressInfo = userRepository.getUserAddressInfo(customerId);
+        return userAddressInfo;
+    }
+
+    public void insertUserAddressInfo(UserAddressDto userAddress) {
+        System.out.println(userAddress.getCustomerId());
+        List<UserAddressDto> UserAddressIdInfo = userRepository.getUserAddressIdInfo(userAddress.getCustomerId());
+
+        // UserAddressIdInfo에서 가장 큰 번호 찾기
+        String maxAddressId = "";
+        for (UserAddressDto address : UserAddressIdInfo) {
+            String addressId = address.getAddressId();  // 예: adr-123-001
+            String[] parts = addressId.split("-");  // ["adr", "123", "001"]
+            String numberPart = parts[2];  // 숫자 부분 추출, 예: "001"
+
+            // 현재 주소 ID가 기존 최대 주소 ID보다 크면, maxAddressId를 업데이트
+            if (maxAddressId.isEmpty() || Integer.parseInt(numberPart) > Integer.parseInt(maxAddressId.split("-")[2])) {
+                maxAddressId = addressId;
+            }
+        }
+
+// 마지막으로 얻은 가장 큰 주소 ID에서 숫자 부분을 분리하여 새로 번호를 추가
+        String lastElement = maxAddressId; // 가장 큰 주소 ID
+        System.out.println(lastElement + " 아이디");
+        String[] parts = lastElement.split("-");
+        String numberPart = parts[2];  // "000" 같은 숫자 부분
+        System.out.println(numberPart + " 가공 전");
+        int newNumber = Integer.parseInt(numberPart) + 1;  // 최대값에 1을 더하기
+        System.out.println(newNumber + " 가공 후");
+        String newNumberFormatted = String.format("%03d", newNumber);  // 3자리 숫자 포맷
+        String addressId = "adr" + '-' + userAddress.getCustomerId() + '-' + newNumberFormatted; // 새로운 주소 ID 생성
+
+// 주소에서 앞 두 문자 추출하여 코드 테이블 값 확인
+        String addressCode = userRepository.getAddressCode(userAddress.getAddress().substring(0, 2));
+        userAddress.setCode(addressCode);
+        userAddress.setAddressId(addressId);
+
+// 주소 정보 삽입
+        userRepository.insertUserAddressInfo(userAddress);
+        return;
+    }
+
+    public void updateDefaultDelivery(UserAddressDto userInfo) {
+        userRepository.updateDefaultDeliveryZero(userInfo);
+        userRepository.updateDefaultDelivery(userInfo);
+        return ;
+    }
+
+    public void updateAddressManage(UserAddressDto userInfo) {
+        userRepository.updateAddressManage(userInfo);
+        return ;
+    }
+
+    public void deleteAddress(UserAddressDto userInfo) {
+        userRepository.deleteAddress(userInfo);
+    }
+
+
+
+
+
+
+
 
 
 }

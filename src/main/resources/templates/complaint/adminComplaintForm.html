@@ -21,6 +21,7 @@
     <h3>고객 민원 정보</h3>
     <p><strong>민원 번호:</strong> <span th:text="${complaint.complaintId}"></span></p>
     <p><strong>신청 날짜:</strong> <span th:text="${complaint.requestDatetime}"></span></p>
+    <p><strong>접수 날짜:</strong> <span th:text="${complaint.receivedDatetime}"></span></p>
     <p><strong>고객 아이디:</strong> </p>
     <p><strong>민원 유형:</strong> <span th:text="${complaint.complaintTypeId}"></span></p>
     <p><strong>민원 제목:</strong> <span th:text="${complaint.reason}"></span></p>
@@ -28,8 +29,17 @@
 </div>
 
 <form th:action="@{'/admin/complaint/response/' + ${complaint.complaintId}}" method="post">
+    <!-- 답변 시 민원Type 따라 status 값 설정위해 hidden 속성 추가 -->
+    <input type="hidden" name="complaintType" th:value="${complaint.complaintTypeId}"/>
     <div class="mb-3">
-        <label for="comment" class="form-label">문의 내용</label>
+        <label for="complaintResponseType" class="form-label">민원 처리 유형</label>
+        <select id="complaintResponseType" name="complaintResponseType" class="form-select" style="width: 400px;">
+            <option value="resolved">처리 완료</option>
+            <option value="rejected">처리 반려</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="comment" class="form-label">문의 답변 내용</label>
         <textarea id="comment" name="comment" class="form-control"
                   placeholder="문의 답변 내용 입력" rows="6" style="width: 400px;" th:text="${complaint?.comment}"></textarea>
     </div>

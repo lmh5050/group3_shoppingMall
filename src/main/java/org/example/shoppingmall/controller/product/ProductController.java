@@ -54,6 +54,7 @@ public class ProductController {
 //    상세 페이지 이동
     @GetMapping("/productDetail")
     public String productDetail(String prdId, Model model) {
+        System.out.println("prdId:"+prdId);
         model.addAttribute("prdId", prdId);
 
         // 서비스 측 구현할 것: 상품 ID를 통해 ProductDto 가져오기

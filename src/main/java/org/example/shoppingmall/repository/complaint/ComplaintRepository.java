@@ -22,5 +22,5 @@ public interface ComplaintRepository {
     void updateComplaint(ComplaintDto complaintDto);
 
     //민원 삭제 메서드
-    void deleteComplaint(ComplaintDto complaintId);
+    void deleteComplaint(ComplaintDto complaintDto);
 }

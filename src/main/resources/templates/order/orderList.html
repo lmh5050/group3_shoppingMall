@@ -1,89 +1,113 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<link rel="stylesheet" th:href="@{/css/Bars.css}">
-<link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>주문 목록</title>
+  <link rel="stylesheet" th:href="@{/css/Bars.css}">
+  <link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
     }
     .main-content {
-      width: 50%;
+      width: 700px;
       margin: auto;
     }
     .search-box {
-      margin-bottom: 10px;
-      padding: 5px;
       width: 100%;
+      padding: 10px;
       font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 20px;
     }
     .order-group {
-      border: 1px solid #ddd;
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
       margin-bottom: 20px;
-      padding: 15px;
-      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
     .order-header {
+      display: flex;
+      justify-content: space-between;
       font-size: 18px;
       font-weight: bold;
+      margin-bottom: 10px;
     }
     .order-items {
-      margin-top: 10px;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
     }
     .order-item {
       display: flex;
       align-items: center;
-      border-bottom: 1px solid #ddd;
       padding: 10px 0;
+      border-bottom: 1px solid #eee;
     }
     .order-item img {
-      width: 50px;
-      height: 50px;
-      margin-right: 10px;
+      width: 100px;
+      height: 100px;
+      margin-right: 15px;
+      border-radius: 5px;
     }
     .order-actions {
-      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
     }
     .btn {
-      background-color: #ddd;
+      background-color: #333;
+      color: white;
       border: none;
-      padding: 5px 10px;
+      padding: 10px 15px;
       cursor: pointer;
-      margin-right: 5px;
+      border-radius: 5px;
+      font-size: 14px;
+      min-width: 120px;
+      text-align: center;
+    }
+    .btn:hover {
+      background-color: #4e4e4e;
+    }
+
+/*    .order-detail-link {
+      background: #ccc;
+      color: #333;
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+    .order-detail-link:hover {
+      background: #bbb;
+    }*/
+
+    .order-detail-link {
+      color: #007bff;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    .order-detail-link:hover {
+      text-decoration: underline;
     }
   </style>
-  <script>
-    function searchOrders() {
-      let input = document.getElementById("search").value.toLowerCase();
-      let orderGroups = document.querySelectorAll(".order-group");
-
-      orderGroups.forEach(group => {
-        let text = group.innerText.toLowerCase();
-        if (text.includes(input)) {
-          group.style.display = "";
-        } else {
-          group.style.display = "none";
-        }
-      });
-    }
-  </script>
 </head>
 <body>
 <div class="main-content">
   <h2>주문 목록</h2>
 
-  <!-- 검색 입력창 -->
-  <input type="text" id="search" class="search-box" placeholder="주문번호, 상품명" onkeyup="searchOrders()">
+  <input type="text" id="search" class="search-box" placeholder="상품명, 색상" onkeyup="searchOrders()">
 
   <th:block th:each="entry : ${groupedOrders}">
     <div class="order-group">
       <div class="order-header">
-        <span th:text="${#dates.format(entry.value[0].createdAt, 'yyyy. MM. dd')}">2025. 3. 11</span>
-        (주문번호: <span th:text="${entry.value[0].orderId}">9775170</span>)
-        <a th:href="@{/order/detail(orderId=${entry.value[0].orderId})}" class="btn">주문 상세보기</a>
+        <span th:text="${entry.value[0].codeName}"></span>
+        <span th:text="${#dates.format(entry.value[0].createdAt, 'yyyy. MM. dd')}"></span>
+        <a th:href="@{/order/detail(orderId=${entry.value[0].orderId})}" class="order-detail-link">상세보기</a>
       </div>
 
       <div class="order-items">
@@ -91,12 +115,11 @@
           <div class="order-item">
             <img th:src="@{${order.imageUrl}}" alt="상품 이미지">
             <div>
-              <p><span th:text="${order.productName}">상품명</span>
-              <span th:text=" ' / ' + ${order.color}">1</span></p>
-              <p><span th:text="${order.size}">1</span>
-              <span th:text="' / '+${order.quantity} +'개'">1</span></p>
-              <p>₩ <span th:text="${#numbers.formatInteger(order.productTotalPrice, 0, 'COMMA')}">100</span></p>
-
+              <p><span th:text="${order.productName}"></span>
+                <span th:text=" ' / ' + ${order.color}"></span></p>
+              <p><span th:text="${order.size}"></span>
+                <span th:text="' / '+${order.quantity} +'개'"></span></p>
+              <p><span th:text="'₩ '+ ${#numbers.formatInteger(order.productTotalPrice, 0, 'COMMA')}"></span></p>
             </div>
           </div>
         </th:block>
@@ -104,11 +127,23 @@
 
       <div class="order-actions">
         <button class="btn">배송조회</button>
-        <button class="btn" onclick="location.href='/complaint'">교환/반품 신청</button>
+        <button class="btn" th:onclick="'location.href=\'/complaint/' + ${entry.value[0].orderId} + '\''">교환/반품 신청</button>
         <button class="btn">리뷰 작성하기</button>
+
       </div>
     </div>
   </th:block>
 </div>
+<script>
+  function searchOrders() {
+    let input = document.getElementById("search").value.toLowerCase();
+    let orderGroups = document.querySelectorAll(".order-group");
+
+    orderGroups.forEach(group => {
+      let text = group.innerText.toLowerCase();
+      group.style.display = text.includes(input) ? "" : "none";
+    });
+  }
+</script>
 </body>
 </html>

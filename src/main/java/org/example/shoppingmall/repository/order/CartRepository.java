@@ -6,4 +6,6 @@ import java.util.List;
 @Mapper
 public interface CartRepository {
     List<CartDto> getCartList (String customerId);
+    void updateCartData (List<CartDto> cartData);
+    void insertCartData (CartDto cartData);
 }

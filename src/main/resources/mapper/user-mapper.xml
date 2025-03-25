@@ -40,7 +40,7 @@
              #{address},
              #{detailAddress},
              #{zipCode},
-             0 ,
+             1 ,
              #{name},
              #{phoneNumber},
              1)
@@ -104,6 +104,7 @@
             address a ON c.customer_id = a.customer_id  -- 'address' 테이블과 'customer' 테이블을 조인
         WHERE
             c.customer_id = #{customerId}
+        and a.status = 1
     </select>
 
     <update id="modifyUserInfo" parameterType="UserInfoDto">
@@ -170,14 +171,105 @@
         WHERE customer_id = #{customerId}
     </update>
 
-
-
-
     <update id="uploadProfileImage" parameterType="UserInfoDto">
         UPDATE customer
         SET
             profile_img = #{profileImg}
             WHERE
-                customer_id = #{customerId}
+            customer_id = #{customerId}
     </update>
+
+
+    <select id="getUserAddressInfo" parameterType="String" resultType="UserAddressDto">
+        SELECT
+            address_id,
+            delivery_name,
+            zip_code,
+            address,
+            detail_address,
+            status,
+            receive_people,
+            receive_phone_number,
+            created_at
+        FROM address
+        WHERE customer_id = #{customerId}
+        order by created_at
+    </select>
+
+
+    <insert id="insertUserAddressInfo" parameterType="UserAddressDto">
+        INSERT INTO address
+        (address_id,
+         customer_id,
+         code,
+         delivery_name,
+         address,
+         detail_address,
+         zip_code,
+         status,
+         receive_people,
+         receive_phone_number,
+         active_flag
+        )
+        VALUES
+            (#{addressId},
+             #{customerId},
+             #{code},
+             #{deliveryName},
+             #{address},
+             #{detailAddress},
+             #{zipCode},
+             0,
+             #{receivePeople},
+             #{receivePhoneNumber},
+             1)
+    </insert>
+
+    <select id="getUserAddressIdInfo" parameterType="String" resultType="UserAddressDto">
+        SELECT
+            address_id
+        FROM address
+        WHERE customer_id = #{customerId}
+    </select>
+
+    <update id="updateDefaultDeliveryZero" parameterType="UserAddressDto">
+        UPDATE address
+        SET
+            status = 0
+        WHERE
+            customer_id = #{customerId}
+    </update>
+
+    <update id="updateDefaultDelivery" parameterType="UserAddressDto">
+        UPDATE address
+        SET
+            status = 1
+        WHERE
+            address_id = #{addressId}
+    </update>
+
+    <update id="updateAddressManage" parameterType="UserAddressDto">
+        UPDATE address
+        SET
+            address_id = #{addressId},
+            delivery_name= #{deliveryName},
+            zip_code = #{zipCode},
+            address = #{address},
+            detail_address = #{detailAddress},
+            receive_people = #{receivePeople},
+            receive_phone_number = #{receivePhoneNumber}
+        WHERE
+            address_id = #{addressId}
+    </update>
+
+    <delete id="deleteAddress" parameterType="UserAddressDto">
+        DELETE FROM address
+        WHERE address_id = #{addressId}
+    </delete>
+
+
+
+
+
+
 </mapper>

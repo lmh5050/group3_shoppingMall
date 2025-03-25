@@ -9,4 +9,7 @@ import java.util.ArrayList;
 public interface CodeDetailRepository {
     ArrayList<CodeDetailDto>  getCodeData();
     ArrayList<CodeDetailDto>  getCodeDataByCodeCategory(String codeCategory);
+
+    //codeNo 값으로 CodeName 값 찾기(complaint)
+    CodeDetailDto findCodeNameByCodeNo(String codeNo);
 }

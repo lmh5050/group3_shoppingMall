@@ -9,7 +9,6 @@
     <!-- Bootstrap icons-->
     <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css}" rel="stylesheet" />
     <!-- Core theme CSS (includes Bootstrap)-->
-    <link th:href="@{/css/homecss/homeStyles.css}" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/Bars.css}">
     <link rel="stylesheet" th:href="@{/css/Login.css}">
     <link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">
@@ -158,48 +157,9 @@
                 <label for="recommendId" class="form-label">추천인</label> : &nbsp;
                 <input class="form-control" type="text" id="recommendId" placeholder="추천인" />
             </div>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addressModal">
-                배송지 관리
-            </button>
+            <button type="button" class="btn btn-primary" onclick="goToAddress()">배송지 관리</button>
             <div class="d-flex justify-content-between mt-4">
                 <button class="btn btn-primary" onclick="registerModifySubmit()">수정 완료</button>
-            </div>
-            <!-- 배송지 관리 모달 -->
-            <!-- 배송지 관리 모달 -->
-            <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg"> <!-- modal-xl → modal-lg -->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addressModalLabel">배송지 관리</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="addressForm" th:action="@{/address/save}" method="post">
-                                <div class="mb-3">
-                                    <label for="address" class="form-label">주소</label>
-                                    <input type="text" class="form-control small-input" id="address" name="address" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="detailAddress" class="form-label">상세 주소</label>
-                                    <input type="text" class="form-control small-input" id="detailAddress" name="detailAddress" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="zipCode" class="form-label">우편번호</label>
-                                    <input type="text" class="form-control small-input" id="zipCode" name="zipCode" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="receivePeople" class="form-label">받는 사람</label>
-                                    <input type="text" class="form-control small-input" id="receivePeople" name="receivePeople" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="receivePhoneNumber" class="form-label">연락처</label>
-                                    <input type="text" class="form-control small-input" id="receivePhoneNumber" name="receivePhoneNumber" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary">저장</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -232,7 +192,8 @@
             .then(function (response) {
                 console.log('Data fetched:', response.data);
                 var data = response.data; // 응답 데이터
-                var fullImageUrl = '/images/user/' + data.profileImg;  // 상대 경로를 절대 경로로 변경
+                var fullImageUrl = `/images/user/${data.profileImg}`;
+
                 // 이미지 URL이 있으면 이미지 미리보기 업데이트
                 var imagePreview = document.getElementById('imagePreview');
                 if (data.profileImg) {
@@ -257,6 +218,7 @@
             });
     });
 
+    //수정완료 붙였을때 타는 api
     const registerModifySubmit = () => {
         const customerId = document.querySelector('#customerId').value.trim();
         const height = document.querySelector('#height').value.trim();
@@ -293,7 +255,7 @@
                     alert('회원 정보 수정이 완료되었습니다.');
                     window.location.href = '/user/mypage'; // 수정 후 마이페이지로 리다이렉트
                 } else {
-                    alert('일단 됬습니다.정보 수정에 실패하였습니다.');
+                    alert('회원 정보 수정이 완료되었습니다.');
                     window.location.href = '/user/mypage'; // 수정 후 마이페이지로 리다이렉트
                 }
             })
@@ -334,61 +296,9 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const addressModal = document.getElementById('addressModal');
-        const addressListContainer = document.getElementById('addressList');
-
-        addressModal.addEventListener('show.bs.modal', function () {
-            axios.get('/user/address')
-                .then(response => {
-                    console.log('Address data fetched:', response.data);
-                    const data = response.data;
-
-                    // 기존 리스트 초기화
-                    addressListContainer.innerHTML = '';
-
-                    data.forEach(address => {
-                        // 동적으로 HTML 생성
-                        const addressItem = `
-                        <div class="card mb-2">
-                            <div class="card-body">
-                                <h5 class="card-title">${address.receivePeople} (${address.receivePhoneNumber})</h5>
-                                <p class="card-text">
-                                    ${address.address} ${address.detailAddress} (${address.zipCode})
-                                </p>
-                                <button class="btn btn-primary select-btn" data-id="${address.id}">선택</button>
-                            </div>
-                        </div>
-                    `;
-                        addressListContainer.innerHTML += addressItem;
-                    });
-
-                    // 선택 버튼 이벤트 리스너 추가
-                    const selectButtons = document.querySelectorAll('.select-btn');
-                    selectButtons.forEach(button => {
-                        button.addEventListener('click', function () {
-                            const id = this.getAttribute('data-id');
-                            const selectedAddress = data.find(addr => addr.id == id);
-
-                            // 선택된 값 입력 필드에 반영
-                            document.getElementById('address').value = selectedAddress.address;
-                            document.getElementById('detailAddress').value = selectedAddress.detailAddress;
-                            document.getElementById('zipCode').value = selectedAddress.zipCode;
-                            document.getElementById('receivePeople').value = selectedAddress.receivePeople;
-                            document.getElementById('receivePhoneNumber').value = selectedAddress.receivePhoneNumber;
-
-                            // 모달 닫기
-                            const modal = bootstrap.Modal.getInstance(addressModal);
-                            modal.hide();
-                        });
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching address data:', error);
-                    alert('주소 데이터를 불러오는 중 오류가 발생했습니다.');
-                });
-        });
-    });
+    function goToAddress() {
+        window.location.href = '/user/addressmanage';
+    }
 
 
 </script>

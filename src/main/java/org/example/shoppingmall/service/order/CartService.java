@@ -19,4 +19,16 @@ public class CartService {
         List<CartDto> cartList = cartRepository.getCartList(customerId);
         return cartList;
     }
+
+    public void updateCartData(List<CartDto> cartData) {
+        cartRepository.updateCartData(cartData);
+    }
+
+    public void insertCartData(CartDto cartData) {
+        cartRepository.insertCartData(cartData);
+    }
+
+
+
+
 }

@@ -3,20 +3,20 @@ package org.example.shoppingmall.controller.User;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.apache.catalina.User;
-import org.example.shoppingmall.dto.User.InsertUserInfoDto;
-import org.example.shoppingmall.dto.User.UserEmailDto;
-import org.example.shoppingmall.dto.User.UserInfoDto;
+import org.example.shoppingmall.dto.User.*;
+import org.example.shoppingmall.dto.order.AddressDto;
 import org.example.shoppingmall.service.login.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.example.shoppingmall.dto.User.UserLoginInfoDto;
 import org.example.shoppingmall.service.login.EmailService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -57,6 +57,18 @@ public class UserController {
         }
 
         return result; // 결과 반환
+    }
+
+    @PostMapping("/user/logout") // 유저 로그아웃 실제적 기능하는 API
+    public String userLogout(HttpSession session) {
+        // 세션에서 customerId 제거
+        session.removeAttribute("customerId");
+
+        // 세션 무효화
+        session.invalidate();  // 세션 자체를 무효화하여 모든 세션 데이터 삭제
+
+        // 디폴트 페이지로 리다이렉트
+        return "redirect:/";  // 디폴트 페이지로 리다이렉트
     }
 
     @GetMapping("/user/mypage")
@@ -139,31 +151,38 @@ public class UserController {
     public String uploadProfileImage(@RequestParam("profileImage") MultipartFile file,
                                      HttpSession session) {
         try {
-            // 파일 처리 로직
+            // 파일 이름 확인
             String fileName = file.getOriginalFilename();
-            if (fileName == null) {
+            if (fileName == null || fileName.isEmpty()) {
                 return "error"; // 파일 이름이 없는 경우 처리
             }
 
-            // 파일 이름 중복 방지 (예: UUID 사용)
-            String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
-
-            // 절대 경로로 파일을 저장할 경로 설정
-            String uploadDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/User/";
-            File dir = new File(uploadDirectory);
-            if (!dir.exists()) {
-                dir.mkdirs(); // 경로가 없으면 생성
+            // MIME 타입 체크 (PNG만 허용)
+            String contentType = file.getContentType();
+            if (!"image/png".equals(contentType)) {
+                return "error"; // PNG가 아닌 경우 에러 처리
             }
 
-            // 파일을 해당 경로에 저장
-            File destFile = new File(uploadDirectory, uniqueFileName);
-            file.transferTo(destFile);
-
-            // 세션에서 customerId를 가져오기
+            // 세션에서 customerId 가져오기
             String customerId = (String) session.getAttribute("customerId");
             if (customerId == null) {
                 return "error"; // 세션에 customerId가 없는 경우 처리
             }
+
+            // 파일 이름 중복 방지 + 원본 확장자 유지
+            String extension = fileName.substring(fileName.lastIndexOf("."));
+            String uniqueFileName = UUID.randomUUID().toString() + "_" + customerId + extension;
+
+            // 파일 저장 경로 설정
+            String uploadDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images/user/";
+            File dir = new File(uploadDirectory);
+            if (!dir.exists()) {
+                dir.mkdirs(); // 경로 없으면 생성
+            }
+
+            // 파일 저장
+            File destFile = new File(uploadDirectory, uniqueFileName);
+            file.transferTo(destFile);
 
             // 사용자 정보에 프로필 이미지 경로 저장
             UserInfoDto userinfo = new UserInfoDto();
@@ -180,6 +199,61 @@ public class UserController {
         }
     }
 
+
+    @GetMapping("/user/addressmanage")
+    public String getUserAddress(HttpSession session, Model model) {
+        String customerId = (String) session.getAttribute("customerId");
+        if (customerId == null) {
+            return "error"; // 세션에 customerId가 없는 경우 처리
+        }
+        model.addAttribute("customerId", customerId); // customerId 값을 모델에 추가
+        return "user/addressmanage"; // user/addressmanage.html 템플릿 반환
+    }
+
+
+    @GetMapping("/user/addressmanage/{customerId}")
+    @ResponseBody
+    public List<UserAddressDto> getUserAddressInfo(@PathVariable String customerId) {
+        List<UserAddressDto> userinfo = loginService.getUserAddressInfo(customerId);
+        return userinfo;
+    }
+
+    @PostMapping("/user/addressmanage")
+    @ResponseBody
+    public String insertUserAddressInfo(@RequestBody UserAddressDto UserAddress ,
+                                                HttpSession session) {
+        String customerId = (String) session.getAttribute("customerId");
+        UserAddress.setCustomerId(customerId);
+        loginService.insertUserAddressInfo(UserAddress);
+        return "success";
+    }
+
+    @PostMapping("/user/addressmanage/select")
+    @ResponseBody
+    public String updateDefaultDelivery(@RequestBody UserAddressDto UserAddress ,
+                                        HttpSession session) {
+        String customerId = (String) session.getAttribute("customerId");
+        UserAddress.setCustomerId(customerId);
+        loginService.updateDefaultDelivery(UserAddress);
+        return "success";
+    }
+
+    @PostMapping("/user/addressmanage/update")
+    @ResponseBody
+    public void updateAddressManage(@RequestBody UserAddressDto UserAddress ,
+                                        HttpSession session) {
+        String customerId = (String) session.getAttribute("customerId");
+        UserAddress.setCustomerId(customerId);
+        loginService.updateAddressManage(UserAddress);
+    }
+
+    @PostMapping("/user/addressmanage/delete")
+    @ResponseBody
+    public void deleteAddress(@RequestBody UserAddressDto UserAddress ) {
+        loginService.deleteAddress(UserAddress);
+    }
+
+
     @PostMapping("/user/emailSend") //이메일 인증 , 디벨롭 필요 api
     @ResponseBody //axios json 이용하기 위해서 responseBody 추가
     public String emailSend(@RequestBody UserEmailDto email, HttpServletResponse response) {
@@ -189,7 +263,5 @@ public class UserController {
         emailService.sendVerificationEmail(email.getEmail());
         return "123"; // 결과 반환
     }
-
-
 
 }

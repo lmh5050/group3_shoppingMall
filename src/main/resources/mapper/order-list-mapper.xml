@@ -2,38 +2,47 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.example.shoppingmall.repository.order.OrderListRepository">
+   <!--모든 주문 조회(관리자)-->
+<!--    <select id="selectOrderAll">
+        SELECT *
+        FROM orders o JOIN order_detail od
+                           ON o.order_id = od.order_id
+    </select>-->
+
     <!--고객별 주문 목록 가져오기-->
     <select id="findOrderListByCustomerId" parameterType="String" resultType="OrderListDto">
         SELECT
             o.created_at,
             o.order_id,
-            o.order_status,
             od.product_name,
             od.size,
             od.color,
             od.quantity,
             od.product_total_price,
-            pdi.product_id
+            pdi.product_id,
+            cd.code_name
         FROM orders o JOIN order_detail od
                            ON o.order_id = od.order_id
                       JOIN product_detail pd
                            ON od.product_detail_id = pd.product_detail_id
-                      JOIN product_description__image pdi
+                      JOIN product_description_image pdi
                            ON pd.product_id = pdi.product_id
+                      JOIN code_detail cd
+                           ON o.order_status = cd.code_no
         WHERE o.customer_id = #{customer_id}
-          AND o.active_flag = 1;
-    </select>
+          AND o.active_flag = 1
+        ORDER BY o.order_id DESC;
+        </select>
 
     <!--특정 주문에 대한 주문 상세 정보 가져오기-->
     <select id="findOrderDetailByOrderId" parameterType="Long" resultType="OrderDetailDto">
         SELECT DISTINCT
             o.created_at,
             o.order_id,
-            o.order_status,
-            o.total_order_amount,
+            o.total_amount,
             o.total_discount_amount,
             p.discount_amount,
-            p.total_amount,
+            p.final_amount,
             p.bank_deposit,
             p.account_deposit,
             pm.name,
@@ -48,7 +57,8 @@
             od.color,
             od.quantity,
             od.product_total_price,
-            pdi.product_id
+            pdi.product_id,
+            cd.code_name
         FROM orders o JOIN payment p
                            ON o.order_id = p.order_id
                       JOIN payment_method pm
@@ -59,14 +69,23 @@
                            ON o.order_id = od.order_id
                       JOIN product_detail pd
                            ON od.product_detail_id = pd.product_detail_id
-                      JOIN product_description__image pdi
+                      JOIN product_description_image pdi
                            ON pd.product_id = pdi.product_id
+                      JOIN code_detail cd
+                           ON o.order_status = cd.code_no
         WHERE o.order_id = #{order_id}
-          AND o.active_flag = 1;
+          AND o.active_flag = 1
     </select>
 
-    <update id="deleteOrder" parameterType="Long">
+    <update id="deleteOrder" parameterType="Map">
         UPDATE orders
+        SET active_flag = 0
+        WHERE order_id = #{orderId}
+          AND customer_id = #{customerId}
+    </update>
+
+    <update id="deletePayment" parameterType="Long">
+        UPDATE payment
         SET active_flag = 0
         WHERE order_id = #{orderId}
     </update>
@@ -76,5 +95,8 @@
         SET active_flag = 0
         WHERE order_id = #{orderId}
     </update>
+
+
+
 
 </mapper>
