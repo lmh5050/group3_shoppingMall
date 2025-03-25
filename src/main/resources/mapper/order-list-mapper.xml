@@ -21,7 +21,8 @@
                       JOIN product_description__image pdi
                            ON pd.product_id = pdi.product_id
         WHERE o.customer_id = #{customer_id}
-          AND o.active_flag = 1;
+          AND o.active_flag = 1
+        ORDER BY o.order_id DESC
     </select>
 
     <!--특정 주문에 대한 주문 상세 정보 가져오기-->
@@ -30,10 +31,10 @@
             o.created_at,
             o.order_id,
             o.order_status,
-            o.total_order_amount,
+            o.total_amount,
             o.total_discount_amount,
             p.discount_amount,
-            p.total_amount,
+            p.final_amount,
             p.bank_deposit,
             p.account_deposit,
             pm.name,
@@ -62,11 +63,18 @@
                       JOIN product_description__image pdi
                            ON pd.product_id = pdi.product_id
         WHERE o.order_id = #{order_id}
-          AND o.active_flag = 1;
+          AND o.active_flag = 1
     </select>
 
-    <update id="deleteOrder" parameterType="Long">
+    <update id="deleteOrder" parameterType="Map">
         UPDATE orders
+        SET active_flag = 0
+        WHERE order_id = #{orderId}
+          AND customer_id = #{customerId}
+    </update>
+
+    <update id="deletePayment" parameterType="Long">
+        UPDATE payment
         SET active_flag = 0
         WHERE order_id = #{orderId}
     </update>
@@ -76,5 +84,8 @@
         SET active_flag = 0
         WHERE order_id = #{orderId}
     </update>
+
+
+
 
 </mapper>
