@@ -18,7 +18,44 @@
             padding-right: initial;
             padding-left: inherit;
         }
+        .card-img-top.grayscale {
+            filter: grayscale(100%); /* 회색으로 바꾸는 필터 */
+            opacity: 0.5; /* 이미지를 반투명하게 처리 */
+        }
+
+        .sold-out-overlay {
+            position: absolute;
+            top: 50%;
+            left: 100%; /* 이미지의 오른쪽에 위치하도록 조정 */
+            transform: translate(20px, -50%); /* 오른쪽으로 조금 띄우고, 세로 중앙 정렬 */
+            font-size: 24px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 10px 20px;
+            border-radius: 5px;
+            white-space: nowrap; /* 텍스트가 한 줄로 나가게 처리 */
+        }
     </style>
+    <style>
+        .card-img-top.grayscale {
+            filter: grayscale(100%); /* 회색으로 바꾸는 필터 */
+            opacity: 0.5; /* 이미지를 반투명하게 처리 */
+        }
+
+        .sold-out-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+    </style>
+
 </head>
 <script>
 
@@ -41,22 +78,27 @@
 <!-- Product section-->
 <section class="py-5">
     <div class="container px-4 px-lg-5 my-5">
-        <div class="row gx-4 gx-lg-5 align-items-center ">
-            <div class="col-md-6" style="width: 450px;">
-                <img style="width: 400px; height: 500px;" class="card-img-top mb-5 mb-md-0" th:src="|/images/product/${product.getProductId()}.png|"  alt=""/>
+        <div class="row gx-4 gx-lg-5 align-items-center">
+            <div class="col-md-6 d-flex align-items-center">
+                <div class="position-relative">
+                    <img style="width: 400px; height: 500px;" class="card-img-top mb-5 mb-md-0"
+                         th:classappend="${product.status == 'sold-out' ? ' grayscale' : ''}"
+                         th:src="|/images/product/${product.getProductId()}.png|"  alt=""/>
+                    <!-- Sold Out overlay -->
+                    <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
+                </div>
             </div>
-            <div class="col-md-6 " >
+            <div class="col-md-6">
                 <div class="small mb-1">SKU: BST-498</div>
                 <h1 class="display-5 fw-bolder" th:text="${product.getName()}">Shop item template</h1>
                 <div class="fs-5 mb-5">
-                    <!--                    <span class="text-decoration-line-through">$45.00</span>-->
                     <span th:text="${product.getPrice()}">$40.00</span>
                 </div>
                 <p class="lead" th:text="${product.getDescription()}">Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium at dolorem quidem modi. Nam sequi consequatur obcaecati excepturi alias magni, accusamus eius blanditiis delectus ipsam minima ea iste laborum vero?</p>
                 <div class="d-flex">
                     <form id="buyNowForm" action="/order/order" method="post">
                         <label for="inputQuantity"  style="margin: 0 0 0 10px;">
-                        <input  name="quantity" id="inputQuantity" type="num" value="1" style="max-width: 3rem" />
+                            <input name="quantity" id="inputQuantity" type="num" value="1" style="max-width: 3rem" />
                         </label>
                         <label>
                             <select style="margin: 0 0 0 10px;" name="productDetailId">
@@ -66,11 +108,14 @@
                             </select>
                         </label>
                         <button class="btn btn-outline-dark flex-shrink-0" type="submit"
+                                th:if="${!product.getStatus().equals('sold-out')}"
                                 onclick="return addProductToCart()" style="margin: 0 0 0 10px;">
                             <i class="bi-cart-fill me-1"></i>
                             Add to cart
                         </button>
-                        <button class="btn btn-outline-dark flex-shrink-0" type="submit" style="margin: 0 0 0 10px;">
+                        <button class="btn btn-outline-dark flex-shrink-0"
+                                th:if="${!product.getStatus().equals('sold-out')}"
+                                type="submit" style="margin: 0 0 0 10px;">
                             <i class="bi-cart-fill me-1"></i>
                             Buy Now
                         </button>
@@ -82,6 +127,7 @@
         </div>
     </div>
 </section>
+
 <!-- Related items section-->
 <section class="py-5 bg-light">
     <div class="container px-4 px-lg-5 mt-5">
