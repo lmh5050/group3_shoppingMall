@@ -183,10 +183,7 @@
                     });
 
                 // 주문 상품의 정보로 파라미터 생성 (예시: customerId, productDetailId, quantity)
-<<<<<<< HEAD
-=======
-                const customerId = 'admin';  // 예시: 실제 customerId를 가져와야 함
->>>>>>> b251de21632fd2ac35232f2c55c3216add818bfd
+                const customerId = document.getElementById("customerId").value.trim();  // 예시: 실제 customerId를 가져와야 함
                 const productDetailId = selectedItems.map(item => item.productDetailId).join(',');
                 const quantity = selectedItems.map(item => item.quantity).join(',');
                 const no = selectedItems.map(item => item.no).join(',');  // no 값을 파라미터로 추가
@@ -199,6 +196,5 @@
         });
     });
 </script>
-
 </body>
 </html>
