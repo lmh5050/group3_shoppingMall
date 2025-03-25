@@ -20,12 +20,11 @@ public class CartController {
     public CartController(CartService cartService) {
         this.cartService = cartService;
     }
-
     @GetMapping("/cart/{id}")
     public String showCart(@PathVariable String id, Model model) {
         // 경로 변수 'id'를 사용하여 필요한 로직 처리
         System.out.println("customerId: " + id); // 콘솔에 출력하거나 로직에 활용
-        id = "ktq1548";
+        id = "admin";
         // "order/cart" 페이지를 반환
         model.addAttribute("customerId", id);
         // "order/cart" 페이지를 반환

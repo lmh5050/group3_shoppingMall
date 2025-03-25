@@ -26,6 +26,7 @@ public class OrderListService {
         return orderListRepository.findOrderDetailByOrderId(orderId);
     }
 
+    //주문삭제
     @Transactional
     public void deleteOrder(Long orderId, String customerId) {
         Map<String, Object> params = new HashMap<>();
