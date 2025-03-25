@@ -11,4 +11,11 @@
         SELECT * FROM code_detail
         WHERE code_category = #{codeCategory}
     </select>
+
+    <!-- code_no 값으로 code_name 조회(complaint)  -->
+    <select id="findCodeNameByCodeNo">
+        SELECT code_name
+        FROM code_detail
+        WHERE code_no = #{codeNo}
+    </select>
 </mapper>

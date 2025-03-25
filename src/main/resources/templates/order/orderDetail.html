@@ -87,6 +87,22 @@
         .order-summary p {
             margin: 0;
         }
+
+        .gray-button {
+            background-color: #d3d3d3;
+            color: #333;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+            border: none;
+        }
+
+        .gray-button:hover {
+            background-color: #a9a9a9;
+        }
     </style>
 </head>
 <body>
@@ -130,10 +146,18 @@
 
         <!-- 결제 정보 -->
         <div class="section">
-            <div class="section-title">결제 정보</div>
+            <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                결제 정보
+                <button class="gray-button" th:onclick="'openReceiptPopup(' + ${entry.value[0].orderId} + ')'">거래명세서</button>
+            </div>
+
+            <div class="order-summary">
+                <p></p>
+            </div>
+
             <div class="order-summary">
                 <p>상품 금액:</p>
-                <span th:text="${#numbers.formatInteger(entry.value[0].totalDiscountAmount.add(entry.value[0].totalOrderAmount), 0, 'COMMA')}">0</span>
+                <span th:text="${#numbers.formatInteger(entry.value[0].totalDiscountAmount.add(entry.value[0].totalAmount), 0, 'COMMA')}">0</span>
             </div>
             <div class="order-summary">
                 <p>할인 금액:</p>
@@ -145,47 +169,82 @@
             </div>
             <div class="order-summary">
                 <p>결제 금액:</p>
-                <span th:text="${#numbers.formatInteger(entry.value[0].totalAmount, 0, 'COMMA')}">배송 중</span>
+                <span th:text="${#numbers.formatInteger(entry.value[0].finalAmount, 0, 'COMMA')}">배송 중</span>
             </div>
             <div class="order-summary">
                 <p>결제 방법:</p>
                 <span th:text="${entry.value[0].name}">배송 중</span>
             </div>
             <div class="order-summary">
-            <p></p>
+                <p></p>
                 <span th:text="${entry.value[0].bankDeposit}"></span>
             </div>
             <div class="order-summary">
-            <p></p>
+                <p></p>
                 <span th:text="${entry.value[0].accountDeposit}"></span>
             </div>
         </div>
-    </th:block>
 
-    <!-- 주문 관리 버튼 -->
-    <div class="section">
-        <button class="btn">배송조회</button>
-        <button class="btn">교환/반품 신청</button>
-        <button class="btn">리뷰 작성하기</button>
-        <button class="btn" onclick="history.back()">목록으로</button>
-        <button class="delete-btn" onclick="confirmDelete()">주문 내역 삭제</button>
-    </div>
+        <!-- 주문 관리 버튼 -->
+        <div class="section">
+            <button class="btn">배송조회</button>
+            <button class="btn" th:onclick="'location.href=\'/complaint/' + ${entry.value[0].orderId} + '\''">교환/반품 신청</button>
+            <button class="btn">리뷰 작성하기</button>
+            <button class="btn" onclick="history.back()">목록으로</button>
+            <button class="delete-btn"
+                    th:data-order-id="${entry.value[0].orderId}"
+                    onclick="confirmDelete(this.getAttribute('data-order-id'))">
+                주문 내역 삭제
+            </button>
+        </div>
+    </th:block>
 </div>
 
 <script>
-    // 주문 내역 삭제 함수 (임시로 콘솔에 출력하는 방식으로 구현)
-    function confirmDelete() {
-        // 확인 다이얼로그를 표시
-        var result = confirm("정말로 삭제하시겠습니까?");
-        if (result) {
-            // 삭제 버튼을 클릭하고 "확인"을 누르면 삭제 작업이 실행될 수 있습니다.
-            alert("삭제되었습니다.");  // 삭제 작업을 여기서 수행하거나 삭제 관련 로직을 추가하세요.
-            // 예: 삭제 처리하는 코드 (예: 서버에 요청 보내기)
-        } else {
-            // 취소를 누르면 아무 일도 일어나지 않습니다.
-            alert("삭제가 취소되었습니다.");
+    // 거래명세서 팝업 창 열기
+    function openReceiptPopup(orderId) {
+        const width = 400, height = 650;
+        const left = (window.screen.width - width) / 2;
+        const top = (window.screen.height - height) / 2;
+
+        // 팝업 창 열기
+        const popup = window.open(
+            '/payment/receipt/' + orderId,
+            'receiptPopup',
+            `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`
+        );
+
+        // 팝업이 정상적으로 열렸는지 확인
+        if (!popup) {
+            alert('팝업을 열 수 없습니다. 팝업 차단을 해제해 주세요.');
         }
     }
+    function confirmDelete(orderId) {
+        if (confirm("정말 삭제하시겠습니까?")) {
+            location.href = "/order/delete/" + orderId;
+        }
+    }
+   /* // 주문 내역 삭제 함수
+    function confirmDelete(button) {
+        var orderId = button.getAttribute('data-order-id');
+        var result = confirm("정말로 삭제하시겠습니까?");
+        if (result) {
+            $.ajax({
+                url: '/order/delete',  // 삭제 요청을 보낼 URL
+                type: 'POST',  // HTTP 메서드 (POST)
+                data: { orderId: orderId },  // 삭제할 주문 ID 전달
+                success: function(response) {
+                    alert("주문이 삭제되었습니다.");
+                    location.reload();  // 페이지를 새로 고쳐서 삭제된 주문을 화면에서 제거
+                },
+                error: function(error) {
+                    alert("주문 삭제에 실패했습니다.");
+                }
+            });
+        } else {
+            alert("삭제가 취소되었습니다.");
+        }
+    }*/
 </script>
 
 </body>

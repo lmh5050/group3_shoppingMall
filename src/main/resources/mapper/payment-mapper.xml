@@ -9,9 +9,9 @@
             total_order_amount, total_quantity, order_datetime
         )
         VALUES (
-            #{orderId}, #{customerId}, #{orderStatus}, #{totalDiscountAmount},
-            #{totalOrderAmount}, #{totalQuantity}, #{orderDatetime}
-        )
+                   #{orderId}, #{customerId}, #{orderStatus}, #{totalDiscountAmount},
+                   #{totalOrderAmount}, #{totalQuantity}, #{orderDatetime}
+               )
     </insert>
 
     <!-- 주문 상세 정보 저장 -->
@@ -22,10 +22,10 @@
             product_price, product_total_price, status
         )
         VALUES (
-            #{orderId}, #{serialNumber}, #{productDetailId}, #{productName},
-            #{size}, #{color}, #{quantity}, #{price}, #{discountAmount},
-            #{productPrice}, #{productTotalPrice}, #{status}
-        )
+                   #{orderId}, #{serialNumber}, #{productDetailId}, #{productName},
+                   #{size}, #{color}, #{quantity}, #{price}, #{discountAmount},
+                   #{productPrice}, #{productTotalPrice}, #{status}
+               )
     </insert>
 
     <!-- 결제 정보 저장 -->
@@ -33,28 +33,28 @@
         INSERT INTO payment (
             payment_id, order_id, payment_method_id, payment_code,
             status, total_amount, tax_amount, discount_amount,
-            payment_datetime, failure_reason, card_number, installment, 
+            payment_datetime, failure_reason, card_number, installment,
             bank_deposit, cash_receipt_type, cash_receipt_number, account_deposit
         )
         VALUES (
-            #{paymentId}, #{orderId}, #{paymentMethodId}, #{paymentCode},
-            #{status}, #{totalAmount}, #{taxAmount}, #{discountAmount},
-            #{paymentDatetime}, #{failureReason}, #{cardNumber}, #{cardInstallment},
-            #{cashBankName}, #{cashReceiptType}, #{cashReceiptNumber}, #{accountDeposit}
-        )
+                   #{paymentId}, #{orderId}, #{paymentMethodId}, #{paymentCode},
+                   #{status}, #{totalAmount}, #{taxAmount}, #{discountAmount},
+                   #{paymentDatetime}, #{failureReason}, #{cardNumber}, #{cardInstallment},
+                   #{cashBankName}, #{cashReceiptType}, #{cashReceiptNumber}, #{accountDeposit}
+               )
     </insert>
 
     <!-- 마지막 결제 ID 조회 -->
     <select id="getLastPaymentId" resultType="String">
-        SELECT payment_id 
-        FROM payment 
-        ORDER BY payment_id DESC 
-        LIMIT 1
+        SELECT payment_id
+        FROM payment
+        ORDER BY payment_id DESC
+            LIMIT 1
     </select>
 
     <!-- 주문 정보 조회 -->
     <select id="getOrder" parameterType="Integer" resultType="org.example.shoppingmall.dto.payment.PaymentOrderDto">
-        SELECT order_id, customer_id, order_status, 
+        SELECT order_id, customer_id, order_status,
                total_discount_amount, total_order_amount, total_quantity
         FROM orders
         WHERE order_id = #{orderId}
@@ -62,9 +62,9 @@
 
     <!-- 주문 상세 정보 조회 -->
     <select id="getOrderDetails" parameterType="Integer" resultType="org.example.shoppingmall.dto.payment.PaymentOrderDetailDto">
-        SELECT order_id, serial_number as orderDetailId, product_detail_id as productId, 
+        SELECT order_id, serial_number as orderDetailId, product_detail_id as productId,
                product_name, size, color, quantity, price, discount_amount,
-               product_price, product_total_price, status
+            product_price, product_total_price, status
         FROM order_detail
         WHERE order_id = #{orderId}
     </select>
@@ -85,7 +85,7 @@
         FROM payment
         WHERE order_id = #{orderId}
         ORDER BY payment_datetime DESC
-        LIMIT 1
+            LIMIT 1
     </select>
 
     <!-- 결제 정보 업데이트 -->
@@ -129,23 +129,23 @@
             cash_receipt_number,
             account_deposit
         ) VALUES (
-            #{paymentId},
-            #{orderId},
-            #{paymentMethodId},
-            #{paymentCode},
-            #{status},
-            #{totalAmount},
-            #{taxAmount},
-            #{discountAmount},
-            #{paymentDatetime},
-            #{failureReason},
-            #{cardNumber},
-            #{cardInstallment},
-            #{cashBankName},
-            #{cashReceiptType},
-            #{cashReceiptNumber},
-            #{accountDeposit}
-        )
+                     #{paymentId},
+                     #{orderId},
+                     #{paymentMethodId},
+                     #{paymentCode},
+                     #{status},
+                     #{totalAmount},
+                     #{taxAmount},
+                     #{discountAmount},
+                     #{paymentDatetime},
+                     #{failureReason},
+                     #{cardNumber},
+                     #{cardInstallment},
+                     #{cashBankName},
+                     #{cashReceiptType},
+                     #{cashReceiptNumber},
+                     #{accountDeposit}
+                 )
     </insert>
 
     <!-- 주문 이력 저장 -->
@@ -155,9 +155,9 @@
             total_order_amount, total_quantity, order_datetime
         )
         VALUES (
-            #{orderId}, #{customerId}, #{orderStatus}, #{totalDiscountAmount},
-            #{totalOrderAmount}, #{totalQuantity}, #{orderDatetime}
-        )
+                   #{orderId}, #{customerId}, #{orderStatus}, #{totalDiscountAmount},
+                   #{totalOrderAmount}, #{totalQuantity}, #{orderDatetime}
+               )
     </insert>
 
     <insert id="insertOrderDetailHistory">
@@ -175,19 +175,19 @@
             product_total_price,
             status
         ) VALUES (
-            #{orderId},
-            #{serialNumber},
-            #{productDetailId},
-            #{productName},
-            #{size},
-            #{color},
-            #{quantity},
-            #{price},
-            #{discountAmount},
-            #{productPrice},
-            #{productTotalPrice},
-            #{status}
-        )
+                     #{orderId},
+                     #{serialNumber},
+                     #{productDetailId},
+                     #{productName},
+                     #{size},
+                     #{color},
+                     #{quantity},
+                     #{price},
+                     #{discountAmount},
+                     #{productPrice},
+                     #{productTotalPrice},
+                     #{status}
+                 )
     </insert>
 
 </mapper>

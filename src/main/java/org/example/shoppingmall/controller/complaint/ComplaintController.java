@@ -82,10 +82,14 @@ public class ComplaintController {
         return "complaint/complaintDetail"; // 상세 페이지로 이동
     }
 
-    //민원 삭제
+    //민원 삭제 플래그 활성화
     @PostMapping("/complaint/delete/{complaintId}")
-    public String deleteComplaint(@PathVariable("complaintId") String complaintId) {
-        complaintService.deleteComplaint(complaintId);
+    public String deleteComplaint(@PathVariable("complaintId") String complaintId,
+                                  @RequestParam ("complaintType")String complaintType) {
+        complaintService.getComplaintById(complaintId);
+
+        complaintService.deleteComplaint(complaintId, complaintType);
+
 
         return "redirect:/complaint/list";
     }

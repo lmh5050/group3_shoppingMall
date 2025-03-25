@@ -40,7 +40,7 @@
              #{address},
              #{detailAddress},
              #{zipCode},
-             0 ,
+             1 ,
              #{name},
              #{phoneNumber},
              1)
@@ -78,6 +78,7 @@
             c.birth,
             c.job,
             c.weight,
+            c.height,
             c.profile_img,
             c.personal_color,
             c.out_date,
@@ -103,6 +104,175 @@
             address a ON c.customer_id = a.customer_id  -- 'address' 테이블과 'customer' 테이블을 조인
         WHERE
             c.customer_id = #{customerId}
+        and a.status = 1
     </select>
+
+    <update id="modifyUserInfo" parameterType="UserInfoDto">
+        UPDATE customer
+        <set>
+            <if test="customerFeature != null and customerFeature != ''">
+                customer_feature = #{customerFeature},
+            </if>
+            <if test="sex != null and sex != ''">
+                sex = #{sex},
+            </if>
+            <if test="phoneNumber != null and phoneNumber != ''">
+                phone_number = #{phoneNumber},
+            </if>
+            <if test="profileImg != null and profileImg != ''">
+                profile_img = #{profileImg},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="birth != null and birth != ''">
+                birth = #{birth},
+            </if>
+            <if test="job != null and job != ''">
+                job = #{job},
+            </if>
+            <if test="weight != null">
+                weight = #{weight},
+            </if>
+            <if test="height != null">
+                height = #{height},
+            </if>
+            <if test="personalColor != null and personalColor != ''">
+                personal_color = #{personalColor},
+            </if>
+            <if test="outDate != null">
+                out_date = #{outDate},
+            </if>
+            <if test="outComment != null and outComment != ''">
+                out_comment = #{outComment},
+            </if>
+            <if test="note != null and note != ''">
+                note = #{note},
+            </if>
+            <if test="registerRoot != null and registerRoot != ''">
+                register_root = #{registerRoot},
+            </if>
+            <if test="recommendId != null and recommendId != ''">
+                recommend_id = #{recommendId},
+            </if>
+            <if test="recentAccessIp != null and recentAccessIp != ''">
+                recent_access_ip = #{recentAccessIp},
+            </if>
+            <if test="pwModifyDate != null">
+                pw_modify_date = #{pwModifyDate},
+            </if>
+            <if test="providerId != null and providerId != ''">
+                provider_id = #{providerId},
+            </if>
+            <if test="allocatedAccountNumber != null and allocatedAccountNumber != ''">
+                allocated_account_number = #{allocatedAccountNumber},
+            </if>
+            <if test="bank != null and bank != ''">
+                bank = #{bank},
+            </if>
+        </set>
+        WHERE customer_id = #{customerId}
+    </update>
+
+    <update id="uploadProfileImage" parameterType="UserInfoDto">
+        UPDATE customer
+        SET
+            profile_img = #{profileImg}
+            WHERE
+                customer_id = #{customerId}
+    </update>
+
+
+    <select id="getUserAddressInfo" parameterType="String" resultType="UserAddressDto">
+        SELECT
+            address_id,
+            delivery_name,
+            zip_code,
+            address,
+            detail_address,
+            status,
+            receive_people,
+            receive_phone_number,
+            created_at
+        FROM address
+        WHERE customer_id = #{customerId}
+        order by created_at
+    </select>
+
+
+    <insert id="insertUserAddressInfo" parameterType="UserAddressDto">
+        INSERT INTO address
+        (address_id,
+         customer_id,
+         code,
+         delivery_name,
+         address,
+         detail_address,
+         zip_code,
+         status,
+         receive_people,
+         receive_phone_number,
+         active_flag
+        )
+        VALUES
+            (#{addressId},
+             #{customerId},
+             #{code},
+             #{deliveryName},
+             #{address},
+             #{detailAddress},
+             #{zipCode},
+             0,
+             #{receivePeople},
+             #{receivePhoneNumber},
+             1)
+    </insert>
+
+    <select id="getUserAddressIdInfo" parameterType="String" resultType="UserAddressDto">
+        SELECT
+            address_id
+        FROM address
+        WHERE customer_id = #{customerId}
+    </select>
+
+    <update id="updateDefaultDeliveryZero" parameterType="UserAddressDto">
+        UPDATE address
+        SET
+            status = 0
+        WHERE
+            customer_id = #{customerId}
+    </update>
+
+    <update id="updateDefaultDelivery" parameterType="UserAddressDto">
+        UPDATE address
+        SET
+            status = 1
+        WHERE
+            address_id = #{addressId}
+    </update>
+
+    <update id="updateAddressManage" parameterType="UserAddressDto">
+        UPDATE address
+        SET
+            address_id = #{addressId},
+            delivery_name= #{deliveryName},
+            zip_code = #{zipCode},
+            address = #{address},
+            detail_address = #{detailAddress},
+            receive_people = #{receivePeople},
+            receive_phone_number = #{receivePhoneNumber}
+        WHERE
+            address_id = #{addressId}
+    </update>
+
+    <delete id="deleteAddress" parameterType="UserAddressDto">
+        DELETE FROM address
+        WHERE address_id = #{addressId}
+    </delete>
+
+
+
+
+
 
 </mapper>

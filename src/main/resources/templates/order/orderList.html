@@ -55,34 +55,20 @@
       margin-right: 5px;
     }
   </style>
-  <script>
-    function searchOrders() {
-      let input = document.getElementById("search").value.toLowerCase();
-      let orderGroups = document.querySelectorAll(".order-group");
 
-      orderGroups.forEach(group => {
-        let text = group.innerText.toLowerCase();
-        if (text.includes(input)) {
-          group.style.display = "";
-        } else {
-          group.style.display = "none";
-        }
-      });
-    }
-  </script>
 </head>
 <body>
 <div class="main-content">
   <h2>주문 목록</h2>
 
   <!-- 검색 입력창 -->
-  <input type="text" id="search" class="search-box" placeholder="주문번호, 상품명" onkeyup="searchOrders()">
+  <input type="text" id="search" class="search-box" placeholder="주문번호, 상품명, 색상" onkeyup="searchOrders()">
 
   <th:block th:each="entry : ${groupedOrders}">
     <div class="order-group">
       <div class="order-header">
         <span th:text="${#dates.format(entry.value[0].createdAt, 'yyyy. MM. dd')}">2025. 3. 11</span>
-        (주문번호: <span th:text="${entry.value[0].orderId}">9775170</span>)
+        (주문번호: <span th:text="${entry.value[0].orderId}"></span>)
         <a th:href="@{/order/detail(orderId=${entry.value[0].orderId})}" class="btn">주문 상세보기</a>
       </div>
 
@@ -104,11 +90,26 @@
 
       <div class="order-actions">
         <button class="btn">배송조회</button>
-        <button class="btn" onclick="location.href='/complaint'">교환/반품 신청</button>
+        <button class="btn" th:onclick="'location.href=\'/complaint/' + ${entry.value[0].orderId} + '\''">교환/반품 신청</button>
         <button class="btn">리뷰 작성하기</button>
       </div>
     </div>
   </th:block>
 </div>
+<script>
+  function searchOrders() {
+    let input = document.getElementById("search").value.toLowerCase();
+    let orderGroups = document.querySelectorAll(".order-group");
+
+    orderGroups.forEach(group => {
+      let text = group.innerText.toLowerCase();
+      if (text.includes(input)) {
+        group.style.display = "";
+      } else {
+        group.style.display = "none";
+      }
+    });
+  }
+</script>
 </body>
 </html>
