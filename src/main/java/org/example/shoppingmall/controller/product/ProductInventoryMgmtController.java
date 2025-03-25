@@ -1,6 +1,5 @@
 package org.example.shoppingmall.controller.product;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.example.shoppingmall.dto.product.*;
 import org.example.shoppingmall.service.CodeDetailService;
 import org.example.shoppingmall.service.product.ProductCategoryService;
@@ -10,10 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 
 @Controller
@@ -38,7 +35,7 @@ public class ProductInventoryMgmtController {
         ArrayList<ProductDto> products = productService.getProductData();
         model.addAttribute("products", products);
 
-        return "/product/Product_inventory_mgmt";
+        return "/product/ProductInventoryMgmt";
     }
 
 //    관리자 - 관리자가 상품의 진열 상태를 변경할 때
@@ -71,7 +68,7 @@ public class ProductInventoryMgmtController {
 
         // 카테고리 정보 가져오기
 //        ArrayList<ProductCategoryDto> categoryDtos = productCategoryService.get
-        return "/product/Product_detail_update";
+        return "/product/ProductDetailUpdate";
     }
 
 
