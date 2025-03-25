@@ -11,7 +11,7 @@
             background-color: #f4f4f4;
         }
         .container {
-            width: 80%;
+            width: 800px;
             margin: auto;
             padding: 20px;
             background-color: white;
@@ -53,7 +53,7 @@
             margin: 5px 0;
         }
         .btn {
-            background-color: #007bff;
+            background-color: #333333;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -63,7 +63,7 @@
             text-align: center;
         }
         .btn:hover {
-            background-color: #0056b3;
+            background-color: #4e4e4e;
         }
         .delete-btn {
             background-color: #dc3545; /* Red for delete */
@@ -114,9 +114,9 @@
         <!-- 주문 기본 정보 -->
         <div class="section">
             <div class="section-title">주문 정보</div>
-            <p>주문번호: <span th:text="${entry.value[0].orderId}">123456</span></p>
             <p>주문일자: <span th:text="${#dates.format(entry.value[0].createdAt, 'yyyy. MM. dd')}">2025. 3. 11</span></p>
-            <p>주문 상태: <span th:text="${entry.value[0].orderStatus}">배송 중</span></p>
+            <p>주문번호: <span th:text="${entry.value[0].orderId}">123456</span></p>
+            <p>주문 상태: <span th:text="${entry.value[0].codeName}">배송 중</span></p>
         </div>
 
         <!-- 배송 정보 -->
@@ -224,28 +224,7 @@
             location.href = "/order/delete/" + orderId;
         }
     }
-   /* // 주문 내역 삭제 함수
-    function confirmDelete(button) {
-        var orderId = button.getAttribute('data-order-id');
-        var result = confirm("정말로 삭제하시겠습니까?");
-        if (result) {
-            $.ajax({
-                url: '/order/delete',  // 삭제 요청을 보낼 URL
-                type: 'POST',  // HTTP 메서드 (POST)
-                data: { orderId: orderId },  // 삭제할 주문 ID 전달
-                success: function(response) {
-                    alert("주문이 삭제되었습니다.");
-                    location.reload();  // 페이지를 새로 고쳐서 삭제된 주문을 화면에서 제거
-                },
-                error: function(error) {
-                    alert("주문 삭제에 실패했습니다.");
-                }
-            });
-        } else {
-            alert("삭제가 취소되었습니다.");
-        }
-    }*/
-</script>
 
+</script>
 </body>
 </html>
