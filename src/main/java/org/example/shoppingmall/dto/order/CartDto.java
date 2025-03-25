@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 @Data
 public class CartDto {
+    private int no;
     private String customerId;
     private String productDetailId;
     private byte checkFlag;

@@ -59,6 +59,18 @@ public class UserController {
         return result; // 결과 반환
     }
 
+    @PostMapping("/user/logout") // 유저 로그아웃 실제적 기능하는 API
+    public String userLogout(HttpSession session) {
+        // 세션에서 customerId 제거
+        session.removeAttribute("customerId");
+
+        // 세션 무효화
+        session.invalidate();  // 세션 자체를 무효화하여 모든 세션 데이터 삭제
+
+        // 디폴트 페이지로 리다이렉트
+        return "redirect:/";  // 디폴트 페이지로 리다이렉트
+    }
+
     @GetMapping("/user/mypage")
     public String getMypage(HttpSession session) {
         // 세션에서 customerId 값을 가져옴
