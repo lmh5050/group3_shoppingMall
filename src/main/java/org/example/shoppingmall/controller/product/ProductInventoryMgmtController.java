@@ -1,6 +1,5 @@
 package org.example.shoppingmall.controller.product;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.example.shoppingmall.dto.product.*;
 import org.example.shoppingmall.service.CodeDetailService;
 import org.example.shoppingmall.service.product.ProductCategoryService;
@@ -12,8 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 
 @Controller
@@ -22,6 +22,7 @@ public class ProductInventoryMgmtController {
     private final ProductService productService;
     private final CodeDetailService codeDetailService;
     private final ProductCategoryService productCategoryService;
+    private static final String UPLOAD_DIR = "C:\\JAVA\\fast_campus_KDT\\projects\\prj_02\\group3_shoppingMall\\src\\main\\resources\\static\\images\\product\\";
 
     @Autowired
     public ProductInventoryMgmtController(ProductService productService, CodeDetailService codeDetailService, ProductCategoryService productCategoryService) {
@@ -38,7 +39,7 @@ public class ProductInventoryMgmtController {
         ArrayList<ProductDto> products = productService.getProductData();
         model.addAttribute("products", products);
 
-        return "/product/Product_inventory_mgmt";
+        return "/product/ProductInventoryMgmt";
     }
 
 //    관리자 - 관리자가 상품의 진열 상태를 변경할 때
@@ -71,10 +72,10 @@ public class ProductInventoryMgmtController {
 
         // 카테고리 정보 가져오기
 //        ArrayList<ProductCategoryDto> categoryDtos = productCategoryService.get
-        return "/product/Product_detail_update";
+        return "/product/ProductDetailUpdate";
     }
 
-
+    // 상품 정보 수정
     @PostMapping("/productInventoryMgmt/updateProductDetail")
     public ResponseEntity<?> updateProductDetail(
             @ModelAttribute ProductUpdateDto productUpdateDto) {
@@ -82,5 +83,54 @@ public class ProductInventoryMgmtController {
         productService.setProductInfo(productUpdateDto);
 
         return ResponseEntity.ok("ok");
+    }
+
+    // 새로운 상품 추가 등록하기 위해 접근
+    @GetMapping("/addNewProduct")
+    public String addNewProduct(Model model) {
+        ArrayList<ProductCategoryDto> productCategory = productCategoryService.getSubCategory();
+        model.addAttribute("productCategory", productCategory);
+
+        return "/product/NewProductPost";
+    }
+
+    // 새로운 상품 추가 등록하기
+    @PostMapping("/addNewProduct")
+    public String addNewProductPost(@ModelAttribute ProductUpdateDto productUpdateDto) {
+        System.out.println("productUpdateDto = " + productUpdateDto);
+        MultipartFile imageFile = productUpdateDto.getImage();
+
+
+        if (imageFile.isEmpty()) {
+            return "파일이 없습니다.";
+        }
+        try {
+
+            // 상품 번호 - 현재 등록된 상품 중 마지막 + 1
+            String productId = productService.makeProductId();
+            // 파일 저장 경로 설정
+            String imgForm = ".png";
+            File destinationFile = new File(UPLOAD_DIR + productId + imgForm); // 파일 이름은 productId.jpg로 설정
+
+            // 폴더 없으면 생성
+            destinationFile.getParentFile().mkdirs();
+
+            // 파일 저장
+            imageFile.transferTo(destinationFile);
+
+            // 새로운 상품 DB에 등록
+            productUpdateDto.setProductId(productId);
+            ProductDescriptionImageDto productDescriptionImageDto = new ProductDescriptionImageDto();
+
+            // 상품 사진 DTO 에 등록
+            productDescriptionImageDto.setProductId(productId);
+            productDescriptionImageDto.setForm(imgForm);
+            productService.setNewProduct(productUpdateDto, productDescriptionImageDto);
+
+            return "/product/ProductInventoryMgmt";
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "redirect:/manager/addNewProduct";
+        }
     }
 }

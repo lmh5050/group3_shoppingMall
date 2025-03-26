@@ -69,4 +69,31 @@ public class ProductCategoryService {
         }
         return false;
     }
+
+    // 소분류만 가져오기
+    public ArrayList<ProductCategoryDto> getSubCategory() {
+        ArrayList<ProductCategoryDto> categorys = this.getCategoryListAll();
+        ArrayList<ProductCategoryDto> subCategory = new ArrayList<>();
+
+        for(ProductCategoryDto ctg : categorys) {
+            if(ctg.getCategoryId().contains("REF"))
+                continue;
+
+            String[] tmp = ctg.getCategoryId().split("_");
+
+            if(tmp.length <= 2){
+                continue;
+            }
+
+            if(ctg.getCategoryId().contains("ALL"))
+                ctg.setName("전체 - "+ctg.getName());
+            else if(ctg.getCategoryId().contains("MAN"))
+                ctg.setName("남성 - "+ctg.getName());
+            else if(ctg.getCategoryId().contains("FEM"))
+                ctg.setName("여성 - "+ctg.getName());
+
+            subCategory.add(ctg);
+        }
+        return subCategory;
+    }
 }

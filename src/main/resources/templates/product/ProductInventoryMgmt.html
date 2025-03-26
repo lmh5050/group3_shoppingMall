@@ -9,7 +9,7 @@
 <!--<h1 th:text="${role}">관리자</h1>-->
 <h1>관리자</h1>
 <h2>제고 관리</h2>
-<button type="button" onclick="return addNewProduct()">
+<button type="button"  onclick="location.href='/manager/addNewProduct'">
     +상품 추가 등록
 </button>
 <br>
@@ -66,11 +66,6 @@
     </div>
 </section>
 <script>
-<!--  새로운 상품 추가하기 위해 이동하는 기능  -->
-    function addNewProduct(){
-
-    }
-
 //     상품의 진열 상태를 변경하는 기능
     function changeProductDisplayStatus(button){
         const form = button.closest('form'); // 버튼이 속한 form 찾기
