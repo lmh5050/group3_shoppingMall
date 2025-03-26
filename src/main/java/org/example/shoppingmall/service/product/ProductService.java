@@ -134,7 +134,29 @@ public class ProductService {
     public void setProductInfo(ProductUpdateDto productUpdateDto) {
         productRepository.setProductInfo(productUpdateDto);
     }
+
+    // 새로운 상품 등록 시, 현재 마지막 상품번호 + 1
+    public String makeProductId() {
+        String lastProductId = productRepository.getLastProductId();
+
+        int tmp = Integer.parseInt(lastProductId.substring(1)) + 1;
+        int zeroLen = lastProductId.length() - 1 - String.valueOf(tmp).length();
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("P");
+        sb.append("0".repeat(Math.max(0, zeroLen)));
+        sb.append(tmp);
+        return sb.toString();
+    }
+
+    // 상품을 추가하기
+    public void setNewProduct(ProductUpdateDto productUpdateDto, ProductDescriptionImageDto productDescriptionImageDto) {
+        productRepository.setNewProduct(productUpdateDto);
+        this.setProductImage(productDescriptionImageDto);
+    }
+
+    // 상품 사진 테이블에 등록하기
+    private void setProductImage(ProductDescriptionImageDto productDescriptionImageDto) {
+        productRepository.setProductImage(productDescriptionImageDto);
+    }
 }
-
-
-
