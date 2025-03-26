@@ -16,6 +16,7 @@ public class PaymentDto {
     // 결제 정보
     private String paymentId;
     private Integer orderId;
+    private String customerId;
     private Integer paymentMethodId;
     private String paymentCode;
     private String status;
