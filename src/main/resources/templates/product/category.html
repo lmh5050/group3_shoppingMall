@@ -7,157 +7,6 @@
 <head>
     <meta charset="UTF-8">
     <title>신사 숙녀 category</title>
-    <style>
-        .card-img-top.grayscale {
-            filter: grayscale(100%); /* 회색으로 바꾸는 필터 */
-            opacity: 0.5; /* 이미지를 반투명하게 처리 */
-        }
-
-        .sold-out-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 24px;
-            color: white;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 10px 20px;
-            border-radius: 5px;
-        }
-
-    body {
-        font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
-        background-color: #fff;
-        padding: 40px;
-        color: #111;
-    }
-
-    h1 {
-        margin-top: 80px;
-        font-size: 1.4rem;
-        font-weight: 600;
-        margin-bottom: 20px;
-        color: #111;
-    }
-
-    ul {
-        list-style: none;
-        padding: 0;
-        margin-bottom: 40px;
-    }
-
-    li {
-        margin-bottom: 10px;
-    }
-
-    button {
-        all: unset;
-        display: block;
-        width: 100%;
-        max-width: 240px;
-        padding: 12px 20px;
-        background-color: #f9f9f9;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        font-size: 15px;
-        font-weight: 400;
-        color: #333;
-        cursor: pointer;
-        transition: all 0.25s ease;
-    }
-
-    button:hover {
-        background-color: #111;
-        color: #fff;
-        border-color: #111;
-    }
-
-    /* 선택된 버튼 스타일 (선택 시 클래스 붙여서 적용 가능) */
-    button.selected {
-        background-color: #111;
-        color: #fff;
-        border-color: #111;
-    }
-
-    /* 반응형 - 모바일 */
-    @media (max-width: 480px) {
-        button {
-            font-size: 14px;
-            padding: 10px 16px;
-        }
-    }
-    .category-product-section {
-        display: flex;
-        max-width: 1600px;
-        margin: 0 auto;
-        padding: 60px 20px;
-    }
-
-    .category-section {
-        width: 250px;
-        padding-right: 30px;
-    }
-
-    .vertical-line {
-        width: 1px;
-        background-color: #ddd;
-        margin: 0 20px;
-    }
-
-    .product-section {
-        flex-grow: 1;
-    }
-
-    /* 검색 & 정렬 UI */
-    .search-sort-container {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        padding: 20px 0;
-    }
-
-    .search-sort-container input,
-    .search-sort-container select,
-    .search-sort-container button {
-        height: 44px;
-        padding: 0 16px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 14px;
-    }
-
-    .search-sort-container input {
-        width: 280px;
-        background-color: #f9f9f9;
-        transition: border-color 0.2s ease-in-out;
-    }
-
-    .search-sort-container input:focus {
-        border-color: #111;
-    }
-
-    .search-sort-container button {
-        background-color: #111;
-        color: white;
-        cursor: pointer;
-        transition: all 0.2s ease-in-out;
-    }
-
-    .search-sort-container button:hover {
-        background-color: #333;
-    }
-
-    .btn-search-order {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: auto; /* 내용에 맞게 자동 조정 */
-        min-width: 80px; /* 최소 너비 설정 (너무 작아지는 걸 방지) */
-        padding: 6px 12px; /* 위아래 6px, 좌우 12px (조정 가능) */
-        font-size: 13px;
-    }
-
-</style>
 </head>
 
 
@@ -256,8 +105,10 @@
                         <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
                     </div>
                     <div class="product-info">
-                        <h5 th:text="${product.getName()}">Fancy Product</h5>
-                        <span class="price" th:text="'₩' + ${product.price}">₩40,000</span>
+                        <h4 th:text="|❤ ${product.getLikeCount()}|"></h4>
+                        <h4 th:text="|💭 ${product.getReviewCount()}|"></h4>
+                        <h3 th:text="${product.getName()}">Fancy Product</h3>
+                        <span class="price" th:text="'₩ ' + ${product.price}">₩40,000</span>
                         <a class="detail-btn" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
                     </div>
                 </div>
@@ -275,8 +126,10 @@
                         <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
                     </div>
                     <div class="product-info">
-                        <h5 th:text="${product.getName()}">Fancy Product</h5>
-                        <span class="price" th:text="'₩' + ${product.price}">₩40,000</span>
+                        <h4 th:text="|❤ ${product.getLikeCount()}|"></h4>
+                        <h4 th:text="|💭 ${product.getReviewCount()}|"></h4>
+                        <h3 th:text="${product.getName()}">Fancy Product</h3>
+                        <span class="price" th:text="'₩ ' + ${product.price}">₩40,000</span>
                         <a class="detail-btn" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
                     </div>
                 </div>

@@ -57,13 +57,15 @@ public class ProductController {
 //    상세 페이지 이동
     @GetMapping("/productDetail")
     public String productDetail(String prdId, Model model) {
-
-        System.out.println("prdId:"+prdId);
         model.addAttribute("prdId", prdId);
 
         // 서비스 측 구현할 것: 상품 ID를 통해 ProductDto 가져오기
         ProductDto product = productService.getProductById(prdId);
         model.addAttribute("product", product);
+
+        // 시즌 정보 가져오기
+        String season = productService.getSeasonBySeasonId(product.getSeasonId());
+        model.addAttribute("season", season);
 
         // 상품의 상세 옵션을 가져옴
         ArrayList<ProductDetailDto> productDetailOptions = productService.getProductDetailOptions(prdId);

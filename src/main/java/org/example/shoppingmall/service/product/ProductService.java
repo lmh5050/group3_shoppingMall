@@ -208,4 +208,9 @@ public class ProductService {
             productDetailRepository.setProductDetailByColorsAndSizes(productDetailDto);
         }
     }
+
+    // 상품에 맞는 시즌 정보 가져오기
+    public String getSeasonBySeasonId(int seasonId) {
+        return productRepository.getSeasonBySeasonId(seasonId);
+    }
 }

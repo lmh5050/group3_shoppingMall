@@ -115,6 +115,12 @@
               null, null, #{form}
             )
     </insert>
+
+<!--  상품의 시즌 정보 가져오기  -->
+    <select id="getSeasonBySeasonId">
+        SELECT name FROM season
+        WHERE season_id = #{seasonId}
+    </select>
 </mapper>
 
 
