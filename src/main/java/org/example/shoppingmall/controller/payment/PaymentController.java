@@ -11,6 +11,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/payment")
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
@@ -21,7 +26,7 @@ public class PaymentController {
     // 결제버튼이 보이는 페이지
     @GetMapping("/page")
     public String paymentPage(Model model){
-        model.addAttribute("orderId", 100025);
+        model.addAttribute("orderId", 100026);
         model.addAttribute("totalOrderAmount", 30000);
         return "payment/payment";
     }

@@ -10,6 +10,7 @@ import java.util.Map;
 
 @Mapper
 public interface OrderListRepository {
+
     //주문목록
     List<OrderListDto> findOrderListByCustomerId(String customerId);
 

@@ -33,7 +33,7 @@ public class ReceiptService {
                 .productPrice(detail.getProductPrice() * detail.getQuantity())
                 .build())
             .collect(Collectors.toList());
-
+        
         return ReceiptDto.builder()
                 .orderId(order.getOrderId())
                 .customerName(customerName)

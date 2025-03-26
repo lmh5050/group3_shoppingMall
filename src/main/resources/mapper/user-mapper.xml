@@ -119,9 +119,6 @@
             <if test="phoneNumber != null and phoneNumber != ''">
                 phone_number = #{phoneNumber},
             </if>
-            <if test="profileImg != null and profileImg != ''">
-                profile_img = #{profileImg},
-            </if>
             <if test="email != null and email != ''">
                 email = #{email},
             </if>
@@ -179,7 +176,7 @@
         SET
             profile_img = #{profileImg}
             WHERE
-                customer_id = #{customerId}
+            customer_id = #{customerId}
     </update>
 
 

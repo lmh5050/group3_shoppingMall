@@ -12,6 +12,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="/css/homecss/homeStyles.css" rel="stylesheet" />
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="/js/homejs/homeScripts.js"></script>
     <style>
         .row > * {
             /*width: 0;*/
@@ -57,21 +61,7 @@
     </style>
 
 </head>
-<script>
 
-// <!--  상품 상세에서 바로 구매  -->
-//     function buyNowProduct(){
-//         let inputQuantity = document.getElementById('inputQuantity').value;
-//         let optionSelector = document.getElementById('optionSelector');
-//         let productDetailId = optionSelector.selectedOptions[0].id;
-//
-//         document.getElementById('buyNowForm').submit();
-//     }
-// 장바구니로 상품 담기
-    function addProductToCart(){
-
-    }
-</script>
 <!-- Navigation-->
 <div th:replace="Bars/nav_bar :: nav"></div>
 <body>
@@ -107,12 +97,12 @@
                                 </option>
                             </select>
                         </label>
-                        <button class="btn btn-outline-dark flex-shrink-0" type="submit"
-                                th:if="${!product.getStatus().equals('sold-out')}"
-                                onclick="return addProductToCart()" style="margin: 0 0 0 10px;">
+                        <a href="javascript:void(0);" class="btn btn-outline-dark flex-shrink-0"
+                           th:if="${!product.getStatus().equals('sold-out')}"
+                           onclick="return addProductToCart()" style="margin: 0 0 0 10px;">
                             <i class="bi-cart-fill me-1"></i>
                             Add to cart
-                        </button>
+                        </a>
                         <button class="btn btn-outline-dark flex-shrink-0"
                                 th:if="${!product.getStatus().equals('sold-out')}"
                                 type="submit" style="margin: 0 0 0 10px;">
@@ -238,10 +228,50 @@
 <footer class="py-5 bg-dark">
     <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
 </footer>
-<!-- Bootstrap core JS-->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Core theme JS-->
-<script src="/js/homejs/homeScripts.js"></script>
+
+<script>
+
+    // <!--  상품 상세에서 바로 구매  -->
+    //     function buyNowProduct(){
+    //         let inputQuantity = document.getElementById('inputQuantity').value;
+    //         let optionSelector = document.getElementById('optionSelector');
+    //         let productDetailId = optionSelector.selectedOptions[0].id;
+    //
+    //         document.getElementById('buyNowForm').submit();
+    //     }
+    // 장바구니로 상품 담기
+    function addProductToCart() {
+        // 폼 데이터에서 필요한 값을 가져옵니다
+        const quantity = document.getElementById('inputQuantity').value;
+        const productDetailId = document.querySelector('[name="productDetailId"]').value;
+
+        // 서버에 POST 요청을 보냅니다
+        axios.post('/order/addToCart', {
+            quantity: quantity,
+            productDetailId: productDetailId
+        })
+            .then(function (response) {
+                // 성공적으로 요청이 완료된 경우
+                alert("장바구니에 추가되었습니다.");
+            })
+            .catch(function (error) {
+                // 에러가 발생한 경우
+                console.error("장바구니에 추가하는 데 실패했습니다:", error);
+
+                // 서버에서 "fail"이 반환되면 로그인 페이지로 리디렉션
+                if (error.response && error.response.data === "fail") {
+                    alert("로그인이 필요합니다.");
+                    window.location.replace('/user/login'); // 로그인 페이지로 리디렉션
+                } else {
+                    alert("알 수 없는 오류가 발생했습니다.");
+                }
+            });
+    }
+
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </body>
 </html>
 
