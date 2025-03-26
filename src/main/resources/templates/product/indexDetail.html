@@ -1,32 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
-<html xmlns:th="http://www.thymeleaf.org">
-<link rel="stylesheet" th:href="@{/css/Bars.css}">
-
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상품 상세 페이지</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/Bars.css}">
     <link rel="stylesheet" th:href="@{/css/productDetail.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
 </head>
 
-<!-- Navigation-->
-<div th:replace="Bars/nav_bar :: nav"></div>
 <body>
-<!-- Product section-->
+<!-- 네비게이션 바 -->
+<div th:replace="Bars/nav_bar :: nav"></div>
+
+<!-- 상품 상세 섹션 -->
 <section class="product-detail">
     <div class="container">
         <div class="product-wrapper">
+            <!-- 상품 이미지 -->
             <div class="product-image">
                 <img th:src="|/images/product/${product.getProductId()}.png|" alt="상품 이미지">
                 <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
             </div>
+            <!-- 상품 정보 -->
             <div class="product-info">
-                <div class="product-meta">SKU: BST-498</div>
+                <div class="product-meta">
+                    <h4 th:text="|❤ ${product.getLikeCount()}|"></h4>
+                    <h4 th:text="|💭 ${product.getReviewCount()}|"></h4>
+                    <h2 th:text="${season}"></h2>
+                </div>
+
                 <h1 class="product-title" th:text="${product.getName()}">상품명</h1>
-                <div class="product-price" th:text="${product.getPrice()}">$40.00</div>
+                <div class="product-price" th:text="|₩ ${product.getPrice()}|">₩40,000</div>
                 <p class="product-description" th:text="${product.getDescription()}">상품 설명</p>
                 <form id="buyNowForm" action="/order/order" method="post" class="purchase-form">
                     <label for="inputQuantity">수량</label>
@@ -51,6 +57,7 @@
 <footer>
     <div th:replace="Bars/footer :: #footer"></div>
 </footer>
+
 <script>
     function addProductToCart() {
         const quantity = document.getElementById('inputQuantity').value;
@@ -72,7 +79,6 @@
             });
     }
 </script>
+
 </body>
 </html>
-
-
