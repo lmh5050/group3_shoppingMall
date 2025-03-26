@@ -22,6 +22,12 @@ public class PaymentInfoDto {
     private Integer totalQuantity;
     // 주문 상세 정보
     private List<PaymentOrderDetailDto> orderDetailList;
+    // 배송 정보
+    private String basicAddress;
+    private String detailAddress;
+    private String receivePeople;
+    private String receivePhoneNumber;
+    private Integer shippingPrice;
 
     // 결제 정보
     private String paymentMethod;

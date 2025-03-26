@@ -9,16 +9,16 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
-@Builder(toBuilder = true)
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class PaymentOrderDto {
-    // 주문 정보
+public class PaymentShippingDto {
+    // 배송 정보
+    private String shippingId;
     private Integer orderId;
-    private String customerId;
-    private String orderStatus;
-    private Integer totalDiscountAmount;
-    private Integer totalOrderAmount;
-    private Integer totalQuantity;
-    private LocalDateTime orderDatetime;
+    private String basicAddress;
+    private String detailAddress;
+    private String receivePeople;
+    private String receivePhoneNumber;
+    private Integer shippingPrice;
 } 
