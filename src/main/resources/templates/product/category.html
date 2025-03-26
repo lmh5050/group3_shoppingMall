@@ -256,7 +256,9 @@
                         <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
                     </div>
                     <div class="product-info">
-                        <h5 th:text="${product.getName()}">Fancy Product</h5>
+                        <h4 th:text="|❤ ${product.getLikeCount()}|"></h4>
+                        <h4 th:text="|💭 ${product.getReviewCount()}|"></h4>
+                        <h3 th:text="${product.getName()}">Fancy Product</h3>
                         <span class="price" th:text="'₩' + ${product.price}">₩40,000</span>
                         <a class="detail-btn" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
                     </div>
@@ -275,7 +277,9 @@
                         <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
                     </div>
                     <div class="product-info">
-                        <h5 th:text="${product.getName()}">Fancy Product</h5>
+                        <h4 th:text="|❤ ${product.getLikeCount()}|"></h4>
+                        <h4 th:text="|💭 ${product.getReviewCount()}|"></h4>
+                        <h3 th:text="${product.getName()}">Fancy Product</h3>
                         <span class="price" th:text="'₩' + ${product.price}">₩40,000</span>
                         <a class="detail-btn" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
                     </div>
