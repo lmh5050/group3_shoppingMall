@@ -1,6 +1,7 @@
 package org.example.shoppingmall.controller.order;
 
 import jakarta.servlet.http.HttpSession;
+import org.example.shoppingmall.config.RequestBean;
 import org.example.shoppingmall.dto.order.*;
 import org.example.shoppingmall.service.order.OrderListService;
 import org.example.shoppingmall.service.order.OrderService;
@@ -14,6 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping("/order")
 public class OrderController {
 
     @Autowired
@@ -22,7 +24,7 @@ public class OrderController {
     private OrderListService orderListService;
 
     // 주문서 페이지
-    @GetMapping("/order/order")
+    @GetMapping("/order")
     public String showOrder(@RequestParam("productDetailId") List<String> productDetailId,
                             @RequestParam("quantity") List<Integer> quantity,
                             HttpSession session, Model model) {
@@ -55,7 +57,7 @@ public class OrderController {
 
     }
 
-    @PostMapping("/order/order")
+    @PostMapping("/order")
     public String showOrder(@ModelAttribute("productInfo") ProductInfoDto productInfoDto,
                             HttpSession session, Model model) {
 
@@ -97,8 +99,9 @@ public class OrderController {
     }
 
     //주문목록
-    @GetMapping(value = "/order/list")
+    @GetMapping(value = "/list")
     public String showOrderList(HttpSession session, Model model) {
+
         String customerId = (String) session.getAttribute("customerId");
         model.addAttribute("customerId", customerId);
 
@@ -132,8 +135,9 @@ public class OrderController {
 
 
     //주문상세
-    @RequestMapping("/order/detail")
+    @RequestMapping("/detail")
     public String showOrderDetail(@RequestParam("orderId") Long orderId, Model model) {
+
         List<OrderDetailDto> orderDetails = orderListService.getOrderDetailByOrderId(orderId);
 
         //주문번호별로 그룹화
@@ -147,7 +151,7 @@ public class OrderController {
     }
 
     //주문내역삭제
-    @GetMapping("/order/delete/{orderId}")
+    @GetMapping("/delete/{orderId}")
     public String deleteOrder(@PathVariable Long orderId, HttpSession session, Model model) {
 
         String customerId = (String) session.getAttribute("customerId");
