@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+    <title>ORDERED</title>
+    <style>
+        /* 전체 래퍼 컨테이너 스타일 (새로 추가된 부분) */
+        .order-wrapper-container {
+            width: 100%; /* 전체 너비 설정 (필요에 맞게 조정) */
+            background-color: #f9f9f9;
+            display: flex;
+            padding: 20px;
+        }
+        /* 전체 컨테이너 스타일 */
+        .admin-order-container {
+            width: 100%;
+            padding: 20px;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column; /* 세로 방향 정렬 */
+            align-items: flex-start; /* 왼쪽 정렬 */
+        }
+
+        /* 전체 주문 조회 제목 스타일 */
+        .order-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px; /* 제목과 검색 필터 간의 간격 */
+        }
+
+        /* 검색 필터 스타일 */
+        .search-filter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+
+
+        .search-filter select, .search-filter input, .search-filter button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .search-button {
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background-color: #555;
+        }
+
+        /* 테이블 스타일 */
+        .order-table {
+            width: 70%;
+            margin-top: 20px;
+            background-color: #fff;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-table th, .order-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .order-table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        /* 엑셀 다운로드 버튼 스타일 */
+        .download-button {
+            padding: 8px 12px;
+            background-color: #333333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+
+        }
+
+        .download-button:hover {
+            background-color: #4e4e4e;
+        }
+
+    </style>
+</head>
+<body>
+<div class="order-wrapper-container">
+    <div class="admin-order-container">
+        <!-- 전체 주문 조회 제목 -->
+        <h2 class="order-title">전체 주문 조회</h2>
+
+        <!-- 검색 필터 -->
+        <div class="search-filter">
+            <label for="search-type">검색어:</label>
+            <select id="search-type">
+                <option value="order-number">주문번호</option>
+                <option value="customer-name">주문자</option>
+            </select>
+            <input type="text" id="search" class="search-box" placeholder="주문번호 또는 주문자 입력" onkeyup="searchOrders()">
+            <button class="search-button">검색</button>
+        </div>
+
+        <!-- 주문 목록 테이블 -->
+        <table class="order-table">
+            <thead>
+            <tr>
+                <th>주문일(결제일)</th>
+                <th>주문상태</th>
+                <th>주문번호</th>
+                <th>주문일련번호</th>
+                <th>주문자</th>
+                <th>상품명</th>
+                <th>색상</th>
+                <th>사이즈</th>
+                <th>상품수량</th>
+                <th>상품구매금액</th>
+                <th>총 주문수량</th>
+                <th>총 결제금액</th>
+            </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="order : ${orderAll}">
+                <tr>
+                    <td><span th:text="${#dates.format(order.createdAt, 'yyyyMMdd')}">주문일</span></td>
+                    <td><span th:text="${order.codeName}">주문상태</span></td>
+                    <td><span th:text="${order.orderId}">주문번호</span></td>
+                    <td><span th:text="${order.serialNumber}">주문일련번호</span></td>
+                    <td><span th:text="${order.customerId}">주문자</span></td>
+                    <td><span th:text="${order.productName}">상품명</span></td>
+                    <td><span th:text="${order.color}">색상</span></td>
+                    <td><span th:text="${order.size}">사이즈</span></td>
+                    <td><span th:text="${order.quantity}">상품수량</span></td>
+                    <td><span th:text="${#numbers.formatInteger(order.productTotalPrice, 0, 'COMMA')}">상품구매 금액</span></td>
+                    <td><span th:text="${order.totalQuantity}">총수량</span></td>
+                    <td><span th:text="${#numbers.formatInteger(order.finalAmount, 0, 'COMMA')}">총 실제 금액</span></td>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+
+        <!-- 엑셀 다운로드 버튼 -->
+        <button class="download-button" onclick="downloadExcel()">엑셀 다운로드</button>
+    </div>
+</div>
+<script>
+    function searchOrders() {
+        let input = document.getElementById("search").value.toLowerCase(); // 입력값 가져오기
+        let orderRows = document.querySelectorAll("tbody tr"); // 테이블의 모든 행 가져오기
+
+        orderRows.forEach(row => {
+            let orderId = row.querySelector("td:nth-child(3)").innerText.toLowerCase(); // 주문번호
+            let customerId = row.querySelector("td:nth-child(5)").innerText.toLowerCase(); // 주문자
+
+            // 검색어가 포함되어 있으면 표시, 없으면 숨김
+            if (orderId.includes(input) || customerId.includes(input)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    function downloadExcel() {
+        let wb = XLSX.utils.book_new(); // 새 엑셀 워크북 생성
+        let ws_data = []; // 데이터를 담을 배열
+
+        // 테이블 헤더 가져오기
+        let headers = [];
+        let headerRow = document.querySelectorAll(".order-table th");
+        headerRow.forEach(th => {
+            headers.push(th.innerText); // 테이블 헤더 텍스트 추가
+        });
+        ws_data.push(headers); // 첫 번째 행에 헤더 추가
+
+        // 테이블 데이터 가져오기
+        let rows = document.querySelectorAll(".order-table tbody tr");
+        rows.forEach(row => {
+            let rowData = [];
+            let cells = row.querySelectorAll("td");
+            cells.forEach(cell => {
+                rowData.push(cell.innerText); // 각 셀의 텍스트 추가
+            });
+            ws_data.push(rowData); // 각 행의 데이터 추가
+        });
+
+        // 엑셀 시트 생성
+        let ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+        // 엑셀 워크북에 시트 추가
+        XLSX.utils.book_append_sheet(wb, ws, "Order Data");
+
+        // 엑셀 파일로 다운로드
+        XLSX.writeFile(wb, "orders.xlsx");
+    }
+</script>
+</body>
+</html>
