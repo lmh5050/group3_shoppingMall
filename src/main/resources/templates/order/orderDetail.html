@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang=en xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>주문 상세 정보</title>
+    <link rel="stylesheet" th:href="@{/css/Bars.css}">
+    <link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 40px;
             background-color: #f4f4f4;
         }
         .container {
@@ -66,7 +68,7 @@
             background-color: #4e4e4e;
         }
         .delete-btn {
-            background-color: #dc3545; /* Red for delete */
+            background-color: #dc3545;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -103,10 +105,18 @@
         .gray-button:hover {
             background-color: #a9a9a9;
         }
+
+        h2 {
+            font-family: Arial, sans-serif;
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
+<!-- 네비게이션 바 포함 -->
+<div th:replace="Bars/nav_bar :: nav"></div>
 <body>
-
 <div class="container">
     <h2>주문 상세 정보</h2>
     <th:block th:each="entry : ${groupedOrderDetails}">
@@ -173,7 +183,7 @@
             </div>
             <div class="order-summary">
                 <p>결제 방법:</p>
-                <span th:text="${entry.value[0].name}">배송 중</span>
+                <span th:text="${entry.value[0].name}"></span>
             </div>
             <div class="order-summary">
                 <p></p>
@@ -188,9 +198,9 @@
         <!-- 주문 관리 버튼 -->
         <div class="section">
             <button class="btn">배송조회</button>
-            <button class="btn" th:onclick="'location.href=\'/complaint/' + ${entry.value[0].orderId} + '\''">교환/반품 신청</button>
+            <button class="btn" th:onclick="|location.href='/complaint/' + ${entry.value[0].orderId}|">교환/반품 신청</button>
             <button class="btn">리뷰 작성하기</button>
-            <button class="btn" onclick="history.back()">목록으로</button>
+            <button class="btn" th:onclick="|location.href='/order/list'|">목록으로</button>
             <button class="delete-btn"
                     th:data-order-id="${entry.value[0].orderId}"
                     onclick="confirmDelete(this.getAttribute('data-order-id'))">
