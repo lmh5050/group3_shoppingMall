@@ -1,5 +1,6 @@
 package org.example.shoppingmall.controller.product;
 
+import org.example.shoppingmall.config.RequestBean;
 import org.example.shoppingmall.dto.product.ProductCategoryDto;
 import org.example.shoppingmall.dto.product.ProductDetailDto;
 import org.example.shoppingmall.dto.product.ProductDto;
@@ -19,11 +20,14 @@ import java.util.ArrayList;
 public class ProductController {
     private final ProductService productService;
     private final ProductCategoryService productCategoryService;
+    private final RequestBean requestBean;
 
     @Autowired
-    public ProductController(ProductService productService,  ProductCategoryService productCategoryService) {
+    public ProductController(ProductService productService,
+                             ProductCategoryService productCategoryService, RequestBean requestBean) {
         this.productService = productService;
         this.productCategoryService = productCategoryService;
+        this.requestBean = requestBean;
     }
 
     //home
@@ -31,6 +35,9 @@ public class ProductController {
     public String home(
             @RequestParam(required = false, name = "orderOption") String orderOption,
             Model model) {
+        // 네비바에서 상품 상세 화면에서는 검색/정렬 기능이 보이지 않기 위해
+        model.addAttribute("currentUrl", requestBean.getRequestURI());
+
         ArrayList<ProductDto> products;
 
         // 정렬 순서를 정한 경우
@@ -54,6 +61,9 @@ public class ProductController {
 //    상세 페이지 이동
     @GetMapping("/productDetail")
     public String productDetail(String prdId, Model model) {
+        // 네비바에서 상품 상세 화면에서는 검색/정렬 기능이 보이지 않기 위해
+        model.addAttribute("currentUrl", requestBean.getRequestURI());
+
         System.out.println("prdId:"+prdId);
         model.addAttribute("prdId", prdId);
 
@@ -77,6 +87,10 @@ public class ProductController {
             @RequestParam(required = false, name = "searchProduct") String searchProduct,
             @RequestParam(required = false, name = "orderOption") String orderOption,
             Model model) {
+        // 네비바에서 상품 상세 화면에서는 검색/정렬 기능이 보이지 않기 위해
+        model.addAttribute("currentUrl", requestBean.getRequestURI());
+
+
 //        정렬 방법 리스트 가져오기
         ArrayList<ProductSortDto> sortList =  productService.getProductSortOptions();
         model.addAttribute("sortList", sortList);

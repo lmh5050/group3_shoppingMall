@@ -3,6 +3,7 @@ package org.example.shoppingmall.dto.product;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,26 +12,32 @@ import java.util.List;
 @Setter
 @Data
 public class ProductUpdateDto {
-    private String productId;                // »óÇ° ID
-    private String productName;              // »óÇ° ÀÌ¸§
-    private Double productPrice;             // »óÇ° °¡°İ
-    private String productDescription;       // »óÇ° ¼³¸í
-    private String productCategoryId;        // Ä«Å×°í¸® ID
-    private String productSessionId;         // ½ÃÁğ ID
-    private String productNotes;             // ºñ°í
-    private String productGender;            // ¼ºº°
-    private String productFit;               // ÇÍ
-    private String productTexture;           // ÃË°¨
-    private String productThickness;         // µÎ²²
-    private String productManufacturer;      // Á¦Á¶»ç
-    private String productOrigin;            // ¿ø»êÁö
-    private String productQualityAssuranceStandard;  // Ç°Áú º¸Áõ ±âÁØ
-    private List<String> detailColor;        // »ö»ó
-    private List<String> detailSize;         // »çÀÌÁî
-    private List<String> colors;        // »ö»ó
-    private List<String> sizes;         // »çÀÌÁî
+    private String productId;                // ìƒí’ˆ ID
+    private String productName;              // ìƒí’ˆ ì´ë¦„
+    private Double productPrice;             // ìƒí’ˆ ê°€ê²©
+    private String productDescription;       // ìƒí’ˆ ì„¤ëª…
+    private String productCategoryId;        // ì¹´í…Œê³ ë¦¬ ID
+    private String productSessionId;         // ì‹œì¦Œ ID
+    private String productNotes;             // ë¹„ê³ 
+    private String productGender;            // ì„±ë³„
+    private String productFit;               // í•
+    private String productTexture;           // ì´‰ê°
+    private String productThickness;         // ë‘ê»˜
+    private String productManufacturer;      // ì œì¡°ì‚¬
+    private String productOrigin;            // ì›ì‚°ì§€
+    private String productQualityAssuranceStandard;  // í’ˆì§ˆ ë³´ì¦ ê¸°ì¤€
+//    private List<String> detailColor;        // ìƒ‰ìƒ
+//    private List<String> detailSize;         // ì‚¬ì´ì¦ˆ
+    private List<String> colors;        // ìƒ‰ìƒ
+    private List<String> sizes;         // ì‚¬ì´ì¦ˆ
+    private int colorCount;
+    private int sizeCount;
+    private MultipartFile image;
+    private String status;
 
-    // Ãß°¡µÈ ÆÄÀÏ ¾÷·Îµå¸¦ À§ÇÑ ÇÊµå
-    private String imageFile;                // ÀÌ¹ÌÁö ÆÄÀÏ (¼±ÅÃµÈ ÆÄÀÏ °æ·Î ¶Ç´Â ÆÄÀÏ¸í µî)
-
+    public ProductUpdateDto() {
+        this.status = "display";
+        this.colorCount=0;
+        this.sizeCount=0;
+    }
 }
