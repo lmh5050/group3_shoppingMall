@@ -19,7 +19,7 @@ public class PaymentDto {
     private Integer paymentMethodId;
     private String paymentCode;
     private String status;
-    private Integer totalAmount;
+    private Integer finalAmount;
     private Integer taxAmount;
     private Integer discountAmount;
     private LocalDateTime paymentDatetime;
