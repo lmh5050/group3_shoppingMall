@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>배송 정보</title>
-
+    <title>배송 상세 정보</title>
 </head>
 <body>
 
-<div th:each="shipping : ${shippingList}" class="shipping-info">
+<div th:each="shipping : ${findDetailShippingId}" class="shipping-info">
     <div>
         <label>배송번호:</label>
         <span th:text="${shipping.shippingId}">배송번호</span>
@@ -100,15 +99,11 @@
     <div>
         <label>변경일:</label>
         <span th:text="${shipping.updatedAt}">변경일</span>
+
+        <!--버튼 추가-->
     </div>
-</div>
-
-<!-- 버튼 추가 -->
-<div>
-    <head>
-
-    <button class="btn" onclick="location.href='/shipping/list'">목록</button>
-    <button class="btn" onclick="location.href='/update/{{shipping.shippingId}}'">수정</button>
+    <a class="btn" href="/shipping/list">목록</a>
+    <a class="btn" th:href="@{/update/{id}(id=${shipping.shippingId})}">세부정보등록</a>
 </div>
 </body>
 </html>
