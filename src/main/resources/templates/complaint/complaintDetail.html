@@ -13,7 +13,7 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link th:href="@{/css/homecss/homeStyles.css}" rel="stylesheet" />
 </head>
-<div th:replace="Bars/nav_bar :: nav"></div>
+<!--<div th:replace="Bars/nav_bar :: nav"></div>-->
 <body>
 
 <!-- Section-->
@@ -21,10 +21,11 @@
     <!-- 민원 상세 페이지 출력 정보-->
     <div class="container">
         <h2>민원 상세</h2>
-        <p><strong>민원 아이디:</strong> <span th:text="${complaint.complaintId}"></span></p>
+        <p><strong>주문 번호:</strong> <span th:text="${complaint.orderId}"></span></p>
+        <p><strong>상품 이름:</strong> <span th:text="${complaint.productName}"></span></p>
+        <p><strong>민원 번호:</strong> <span th:text="${complaint.complaintId}"></span></p>
         <p><strong>민원 유형:</strong> <span th:text="${complaint.complaintTypeId}"></span></p>
         <p><strong>민원 상태:</strong> <span th:text="${complaint.status}"></span></p>
-        <p><strong>주문 상세 아이디:</strong> <span th:text="${complaint.orderDetailId}"></span></p>
         <!-- 회수지, 배송지 null or 빈 문자열이면 안보이게 -->
         <p th:if="${complaint.pickupAddress != null && complaint.pickupAddress != ''}">
             <strong>반품 회수지:</strong> <span th:text="${complaint.pickupAddress}"></span>

@@ -1,11 +1,13 @@
 package org.example.shoppingmall.controller.complaint;
 
+import jakarta.servlet.http.HttpSession;
 import org.example.shoppingmall.dto.complaint.ComplaintDto;
 import org.example.shoppingmall.service.complaint.ComplaintService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -20,42 +22,75 @@ public class ComplaintController {
     }
 
     @GetMapping("/complaint/list") // 기본 민원 리스트 페이지
-    public String complaint(Model model) {
+    public String complaint(HttpSession session, Model model) {
+        //customerId별로 조회하기 위해 추가
+        String customerId = (String) session.getAttribute("customerId");
+        model.addAttribute("customerId", customerId);
+
         // 모든 complaint 목록 조회
-        List<ComplaintDto> complaints = complaintService.getAllComplaints();
+//        List<ComplaintDto> complaints = complaintService.getAllComplaints();
+
+        List<ComplaintDto> complaints = complaintService.getComplaintsByCustomerId(customerId);
         model.addAttribute("complaints", complaints); // complaints 데이터를 뷰로 전달
         return "complaint/complaintList";
     }
 
-    @GetMapping("/complaint") //민원 신청 페이지
-    public String complaintForm() {
+    //민원 신청 페이지(orderId 받도록 수정)
+    @GetMapping("/complaint/{orderId}")
+    public String complaintForm(@PathVariable("orderId") Long orderId, Model model) {
+        List<String> productName = complaintService.findProductNameByOrderId(orderId);
+
+        model.addAttribute("orderId", orderId);
+        model.addAttribute("productNames", productName);
+        model.addAttribute("editMode", false);
         return "complaint/complaintForm";
     }
 
+    //민원 신청
     @PostMapping("/complaint/request")
     public String requestComplaint( @RequestParam ("complaintType") String complaintType,
                                     @RequestParam String complaintTitle,
                                     @RequestParam String complaintText,
-                                    @RequestParam String pickupAddress) {
+                                    @RequestParam String pickupAddress,
+                                    @RequestParam Long orderId,
+                                    @RequestParam String productName,
+                                    RedirectAttributes redirectAttributes) {
+
+        // 기존 민원이 있는지 확인, redirect 는 페이지가 다시 로드되면 사라짐
+        if (complaintService.isComplaintAlreadyExists(orderId, productName)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "이미 신청한 민원입니다.");
+            return "redirect:/complaint/list"; // list 페이지로 리다이렉트
+        }
+
 
         // ComplaintService에서 complaint 저장 처리
-        complaintService.saveComplaint(complaintType, complaintTitle, complaintText, pickupAddress);
+        complaintService.saveComplaint(complaintType, complaintTitle, complaintText, pickupAddress, orderId, productName);
 
         return "redirect:/complaint/list";
     }
 
     //complaint/list에서 수정버튼 누르면 기존에 저장되어 있던 정보가지고 Form화면으로 이동
-    @GetMapping("/complaint/edit/{complaintId}")
-    public String editComplaint(@PathVariable("complaintId") String complaintId, Model model) {
+    @GetMapping("/complaint/edit")
+    public String editComplaint(@RequestParam("complaintId") String complaintId,
+                                @RequestParam("orderId") Long orderId,
+                                @RequestParam("productName") String productName,
+                                Model model) {
+
         ComplaintDto complaint = complaintService.getComplaintById(complaintId);
 
         if (complaint == null) {
             complaint = new ComplaintDto(); // 빈 객체 전달
         }
 
+        //orderId, productName 있을 시 값 전달
         model.addAttribute("complaint", complaint);
+        model.addAttribute("orderId", orderId);
+        model.addAttribute("productName", productName);
+        model.addAttribute("editMode", true); // 수정 모드 표시
+
         return "complaint/complaintForm";
     }
+
 
     //수정버튼으로 이동 후 수정하고 나서 complaint/list로 이동
     @PostMapping("/complaint/update")

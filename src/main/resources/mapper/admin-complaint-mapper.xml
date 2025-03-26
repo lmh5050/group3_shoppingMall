@@ -35,7 +35,8 @@
         SET
         status = #{status},
         end_datetime = #{endDatetime},
-        comment = #{comment}
+        comment = #{comment},
+        refund_amount = #{refundAmount}
         WHERE complaint_id = #{complaintId}
     </update>
 
@@ -46,5 +47,13 @@
             delete_flag = #{deleteFlag}
         WHERE complaint_id = #{complaintId}
     </update>
+
+    <!-- order_id에 해당하는 상품 가격 조회 -->
+    <select id="findProductTotalPriceByOrderId">
+        SELECT
+            product_total_price
+        FROM order_detail
+        WHERE order_id = #{orderId}
+    </select>
 
 </mapper>
