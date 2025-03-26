@@ -2,6 +2,7 @@ package org.example.shoppingmall.service.order;
 
 import jakarta.servlet.http.HttpSession;
 import org.example.shoppingmall.dto.order.OrderDetailDto;
+import org.example.shoppingmall.dto.order.OrderDto;
 import org.example.shoppingmall.dto.order.OrderListDto;
 import org.example.shoppingmall.repository.order.OrderListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,12 @@ public class OrderListService {
 
     @Autowired
     private OrderListRepository orderListRepository;
+
+    //전체 주문목록 조회(관리자)
+    public List<OrderDto> getOrderAll() {
+        return orderListRepository.selectOrderAll();
+    }
+
     //주문목록
     public List<OrderListDto> getOrderListByCustomerId(String customerId) {
         return orderListRepository.findOrderListByCustomerId(customerId);
