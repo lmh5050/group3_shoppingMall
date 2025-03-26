@@ -136,14 +136,32 @@ public class ProductService {
     }
 
     // 새로운 상품 등록 시, 현재 마지막 상품번호 + 1
-    public String makeProductId() {
-        String lastProductId = productRepository.getLastProductId();
+    public String makeProductId(String role, String init) {
+        String lastProductId;
+        int tmp;
+        int zeroLen;
+        String prefix;
 
-        int tmp = Integer.parseInt(lastProductId.substring(1)) + 1;
-        int zeroLen = lastProductId.length() - 1 - String.valueOf(tmp).length();
+        if(role.equals("productId")){ // 상품 번호를 만들 경우
+            lastProductId = productRepository.getLastProductId();
+            tmp = Integer.parseInt(lastProductId.substring(1)) + 1;
+            zeroLen = lastProductId.length() - 1 - String.valueOf(tmp).length();
+            prefix = "P";
+        } else if (role.equals("productDetailId")) {  //상품 상세 번호를 만들 경우
+            if (init == null){
+                lastProductId = productDetailRepository.getLastProductDetailId();
+            } else {
+                lastProductId = init;
+            }
+            tmp = Integer.parseInt(lastProductId.substring(2)) + 1;
+            zeroLen = lastProductId.length() - 2 - String.valueOf(tmp).length();
+            prefix = "PD";
+        } else {
+            return null;
+        }
 
         StringBuffer sb = new StringBuffer();
-        sb.append("P");
+        sb.append(prefix);
         sb.append("0".repeat(Math.max(0, zeroLen)));
         sb.append(tmp);
         return sb.toString();
@@ -153,10 +171,39 @@ public class ProductService {
     public void setNewProduct(ProductUpdateDto productUpdateDto, ProductDescriptionImageDto productDescriptionImageDto) {
         productRepository.setNewProduct(productUpdateDto);
         this.setProductImage(productDescriptionImageDto);
+        this.setProductDetailByColorsAndSizes(productUpdateDto);
     }
 
     // 상품 사진 테이블에 등록하기
     private void setProductImage(ProductDescriptionImageDto productDescriptionImageDto) {
         productRepository.setProductImage(productDescriptionImageDto);
+    }
+
+    // 상품에 등록된 옵션을 카타시안 곱을 통해 매칭해주고 DB에 저장하기
+    private void setProductDetailByColorsAndSizes(ProductUpdateDto productUpdateDto) {
+        // 등록된 컬러/사이즈를 가져옴
+        List<String> colors = productUpdateDto.getColors();
+        List<String> sizes = productUpdateDto.getSizes();
+
+        // 반복문으로 insert문을 통해 등록
+        ArrayList<ProductDetailDto> productDetailDtos = new ArrayList<>();
+        String productDetailId = this.makeProductId("productDetailId", null);
+        for(String color : colors){
+            for(String size : sizes){
+                ProductDetailDto productDetailDto = new ProductDetailDto();
+                // 상품 상세 정보 DTO에 저장
+                productDetailDto.setProductId(productUpdateDto.getProductId());  //상품 아이디
+                productDetailDto.setProductDetailId(productDetailId);  //상품 상세 아이디
+                productDetailDto.setColor(color);  //상품 컬러
+                productDetailDto.setSize(size);  //상품 사이즈
+                productDetailDtos.add(productDetailDto);  //리스트에 추가
+                productDetailId = this.makeProductId("productDetailId", productDetailId);
+            }
+        }
+
+        // DB에 저장
+        for(ProductDetailDto productDetailDto : productDetailDtos){
+            productDetailRepository.setProductDetailByColorsAndSizes(productDetailDto);
+        }
     }
 }

@@ -20,4 +20,10 @@ public class ProductDetailDto {
     private Date expectedStockInDate;
     private String note;
     private String status;
+
+    public ProductDetailDto() {
+        this.stockQuantity = 0;
+        this.note = null;
+        this.status = "ACTIVE";
+    }
 }
