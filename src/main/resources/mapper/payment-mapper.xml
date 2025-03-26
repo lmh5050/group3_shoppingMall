@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.shoppingmall.repository.payment.PaymentRepository">  <!-- 어떤 리포지토리를 볼지 정하는 곳 -->
+<mapper namespace="org.example.shoppingmall.repository.payment.PaymentRepository"> 
 
     <!-- 주문 정보 저장 -->
     <insert id="insertOrder">
@@ -9,9 +9,9 @@
             total_amount, total_quantity, order_datetime
         )
         VALUES (
-                   #{orderId}, #{customerId}, #{orderStatus}, #{totalDiscountAmount},
-                   #{totalOrderAmount}, #{totalQuantity}, #{orderDatetime}
-               )
+            #{orderId}, #{customerId}, #{orderStatus}, #{totalDiscountAmount},
+            #{totalOrderAmount}, #{totalQuantity}, #{orderDatetime}
+        )
     </insert>
 
     <!-- 주문 상세 정보 저장 -->
@@ -19,25 +19,25 @@
         INSERT INTO order_detail (
             order_id, serial_number, product_detail_id, product_name,
             size, color, quantity, price, discount_amount,
-            product_price, product_total_price, status
+            product_price, product_total_price
         )
         VALUES (
-                   #{orderId}, #{serialNumber}, #{productDetailId}, #{productName},
-                   #{size}, #{color}, #{quantity}, #{price}, #{discountAmount},
-                   #{productPrice}, #{productTotalPrice}, #{status}
-               )
+            #{orderId}, #{serialNumber}, #{productDetailId}, #{productName},
+            #{size}, #{color}, #{quantity}, #{price}, #{discountAmount},
+            #{productPrice}, #{productTotalPrice}
+        )
     </insert>
 
     <!-- 결제 정보 저장 -->
     <insert id="insertPayment">
         INSERT INTO payment (
-            payment_id, order_id, payment_method_id, payment_code,
+            payment_id, order_id, customer_id, payment_method_id, payment_code,
             status, final_amount, tax_amount, discount_amount,
             payment_datetime, failure_reason, card_number, installment, 
             bank_deposit, cash_receipt_type, cash_receipt_number, account_deposit
         )
         VALUES (
-            #{paymentId}, #{orderId}, #{paymentMethodId}, #{paymentCode},
+            #{paymentId}, #{orderId}, #{customerId}, #{paymentMethodId}, #{paymentCode},
             #{status}, #{finalAmount}, #{taxAmount}, #{discountAmount},
             #{paymentDatetime}, #{failureReason}, #{cardNumber}, #{cardInstallment},
             #{cashBankName}, #{cashReceiptType}, #{cashReceiptNumber}, #{accountDeposit}
@@ -64,14 +64,14 @@
     <select id="getOrderDetails" parameterType="Integer" resultType="org.example.shoppingmall.dto.payment.PaymentOrderDetailDto">
         SELECT order_id, serial_number as orderDetailId, product_detail_id as productId,
                product_name, size, color, quantity, price, discount_amount,
-            product_price, product_total_price, status
+            product_price, product_total_price
         FROM order_detail
         WHERE order_id = #{orderId}
     </select>
 
     <!-- 결제 정보 조회 -->
     <select id="getPayment" parameterType="Integer" resultType="org.example.shoppingmall.dto.payment.PaymentDto">
-        SELECT payment_id, order_id, payment_method_id, payment_code,
+        SELECT payment_id, order_id, customer_id, payment_method_id, payment_code,
                status, final_amount, tax_amount, discount_amount,
                payment_datetime, failure_reason, card_number, installment as cardInstallment,
                bank_deposit as cashBankName, account_deposit, cash_receipt_type, cash_receipt_number
@@ -114,6 +114,7 @@
         INSERT INTO payment_history (
             payment_id,
             order_id,
+            customer_id,
             payment_method_id,
             payment_code,
             status,
@@ -131,6 +132,7 @@
         ) VALUES (
             #{paymentId},
             #{orderId},
+            #{customerId},
             #{paymentMethodId},
             #{paymentCode},
             #{status},
@@ -155,9 +157,9 @@
             total_amount, total_quantity, order_datetime
         )
         VALUES (
-                   #{orderId}, #{customerId}, #{orderStatus}, #{totalDiscountAmount},
-                   #{totalOrderAmount}, #{totalQuantity}, #{orderDatetime}
-               )
+            #{orderId}, #{customerId}, #{orderStatus}, #{totalDiscountAmount},
+            #{totalOrderAmount}, #{totalQuantity}, #{orderDatetime}
+        )
     </insert>
 
     <insert id="insertOrderDetailHistory">
@@ -172,22 +174,20 @@
             price,
             discount_amount,
             product_price,
-            product_total_price,
-            status
+            product_total_price
         ) VALUES (
-                     #{orderId},
-                     #{serialNumber},
-                     #{productDetailId},
-                     #{productName},
-                     #{size},
-                     #{color},
-                     #{quantity},
-                     #{price},
-                     #{discountAmount},
-                     #{productPrice},
-                     #{productTotalPrice},
-                     #{status}
-                 )
+            #{orderId},
+            #{serialNumber},
+            #{productDetailId},
+            #{productName},
+            #{size},
+            #{color},
+            #{quantity},
+            #{price},
+            #{discountAmount},
+            #{productPrice},
+            #{productTotalPrice}
+        )
     </insert>
 
     <!-- 결제 대기 건 조회 -->
@@ -214,6 +214,39 @@
         UPDATE payment
         SET status = #{status}
         WHERE payment_id = #{paymentId}
+    </update>
+
+    <!-- 배송 정보 저장 -->
+    <insert id="insertShipping">
+        INSERT INTO shipping (
+            shipping_id, order_id, basic_address, detail_address, receive_people, receive_phone_number, shipping_price
+        ) VALUES (
+            #{shippingId}, #{orderId}, #{basicAddress}, #{detailAddress}, #{receivePeople}, #{receivePhoneNumber}, #{shippingPrice}
+        )
+    </insert>
+
+    <!-- 마지막 배송 ID 조회 -->
+    <select id="getLastShippingId" resultType="String">
+        SELECT shipping_id
+        FROM shipping
+        ORDER BY shipping_id DESC
+        LIMIT 1
+    </select>
+
+    <!-- 배송 이력 저장 -->
+    <insert id="insertShippingHistory">
+        INSERT INTO shipping_history (
+            shipping_id, order_id, basic_address, detail_address, receive_people, receive_phone_number, shipping_price
+        ) VALUES (
+            #{shippingId}, #{orderId}, #{basicAddress}, #{detailAddress}, #{receivePeople}, #{receivePhoneNumber}, #{shippingPrice}
+        )
+    </insert>
+
+    <!-- 주문 상태 변경 -->
+    <update id="updateOrderStatus" parameterType="org.example.shoppingmall.dto.payment.PaymentPendingDto">
+        UPDATE orders
+        SET order_status = #{status}
+        WHERE order_id = #{orderId}
     </update>
 
 </mapper>
