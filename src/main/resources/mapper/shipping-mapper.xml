@@ -1,25 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.shoppingmall.repository.shipping.ManagementRepository">  <!-- 어떤 리포지토리를 볼지 정하는 곳 -->
+<mapper namespace="org.example.shoppingmall.repository.shipping.ShippingListRepository">  <!-- 어떤 리포지토리를 볼지 정하는 곳 -->
 
-    <select id="selectTest" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
-        select * from test
+    <!--배송리스트 전체 조회-->
+    <select id="selectAllShipping" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
+        select * from shipping
+
     </select>
 
-
-    <insert id="test" parameterType="org.example.shoppingmall.dto.shipping.ShippingDto">
-        INSERT INTO test (boardWriter, boardPass, boardTitle, boardContents)
-        VALUES (#{boardWriter}, #{boardPass}, #{boardTitle}, #{boardContents});
-    </insert>
-
-    <select id="findAll2" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
-        select Id, boardTitle, boardWriter, boardHits, createdAt as createdAt
-        from test order by id desc
+    <!--배송 상세 페이지-->
+    <select id="findDetailShippingId" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
+        select * from shipping
+        where shipping_id = #{id}
     </select>
 
-    <select id="findById" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
-        select Id, boardTitle, boardWriter, boardHits, createdAt as createdAt
-        from test where id=#{id}
+    <!--배송 상세 페이지 수정 페이지-->
+  <select id="updateShipping" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
+    select
+            shipping_id,
+            tracking_number,
+            shipping_datetime,
+             expected_datetime,
+             end_datetime,
+             note,
+             delay_reason,
+             description,
+             delivery_name,
+             delivery_number,
+             delivery_datetime,
+             updated_at
+        from shipping where shipping_id = #{id}
     </select>
+
+    <!--배송 상세 페이지 수정 후 업데이트-->
+    <update id="updateShippingList" parameterType="org.example.shoppingmall.dto.shipping.ShippingDto">
+        update shipping
+        <set>
+            <if test="trackingNumber != null">tracking_number = #{trackingNumber},</if>
+            <if test="shippingDatetime != null">shipping_datetime = #{shippingDatetime},</if>
+            <if test="expectedDatetime != null">expected_datetime = #{expectedDatetime},</if>
+            <if test="endDatetime != null">end_datetime = #{endDatetime},</if>
+            <if test="note != null">note = #{note},</if>
+            <if test="delayReason != null">delay_reason = #{delayReason},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="deliveryName != null">delivery_name = #{deliveryName},</if>
+            <if test="deliveryNumber != null">delivery_number = #{deliveryNumber},</if>
+            <if test="deliveryDatetime != null">delivery_datetime = #{deliveryDatetime},</if>
+            updated_at = NOW()
+        </set>
+        where shipping_id = #{shippingId}
+    </update>
+
+    <!-->배송 리스트 삭제-->
+    <delete id="deleteShippingList">
+        delete from shipping where shipping_id = #{shippingId}
+    </delete>
+    <!--    <insert id="test" parameterType="org.example.shoppingmall.dto.shipping.ShippingDto">-->
+    <!--        INSERT INTO test (boardWriter, boardPass, boardTitle, boardContents)-->
+    <!--        VALUES (#{boardWriter}, #{boardPass}, #{boardTitle}, #{boardContents});-->
+    <!--    </insert>-->
+
+    <!--    <select id="findAll2" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">-->
+    <!--        select Id, boardTitle, boardWriter, boardHits, createdAt as createdAt-->
+    <!--        from test order by id desc-->
+    <!--    </select>-->
+
+    <!--    <select id="findById" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">-->
+    <!--        select Id, boardTitle, boardWriter, boardHits, boardContents, createdAt-->
+    <!--        from test where id=#{id}-->
+    <!--    </select>-->
+
+    <!--    <update id="update">-->
+    <!--        update test set boardTitle=#{boardTitle}, boardWriter=#{boardWriter}, boardContents=#{boardContents}-->
+    <!--        where id=#{id}-->
+    <!--    </update>-->
+
+    <!--    <delete id="delete">-->
+    <!--        delete from test where id=#{id}-->
+    <!--    </delete>-->
 
 </mapper>
