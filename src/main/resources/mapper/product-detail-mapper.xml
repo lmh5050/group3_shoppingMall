@@ -6,5 +6,22 @@
         SELECT * FROM product_detail
         WHERE product_id = #{productId}
     </select>
-
+<!--  상품이 새로 등록될 때, 작성한 컬러/사이즈를 카타시안 곱을 이용해 등록함 -->
+    <insert id="setProductDetailByColorsAndSizes">
+        INSERT INTO product_detail
+        (
+            PRODUCT_DETAIL_ID, PRODUCT_ID, COLOR, SIZE, STOCK_QUANTITY,
+            STOCK_IN_DATE, EXPECTED_STOCK_IN_DATE, NOTE, STATUS
+        )
+        VALUES (
+            #{productDetailId}, #{productId} ,#{color}, #{size}, #{stockQuantity},
+            now(), now(), #{note}, 1
+        )
+    </insert>
+<!--  가장 마지막 상품 상세 번호를 가져옴  -->
+    <select id="getLastProductDetailId">
+        SELECT product_detail_id FROM product_detail
+        ORDER BY product_detail_id DESC
+        LIMIT 1
+    </select>
 </mapper>

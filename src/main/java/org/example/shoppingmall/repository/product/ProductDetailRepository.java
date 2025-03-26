@@ -7,5 +7,6 @@ import java.util.ArrayList;
 
 @Mapper
 public interface ProductDetailRepository {
-    ArrayList<ProductDetailDto> getProductDetailByProductId(String productId);
+    void setProductDetailByColorsAndSizes(ProductDetailDto productDetailDto);
+    String getLastProductDetailId();
 }

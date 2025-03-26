@@ -105,9 +105,8 @@ public class ProductInventoryMgmtController {
             return "파일이 없습니다.";
         }
         try {
-
             // 상품 번호 - 현재 등록된 상품 중 마지막 + 1
-            String productId = productService.makeProductId();
+            String productId = productService.makeProductId("productId", null);
             // 파일 저장 경로 설정
             String imgForm = ".png";
             File destinationFile = new File(UPLOAD_DIR + productId + imgForm); // 파일 이름은 productId.jpg로 설정
@@ -118,8 +117,11 @@ public class ProductInventoryMgmtController {
             // 파일 저장
             imageFile.transferTo(destinationFile);
 
+            System.out.println("productUpdateDto = " + productUpdateDto);
             // 새로운 상품 DB에 등록
             productUpdateDto.setProductId(productId);
+            productUpdateDto.setColorCount(productUpdateDto.getColors().size());
+            productUpdateDto.setSizeCount(productUpdateDto.getColors().size());
             ProductDescriptionImageDto productDescriptionImageDto = new ProductDescriptionImageDto();
 
             // 상품 사진 DTO 에 등록
