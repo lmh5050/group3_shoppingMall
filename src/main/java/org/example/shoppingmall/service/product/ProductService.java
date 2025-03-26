@@ -6,6 +6,7 @@ import org.example.shoppingmall.repository.product.ProductDetailRepository;
 import org.example.shoppingmall.repository.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -168,6 +169,7 @@ public class ProductService {
     }
 
     // 상품을 추가하기
+    @Transactional
     public void setNewProduct(ProductUpdateDto productUpdateDto, ProductDescriptionImageDto productDescriptionImageDto) {
         productRepository.setNewProduct(productUpdateDto);
         this.setProductImage(productDescriptionImageDto);

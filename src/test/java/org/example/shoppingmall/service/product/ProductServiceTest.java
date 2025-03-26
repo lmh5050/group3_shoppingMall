@@ -69,6 +69,7 @@ class ProductServiceTest {
         sb.append("0".repeat(Math.max(0, zeroLen)));
         sb.append(tmp);
         res = sb.toString();
+        System.out.println("res = " + res);
         Assertions.assertThat(res.equals("P00021")).isTrue();
     }
 

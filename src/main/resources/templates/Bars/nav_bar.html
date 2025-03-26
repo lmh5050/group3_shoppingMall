@@ -12,8 +12,11 @@
 <section id="header">
     <nav id="nav">
         <div style="display: flex; align-items: center; gap: 12px; padding: 20px; font-family: 'Pretendard', 'Noto Sans KR', sans-serif;">
-            <th:block th:if="${!currentUrl.contains('productDetail')}">
-                <!-- 검색창 -->
+            <th:block th:if="${!(currentUrl.contains('productDetail')
+             or currentUrl.contains('order/list')
+             or currentUrl.contains('order/detail')
+             or currentUrl.contains('order/order'))}">
+            <!-- 검색창 -->
                 <label for="productName">
                     <input type="search" placeholder="Search Product Name"
                            id="productName"

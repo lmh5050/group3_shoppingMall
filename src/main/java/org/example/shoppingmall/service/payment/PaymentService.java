@@ -33,6 +33,8 @@ public class PaymentService {
             // 새로운 결제 처리
             processNewPayment(paymentInfoDto);
         }
+        // 배송 로우가 생김, 근데 운송장 번호는 아직 관리자가 매핑해주지 않음
+
     }
 
     // 새로운 결제 처리
