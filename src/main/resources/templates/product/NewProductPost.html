@@ -111,14 +111,14 @@
         <div th:replace="Bars/side_bar :: topnav"></div>
         <!--   내용 시작     -->
 
-        <h1>관리자 - 상품 추가 등록</h1>
         <section>
             <div>
                 <div class="admin-container">
                     <form id="newProductForm" >
+                        <h1 style="text-align: center;">관리자 - 상품 추가 등록</h1>
                         <!-- 메인 사진 수정 -->
                         <div>
-                            <h3>(1) 메인 사진</h3>
+                            <h3>(1) 메인 사진</h3> <p style="color: red;">*필수</p>
                             <!-- 버튼 클릭 시 파일 선택 창 열리기 -->
                             <button type="button" onclick="openNewFileInput()">사진 선택</button>
 
@@ -134,25 +134,25 @@
                         <br>
                         <!-- 상품 이름 수정 -->
                         <div>
-                            <h3>(2) 등록된 상품 이름</h3>
+                            <h3>(2) 등록된 상품 이름 - 5글자 이상, 50 이하</h3> <p style="color: red;">*필수</p>
                             <input type="text" name="productName" id="productName">
                         </div>
                         <br>
                         <!-- 상품 가격 수정 -->
                         <div>
-                            <h3>(3) 상품 가격 (원)</h3>
+                            <h3>(3) 상품 가격 (원) - 0원 이상</h3> <p style="color: red;">*필수</p>
                             <input type="text" name="productPrice" id="productPrice">
                         </div>
                         <br>
                         <!-- 상품 상세 설명 수정 -->
                         <div>
-                            <h3>(4) 상품 상세 설명</h3>
+                            <h3>(4) 상품 상세 설명 - 20자 이상, 100 이하</h3> <p style="color: red;">*필수</p>
                             <textarea name="productDescription" id="productDescription"></textarea>
                         </div>
                         <br>
                         <!-- 카테고리 수정 -->
                         <div>
-                            <h3>(5) 카테고리</h3>
+                            <h3>(5) 카테고리</h3> <p style="color: red;">*필수</p>
                             <select name="productCategoryId" id="productCategoryId">
                                 <option value="default">카테고리 선택</option>
                                 <th:block th:each="category : ${productCategory}">
@@ -163,7 +163,7 @@
                         <br>
                         <!-- 시즌 수정 -->
                         <div>
-                            <h3>(6) 시즌</h3>
+                            <h3>(6) 시즌</h3> <p style="color: red;">*필수</p>
                             <select name="productSeasonId" id="productSeasonId">
                                 <option value="default">시즌 선택</option>
                                 <th:block th:each="season : ${productSeason}">
@@ -180,7 +180,7 @@
                         <br>
                         <!-- 성별 수정 -->
                         <div>
-                            <h3>(8) 성별</h3>
+                            <h3>(8) 성별</h3> <p style="color: red;">*필수</p>
                             <select name="productGender" id="productGender">
                                 <option value="default">성별 선택</option>
                                 <option value="ALL">전체</option>
@@ -191,7 +191,7 @@
                         <br>
                         <!-- 핏 정보 수정 -->
                         <div>
-                            <h3>(9) 핏</h3>
+                            <h3>(9) 핏</h3> <p style="color: red;">*필수</p>
                             <select name="productFit" id="productFit">
                                 <option value="default">핏 선택</option>
                                 <option value="Regular">레귤러</option>
@@ -202,7 +202,7 @@
                         <br>
                         <!-- 촉감 정보 수정 -->
                         <div>
-                            <h3>(10) 촉감</h3>
+                            <h3>(10) 촉감</h3> <p style="color: red;">*필수</p>
                             <select name="productTexture" id="productTexture">
                                 <option value="default">촉감 선택</option>
                                 <option value="Soft">부드러움</option>
@@ -214,7 +214,7 @@
                         <br>
                         <!-- 두께 정보 수정 -->
                         <div>
-                            <h3>(11) 두께</h3>
+                            <h3>(11) 두께</h3> <p style="color: red;">*필수</p>
                             <select name="productThickness" id="productThickness">
                                 <option value="default">촉감 선택</option>
                                 <option value="Slightly thin">약간 얇음</option>
@@ -226,19 +226,19 @@
                         <br>
                         <!-- 제조사 수정 -->
                         <div>
-                            <h3>(12) 제조사</h3>
+                            <h3>(12) 제조사</h3> <p style="color: red;">*필수</p>
                             <input type="text" name="productManufacturer" id="productManufacturer">
                         </div>
                         <br>
                         <!-- 원산지 수정 -->
                         <div>
-                            <h3>(13) 원산지</h3>
+                            <h3>(13) 원산지</h3> <p style="color: red;">*필수</p>
                             <input type="text" name="productOrigin" id="productOrigin">
                         </div>
                         <br>
                         <!-- 품질 보증 기준 수정 -->
                         <div>
-                            <h3>(14) 품질 보증 기준</h3>
+                            <h3>(14) 품질 보증 기준</h3> <p style="color: red;">*필수</p>
                             <select name="productQualityAssuranceStandard" id="productQualityAssuranceStandard">
                                 <option value="default">품질 보증 기준 선택</option>
                                 <option value="OEKO-TEX Standard 100">국제 섬유 및 환경 인증 : OEKO-TEX Standard 100</option>
@@ -264,7 +264,7 @@
                         <br>
                         <!-- 색상 수정 -->
                         <div>
-                            <h3>(15) 색상</h3>
+                            <h3>(15) 색상 - 1개 이상 등록</h3> <p style="color: red;">*필수</p>
                             <div id="colorContainer">
                                 <input type="text" name="colors">
                             </div>
@@ -273,7 +273,7 @@
                         <br>
                         <!-- 사이즈 수정 -->
                         <div>
-                            <h3>(16) 사이즈</h3>
+                            <h3>(16) 사이즈 - 1개 이상 등록</h3> <p style="color: red;">*필수</p>
                             <div id="sizeContainer">
                                 <input type="text" name="sizes">
                             </div>
@@ -342,11 +342,10 @@
     function validateNewProductInfo() {
         let image = document.getElementById("newImg")?.files?.[0] || null; // 파일 입력
         let productName = document.getElementById("productName")?.value?.trim() || "";
+        let productPrice = document.getElementById("productPrice")?.value.trim();
         let productDescription = document.getElementById("productDescription")?.value?.trim() || "";
         let productCategoryId = document.getElementById("productCategory")?.value;
         let productSeasonId = document.getElementById("productSeason")?.value;
-        let productNotesElement = document.getElementById("productNotes");
-        let productNotes = productNotesElement?.value?.trim() || "";
         let productGender = document.getElementById("productGender")?.value ;
         let productFit = document.getElementById("productFit")?.value ;
         let productTexture = document.getElementById("productTexture")?.value ;
@@ -354,92 +353,120 @@
         let productManufacturer = document.getElementById("productManufacturer")?.value?.trim() || "";
         let productOrigin = document.getElementById("productOrigin")?.value?.trim() || "";
         let productQualityAssuranceStandard = document.getElementById("productQualityAssuranceStandard")?.value?.trim();
-        // let colors = document.getElementById("colorContainer")?.value?.trim() || "";
-        // let sizes = document.getElementById("sizeContainer")?.value?.trim() || "";
+        let colors = document.getElementsByName("colors");
+        let sizes = document.getElementsByName("sizes");
 
         // 상품 사진 체크
         if (!image) {
             alert("상품 사진이 비어있습니다.");
+            document.getElementById("newImgPreview").focus(); // 다시 입력하도록 포커스 이동
             return false;
         }
 
         // 상품 이름 체크
         if (productName.length === 0) {
             alert("상품 이름이 비어있습니다.");
+            document.getElementById("productName").focus(); // 다시 입력하도록 포커스 이동
             return false;
         }
         if (productName.length < 5) {
             alert("상품 이름은 5글자 이상으로 등록되어야 합니다.");
+            document.getElementById("productName").focus(); // 다시 입력하도록 포커스 이동
             return false;
         }
         if (productName.length > 50) {
             alert("상품 이름은 50자 이하로 등록되어야 합니다.");
+            document.getElementById("productName").focus(); // 다시 입력하도록 포커스 이동
+            return false;
+        }
+
+        // 숫자가 아니거나 빈 값일 경우
+        if (!productPrice || isNaN(productPrice) || Number(productPrice) <= 0) {
+            alert("상품 가격은 0보다 큰 숫자로 입력해야 합니다.");
+            document.getElementById("productPrice").value = ""; // 입력값 초기화
+            document.getElementById("productPrice").focus(); // 다시 입력하도록 포커스 이동
             return false;
         }
 
         // 상품 상세 설명 체크
         if (productDescription.length === 0) {
             alert("상품 상세 설명이 비어있습니다.");
+            document.getElementById("productDescription").focus(); // 다시 입력하도록 포커스 이동
             return false;
         }
         if (productDescription.length < 20) {
             alert("상품 상세 설명은 20자 이상이어야 합니다.");
+            document.getElementById("productDescription").focus(); // 다시 입력하도록 포커스 이동
             return false;
         }
         if (productDescription.length > 100) {
             alert("상품 상세 설명은 100자 이하이어야 합니다.");
+            document.getElementById("productDescription").focus(); // 다시 입력하도록 포커스 이동
             return false;
         }
 
         // 필수 선택 항목 체크
         if (productCategoryId === "default") {
             alert("상품의 카테고리는 필수로 선택되어야 합니다.");
+            document.getElementById("productCategoryId").focus(); // 다시 입력하도록 포커스 이동
             return false;
         }
         if (productSeasonId === "default") {
             alert("상품의 시즌은 필수로 선택되어야 합니다.");
+            document.getElementById("productSeasonId").focus(); // 다시 입력하도록 포커스 이동
             return false;
         }
         if (productGender === "default") {
             alert("상품의 성별은 필수로 선택되어야 합니다.");
+            document.getElementById("productGender").focus(); // 다시 입력하도록 포커스 이동
             return false;
         }
         if (productFit === "default") {
             alert("상품의 핏은 필수로 선택되어야 합니다.");
+            document.getElementById("productFit").focus(); // 다시 입력하도록 포커스 이동
             return false;
         }
         if (productTexture === "default") {
             alert("상품의 촉감은 필수로 선택되어야 합니다.");
+            document.getElementById("productTexture").focus(); // 다시 입력하도록 포커스 이동
             return false;
         }
         if (productThickness === "default") {
             alert("상품의 두께는 필수로 선택되어야 합니다.");
+            document.getElementById("productThickness").focus(); // 다시 입력하도록 포커스 이동
             return false;
         }
 
         // 제조사, 원산지, 품질 보증 기준 체크
         if (productManufacturer.length === 0) {
             alert("상품의 제조사는 필수로 입력되어야 합니다.");
+            document.getElementById("productManufacturer").focus(); // 다시 입력하도록 포커스 이동
             return false;
         }
         if (productOrigin.length === 0) {
             alert("상품의 원산지는 필수로 입력되어야 합니다.");
+            document.getElementById("productOrigin").focus(); // 다시 입력하도록 포커스 이동
             return false;
         }
         if (productQualityAssuranceStandard.length === 0) {
             alert("상품의 품질 보증 기준은 필수로 입력되어야 합니다.");
+            document.getElementById("productQualityAssuranceStandard").focus(); // 다시 입력하도록 포커스 이동
             return false;
         }
 
-        // 색상 & 사이즈 체크
-        // if (colors.length === 0) {
-        //     alert("상품의 색상은 필수로 작성되어야 합니다.");
-        //     return false;
-        // }
-        // if (sizes.length === 0) {
-        //     alert("상품의 사이즈는 필수로 작성되어야 합니다.");
-        //     return false;
-        // }
+        //색상 & 사이즈 체크
+        let isColorSelected = Array.from(colors).some(color => color.value.trim().length > 0);
+        if (!isColorSelected) {
+            alert("상품의 색상은 필수로 작성되어야 합니다.");
+            return false;
+        }
+
+        // 사이즈 체크
+        let isSizeSelected = Array.from(sizes).some(size => size.value.trim().length > 0);
+        if (!isSizeSelected) {
+            alert("상품의 사이즈는 필수로 작성되어야 합니다.");
+            return false;
+        }
         return true; // 모든 유효성 검사를 통과하면 true 반환
     }
 
@@ -467,11 +494,11 @@
         }
 
         // 서버로 요청 보내기
-        axios.post("/admin/addNewProduct", formData)
+        axios.post("/admin/product/addNewProduct", formData)
             .then(response => {
                 console.log("성공:", response);
                 // 리다이렉트 처리
-                window.location.href = "/admin/productInventoryMgmt"; // 상품 관리 페이지로 이동
+                window.location.href = "/admin/product/"; // 상품 관리 페이지로 이동
             })
             .catch(error => {
                 console.error("실패:", error.response?.data || error);

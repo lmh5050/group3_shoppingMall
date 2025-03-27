@@ -163,7 +163,7 @@
         <div th:replace="Bars/side_bar :: topnav"></div>
         <div class="container">
             <h1>관리자 - 제고 관리</h1>
-            <button type="button"  onclick="location.href='/admin/addNewProduct'">
+            <button type="button"  onclick="location.href='/admin/product/addNewProduct'">
                 +상품 추가 등록
             </button>
             <br>
@@ -198,7 +198,7 @@
                                     </button>
                                 </form>
                                 <div>
-                                    <a th:href="@{'/admin/productInventoryMgmt/updateProductDetail?prdId=' + ${product.getProductId()}}">상품 정보 수정</a>
+                                    <a th:href="@{'/admin/product/updateProductDetail?prdId=' + ${product.getProductId()}}">상품 정보 수정</a>
                                 </div>
                            </div>
                         </div>
@@ -245,7 +245,7 @@
         if (confirmed) {
             axios({
                 method: "post",
-                url: "/admin/productInventoryMgmt",
+                url: "/admin/product",
                 headers: {
                     'Content-Type': 'application/json'
                 },
