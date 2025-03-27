@@ -176,7 +176,7 @@
                             <div class="product-image">
 <!--                             onerror="reloadImage(this)"   -->
 <!--                                <img th:src="|/images/product/@{${product.getProductId()}}.png?version=${product.getUpdatedDatetime()}|" alt="Product Image"/>-->
-                                <img th:src="|/images/product/@{${product.getProductId()}}.png|" alt="Product Image"/>
+                                <img th:src="|/images/product/${product.getProductId()}.png|" alt="Product Image"/>
                             </div>
                             <!-- 상품 정보 -->
                             <div class="product-details">
@@ -205,7 +205,6 @@
                            </div>
                         </div>
                     </div>
-
                 </div>
             </section>
         </div>
