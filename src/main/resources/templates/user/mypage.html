@@ -18,9 +18,18 @@
             font-family: 'Arial', sans-serif;
             background-color: #f8f9fa;
         }
+
         .container {
             margin-top: 50px;
+            display: flex;
+            justify-content: center; /* 가로 중앙 정렬 */
+            align-items: center; /* 세로 중앙 정렬 */
+            height: 100vh; /* 화면의 전체 높이를 차지하도록 설정 */
+            margin-left: -150px;
+            transform: translateX(150px); /* 왼쪽으로 이동한 만큼 다시 되돌려서 중앙에 위치하도록 */
         }
+
+
         .input-group {
             display: flex;
             align-items: center; /* 세로 가운데 정렬 */

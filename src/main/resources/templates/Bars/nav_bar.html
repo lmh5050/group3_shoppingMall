@@ -25,7 +25,7 @@
                     <a th:href="|/category?majorCID=${majorC.categoryId}|" th:text="${majorC.name}">default</a>
                 </div>
             </li>
-            <!-- ▼ 고객센터 메뉴 + 드롭다운 -->
+            <!-- ▼ 고객센터 메뉴 + 드롭다운
             <li>
                 <a class="kaqg_main-menu" href="#">고객센터</a>
                 <div class="dropdown">
@@ -34,6 +34,7 @@
                     <a th:href="@{/contact}">고객 문의</a>
                 </div>
             </li>
+            -->
             <!-- 장바구니 -->
             <li th:if="${session.customerId != null}">
                 <a class="kaqg_main-menu" th:href="@{/order/cart/{customerId}(customerId=${session.customerId})}">장바구니</a>
@@ -48,6 +49,11 @@
                     <a th:href="@{/notice}">취소/환불/교환</a>
                     <a th:href="@{/contact}">1;1 문의 내역</a>
                 </div>
+            </li>
+            <li th:if="${session.customerId == 'admin'}">
+                <a href="/admin/productInventoryMgmt">
+                    <button type="button">관리자 페이지</button>
+                </a>
             </li>
             <li th:if="${session.customerId != null}">
                 <form th:action="@{/user/logout}" method="post" style="display: inline;">
