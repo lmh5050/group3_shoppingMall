@@ -140,13 +140,12 @@ public class UserController {
     @PostMapping("/user/modify") //회원 정보 수정하는 api
     @ResponseBody //axios json 이용하기 위해서 responseBody 추가
     public void modifyUserInfo(@RequestBody UserInfoDto userInfo) {
-
         // 아이디 확인
         loginService.modifyUserInfo(userInfo);
         return ; // 결과 반환
     }
 
-    @PostMapping("/user/uploadProfileImage")
+    @PostMapping("/user/uploadProfileImage") //파일 업로드 하는 api
     @ResponseBody
     public String uploadProfileImage(@RequestParam("profileImage") MultipartFile file,
                                      HttpSession session) {
@@ -200,7 +199,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/user/addressmanage")
+    @GetMapping("/user/addressmanage") //배송지 관리 들어갈때 쓰는 api
     public String getUserAddress(HttpSession session, Model model) {
         String customerId = (String) session.getAttribute("customerId");
         if (customerId == null) {
@@ -211,14 +210,14 @@ public class UserController {
     }
 
 
-    @GetMapping("/user/addressmanage/{customerId}")
+    @GetMapping("/user/addressmanage/{customerId}") //주소 정보 들고 들어오는 api
     @ResponseBody
     public List<UserAddressDto> getUserAddressInfo(@PathVariable String customerId) {
         List<UserAddressDto> userinfo = loginService.getUserAddressInfo(customerId);
         return userinfo;
     }
 
-    @PostMapping("/user/addressmanage")
+    @PostMapping("/user/addressmanage") //주소 정보 수정 완료 눌릴때 쓰는 api
     @ResponseBody
     public String insertUserAddressInfo(@RequestBody UserAddressDto UserAddress ,
                                                 HttpSession session) {
@@ -252,7 +251,6 @@ public class UserController {
     public void deleteAddress(@RequestBody UserAddressDto UserAddress ) {
         loginService.deleteAddress(UserAddress);
     }
-
 
     @PostMapping("/user/emailSend") //이메일 인증 , 디벨롭 필요 api
     @ResponseBody //axios json 이용하기 위해서 responseBody 추가

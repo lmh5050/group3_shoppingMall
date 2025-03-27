@@ -1,48 +1,151 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<link rel="stylesheet" th:href="@{/css/Bars.css}">
-<link rel="stylesheet" th:href="@{/css/Login.css}">
-<link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">
 <head>
     <meta charset="UTF-8">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>로그인</title>
+    <link rel="stylesheet" th:href="@{/css/Bars.css}">
+    <link rel="stylesheet" th:href="@{/css/Login.css}">
+    <link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center; /* 수평 중앙 정렬 */
+            align-items: center; /* 수직 중앙 정렬 */
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            box-sizing: border-box;
+            animation: fadeIn 0.5s;
+            margin: auto;
+            margin-left: -200px; /* 왼쪽으로 1픽셀 이동 */
+        }
+
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-container h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 24px;
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .input-container input {
+            width: 100%;
+            padding: 16px;
+            padding-left: 48px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            outline: none;
+        }
+
+        .input-container input:focus {
+            border-color: #1ec800;
+            box-shadow: 0 0 8px rgba(30, 200, 0, 0.2);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 20px;
+        }
+
+        /* ✅ 버튼 크기 및 스타일 통일 */
+        .small-button, .signup-button {
+            width: 100% !important;
+            padding: 16px !important;
+            background-color: #1ec800;
+            color: white;
+            border: none;
+            border-radius: 10px !important;
+            font-size: 18px !important;
+            font-weight: 600 !important;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            outline: none;
+            margin-top: 8px !important;
+        }
+
+        .small-button:hover, .signup-button:hover {
+            background-color: #17b000 !important;
+        }
+
+        .signup-container {
+            margin-top: 12px;
+        }
+
+        /* ✅ 반응형 처리 → 모바일에서도 보기 좋게 설정 */
+        @media (max-width: 480px) {
+            .login-container {
+                width: 90%;
+                padding: 32px;
+            }
+
+            .input-container input,
+            .small-button,
+            .signup-button {
+                font-size: 16px;
+                padding: 14px;
+            }
+        }
+    </style>
 </head>
 
-<style>
-
-</style>
-<div th:replace="Bars/nav_bar :: nav"></div>
 <body>
-<!-- 네비게이션 바 포함 -->
+<!-- ✅ 기존 네비게이션 바 유지 -->
+<div th:replace="Bars/nav_bar :: nav"></div>
 
+<!-- ✅ 로그인 폼 -->
 <div class="login-container">
     <h1>로그인</h1>
-        <div class="input-container">
-            아이디:
-            <input type="text" name="username" id="username" class="small-input" required th:value="${username}" /> <br>
-        </div>
-        <div class="input-container">
-            비밀번호:
-            <input type="password" name="password" id="password" required class="small-input" th:value="${password}" /><br>
-        </div>
-        <div class="input-container">
-            <button class="small-button" onclick="login()">로그인</button>
-        </div>
-
-    <!-- 회원가입 버튼 추가 -->
-    <div class="input-container signup-container">
+    <div class="input-container">
+        <i class="input-icon">👤</i>
+        <input type="text" name="username" id="username" placeholder="아이디" required th:value="${username}" />
+    </div>
+    <div class="input-container">
+        <i class="input-icon">🔒</i>
+        <input type="password" name="password" id="password" placeholder="비밀번호" required th:value="${password}" />
+    </div>
+    <div class="input-container">
+        <button class="small-button" onclick="login()">로그인</button>
+    </div>
+    <div class="signup-container">
         <button type="button" class="signup-button" id="signupButton">회원가입</button>
     </div>
 </div>
 
+<!-- ✅ 기존 푸터 유지 -->
 <footer>
     <div th:replace="Bars/footer :: #footer"></div>
 </footer>
 
-<script type="text/javascript">
-    // 쿠키에서 'username'과 'password'를 가져오는 함수
-    // 쿠키에서 특정 값을 가져오는 함수
+<script>
+    // ✅ 쿠키에서 값 가져오는 함수
     function getCookie(name) {
         let value = "; " + document.cookie;
         let parts = value.split("; " + name + "=");
@@ -50,61 +153,47 @@
         return null;
     }
 
-    // 페이지 로드 시 쿠키 확인
-    window.onload = function() {
-        let usernameCookie = getCookie("username");
-        let checkBoxCookie = getCookie("checkBox");
-
-        // username 쿠키가 있으면 입력 필드에 값 설정
-        if (usernameCookie !== null) {
+    // ✅ 페이지 로드 시 쿠키 값 로드
+    window.onload = () => {
+        const usernameCookie = getCookie("username");
+        if (usernameCookie) {
             document.getElementById("username").value = usernameCookie;
-        }
-
-        // checkBox 쿠키가 "on"이면 체크박스를 체크 상태로 설정
-        if (checkBoxCookie === "on") {
-            document.getElementById("checkBox").checked = true;
         }
     };
 
-    // 회원가입 버튼 클릭 시 signin 이벤트 트리거
-    document.getElementById("signupButton").addEventListener("click", function() {
+    // ✅ 회원가입 버튼 클릭 시 이벤트
+    document.getElementById("signupButton").addEventListener("click", () => {
         location.href = '/user/register';
     });
 
-    const back = () => {
-        history.back();
-    }
+    // ✅ 로그인 기능
     const login = () => {
-        const customerId = document.querySelector('input[name="username"]').value;
-        const pw = document.querySelector('input[name="password"]').value;
+        const customerId = document.getElementById('username').value;
+        const pw = document.getElementById('password').value;
 
-        axios({
-            method: "post",
-            url: "/user/login",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {
-                customerId: customerId,
-                pw: pw
-            }
+        if (!customerId || !pw) {
+            alert('아이디와 비밀번호를 입력해주세요.');
+            return;
+        }
+
+        axios.post('/user/login', {
+            customerId: customerId,
+            pw: pw
         }).then(res => {
             console.log("res", res);
             if (res.data.status === true) {
-                // 로그인 성공 시 세션에 customerId 저장
+                // 세션 저장 후 마이페이지 이동
                 sessionStorage.setItem('customerId', customerId);
-                alert("로그인 성공");
-                // 마이페이지로 이동
-                window.location.href = "/user/mypage";
+                alert('로그인 성공');
+                window.location.href = '/user/mypage';
             } else {
-                alert("로그인 실패");
+                alert('로그인 실패');
             }
         }).catch(err => {
-            console.log("err", err);
-            alert("서버 오류 발생");
+            console.error('Error:', err);
+            alert('서버 오류 발생');
         });
-    }
-    console.log(document.querySelector('input[name="username"]').value);
+    };
 </script>
 
 </body>
