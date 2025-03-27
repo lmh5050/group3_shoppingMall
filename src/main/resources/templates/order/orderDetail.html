@@ -133,14 +133,17 @@
             <div class="section-title">배송 정보</div>
             <p>수령인: <span th:text="${entry.value[0].receivePeople}">홍길동</span></p>
             <p>연락처: <span th:text="${entry.value[0].receivePhoneNumber}">010-1234-5678</span></p>
-            <p>배송 주소: <span th:text="${entry.value[0].basicAddress}">서울특별시 강남구 테헤란로</span>
+            <p>배송 주소:
+                (<span th:text="${entry.value[0].zipCode}"></span>)
+                <span th:text="${entry.value[0].basicAddress}">서울특별시 강남구 테헤란로</span>
                 <span th:text="${entry.value[0].detailAddress}">123번지</span></p>
+            <p>배송 요청사항: <span th:text="${entry.value[0].deliveryRequest}">010-1234-5678</span></p>
         </div>
 
         <!-- 주문 상세 항목들 -->
         <div class="section">
+            <div class="section-title">주문 상품</div>
             <th:block th:each="orderDetail : ${entry.value}">
-                <div class="section-title">주문 상품</div>
                 <div class="order-item">
                     <img th:src="@{${orderDetail.imageUrl}}" alt="상품 이미지">
                     <div>
