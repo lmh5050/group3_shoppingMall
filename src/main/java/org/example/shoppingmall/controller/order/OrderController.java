@@ -1,7 +1,6 @@
 package org.example.shoppingmall.controller.order;
 
 import jakarta.servlet.http.HttpSession;
-import org.example.shoppingmall.config.RequestBean;
 import org.example.shoppingmall.dto.order.*;
 import org.example.shoppingmall.service.order.OrderListService;
 import org.example.shoppingmall.service.order.OrderService;
@@ -31,7 +30,6 @@ public class OrderController {
 
         String customerId = (String) session.getAttribute("customerId");
         model.addAttribute("customerId", customerId);
-        System.out.println("customerId = " + customerId);
 
         //주문번호 표시
         Long showOrderId = orderService.getOrderId();
@@ -63,7 +61,6 @@ public class OrderController {
 
         String customerId = (String) session.getAttribute("customerId");
         model.addAttribute("customerId", customerId);
-        System.out.println("customerId = " + customerId);
 
         if (customerId == null) {
             return "redirect:/user/login";
@@ -98,7 +95,35 @@ public class OrderController {
         return "order/orderForm";
     }
 
-    //주문목록
+    // 주문목록
+    @GetMapping(value = "/list")
+    public String showOrderList(HttpSession session, Model model) {
+
+        String customerId = (String) session.getAttribute("customerId");
+        model.addAttribute("customerId", customerId);
+
+        if (customerId == null) {
+            return "redirect:/user/login";
+        }
+
+        List<OrderListDto> orders = orderListService.getOrderListByCustomerId(customerId);
+
+        // 주문번호별로 그룹화 (Long 타입의 키 사용)
+        Map<Long, List<OrderListDto>> groupedOrders = orders.stream()
+                .collect(Collectors.groupingBy(OrderListDto::getOrderId));
+
+        //자동 정렬 (내림차순)
+        Map<Long, List<OrderListDto>> sortedGroupedOrders = new TreeMap<>(
+                (orderId1, orderId2) -> Long.compare(orderId2, orderId1)
+        );
+
+        sortedGroupedOrders.putAll(groupedOrders);
+        model.addAttribute("groupedOrders", sortedGroupedOrders);
+
+        return "order/orderList";
+    }
+
+/*    //주문목록
     @GetMapping(value = "/list")
     public String showOrderList(HttpSession session, Model model) {
 
@@ -113,12 +138,12 @@ public class OrderController {
         List<OrderListDto> orders = orderListService.getOrderListByCustomerId(customerId);
 
         // 주문번호별로 그룹화
-        Map<Integer, List<OrderListDto>> groupedOrders = orders.stream()
+        Map<Long, List<OrderListDto>> groupedOrders = orders.stream()
                 .collect(Collectors.groupingBy(OrderListDto::getOrderId));
 
         // Map 자체에서 정렬 (내림차순)
         Map<Integer, List<OrderListDto>> sortedGroupedOrders = groupedOrders.entrySet().stream()
-                .sorted((entry1, entry2) -> Integer.compare(entry2.getKey(), entry1.getKey()))  // 내림차순 정렬
+                .sorted((entry1, entry2) -> Long.compare(entry2.getKey(), entry1.getKey()))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
@@ -131,7 +156,7 @@ public class OrderController {
         System.out.println("sortedGroupedOrders = " + sortedGroupedOrders);
 
         return "order/orderList";
-    }
+    }*/
 
 
     //주문상세
