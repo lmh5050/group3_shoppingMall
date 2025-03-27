@@ -21,4 +21,5 @@ public class PaymentShippingDto {
     private String receivePeople;
     private String receivePhoneNumber;
     private Integer shippingPrice;
+    private String deliveryRequest;
 } 

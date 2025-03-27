@@ -88,7 +88,7 @@
             const top = (window.screen.height - height) / 2;
 
             const orderData = {
-                orderId: 100062,
+                orderId: 100074,
                 customerId: "user005",
                 orderStatus: "MA01006",
                 totalDiscountAmount: 0,
@@ -136,9 +136,10 @@
                 detailAddress: "상세 주소",
                 receivePeople: "김우주",
                 receivePhoneNumber: "010-1111-2222",
-                shippingPrice: 3000
+                shippingPrice: 3000,
+                deliveryRequest: "배송 전 전화 주세요. 테스트지요"
             };
-            console.log(orderData);
+            
             const popup = window.open(
                 '/payment',
                 'paymentPopup',
