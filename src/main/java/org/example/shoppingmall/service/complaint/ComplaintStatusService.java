@@ -40,7 +40,7 @@ public class ComplaintStatusService {
             status = "MA03005";
         } else if ("refund".equals(complaintType)) {
             status = "MA05010";
-        } else  {
+        } else {
             status = "MA04010";
         }
         return getCodeNameByCodeNo(status);

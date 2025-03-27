@@ -24,10 +24,10 @@ public class ComplaintService {
         this.complaintStatusService = complaintStatusService;
     }
 
-    // 모든 complaint 목록 조회
-    public List<ComplaintDto> getAllComplaints() {
-        return complaintRepository.findAllComplaints();
-    }
+//    // 모든 complaint 목록 조회
+//    public List<ComplaintDto> getAllComplaints() {
+//        return complaintRepository.findAllComplaints();
+//    }
 
     // UUID 생성 메서드
     private String createNumericUUID(String complaintType) {
@@ -64,17 +64,28 @@ public class ComplaintService {
     }
 
 
+    //해당 고객의 민원 조회
+    public List<ComplaintDto> getComplaintsByCustomerId(String customerId) {
+        return complaintRepository.findComplaintsByCustomerId(customerId);
+    }
+
     //민원 저장
-    public void saveComplaint(String complaintType, String complaintTitle, String complaintText,String pickupAddress) {
+    public void saveComplaint(String complaintType, String complaintTitle, String complaintText,String pickupAddress, Long orderId, String productName) {
+
         // 숫자로만 이루어진 complaint_id 생성
         String complaintId = createNumericUUID(complaintType);
 
         // 현재 시간을 request_datetime 으로 넣기 위해 LocalDateTime 사용
         LocalDateTime currentDateTime = LocalDateTime.now();
 
+        //민원 타입따라 배송비 설정
         double shippingPrice = applyShippingPrice(complaintType);
-        
+
+        //민원 유형따라 상태값 설정
         String status = complaintStatusService.applyComplaintStatusToRequest(complaintType);
+
+        // 환불 예상 금액(expected_refund_amount) 설정
+        double expectedRefundAmount = 0.0;
 
         // ComplaintDto 객체에 값 설정
         ComplaintDto complaintDto = new ComplaintDto();
@@ -86,6 +97,16 @@ public class ComplaintService {
         complaintDto.setDescription(complaintText); // complaintText를 description에 설정
         complaintDto.setRequestDatetime(Timestamp.valueOf(currentDateTime)); // 현재 시간 넣기
         complaintDto.setShippingPrice(shippingPrice);
+        complaintDto.setOrderId(orderId);
+        complaintDto.setProductName(productName);
+
+        //취소, 환불인 경우에만 product_total_price = expectedRefundAmount
+        if (complaintType.equals("cancel") || complaintType.equals("refund")) {
+            //예상 환불 금액에 상품 금액 대입, ProductTotalPrice 는 String형이여서 형변환
+            expectedRefundAmount = Double.parseDouble(complaintRepository.findProductTotalPriceByOrderId(orderId));
+            complaintDto.setExpectedRefundAmount((expectedRefundAmount));
+        } else complaintDto.setExpectedRefundAmount(expectedRefundAmount); //교환인 경우 예상 금액 = 0;
+
 
         // Repository를 통해 데이터 저장
         complaintRepository.insertComplaint(complaintDto);
@@ -114,14 +135,41 @@ public class ComplaintService {
         //deleteFlag 활성화 변수
         Byte onDeleteFlag = 1;
 
+        // 삭제 시 삭제시간을 완료 시간에 넣기 위해 생성
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
         String status = complaintStatusService.applyComplaintStatusToDelete(complaintType);
 
-        ComplaintDto complaintDto = new ComplaintDto();
+        double refundAmount = 0.0;
+
+        ComplaintDto complaintDto = complaintRepository.findComplaintById(complaintId);
         complaintDto.setComplaintId(complaintId);
         complaintDto.setDeleteFlag(onDeleteFlag);
-        complaintDto.setStatus(status);
+
+        //신청상태에서만 삭제하면 상태 철회로 변경
+        if (complaintDto.getStatus().contains("신청")) {
+            complaintDto.setStatus(status);
+            //신청 취소 시 환불금액은 없음
+            complaintDto.setRefundAmount(refundAmount);
+        }
+
+        //완료 시간 없을 시 완료 시간=삭제 시간
+        if (complaintDto.getEndDatetime() == null) {
+            complaintDto.setEndDatetime(Timestamp.valueOf(currentDateTime));
+        }
 
         complaintRepository.deleteComplaint(complaintDto);
     }
+
+    //같은 orderId를 가지고 있는 productName 값들 출력
+    public List<String> findProductNameByOrderId(Long orderId) {
+       return complaintRepository.findProductNameByOrderId(orderId);
+    }
+
+    public boolean isComplaintAlreadyExists(Long orderId, String productName) {
+        // 상태 값이 "철회"가 아닌 민원이 존재하는지 확인
+        return complaintRepository.existsByOrderIdAndProductNameAndStatusNotContaining(orderId, productName, "철회");
+    }
+
 
 }

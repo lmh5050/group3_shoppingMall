@@ -13,19 +13,19 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link th:href="@{/css/homecss/homeStyles.css}" rel="stylesheet" />
 </head>
-<div th:replace="~{Bars/nav_bar :: nav}"></div>
+<!--<div th:replace="~{Bars/nav_bar :: nav}"></div>-->
 <body>
 <!-- Header-->
 <header>
 
 </header>
+<!-- 이미 신청한 민원 있을 시 에러 메세지 출력위해 추가 -->
+<input type="hidden" id="errorMessageInput" th:value="${errorMessage}" />
 
 <!-- Section-->
 <section class="py-5">
-    <div class="mt-4">
-        <a class="btn btn-success" th:href="@{/complaint}">민원 신청하기</a>
-    </div>
     <!-- 민원 목록 출력 -->
+
     <!-- 취소 테이블 -->
     <div style="display: flex; gap: 40px; overflow-x: auto;">
         <div>
@@ -41,16 +41,20 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="complaint : ${complaints}" th:if="${complaint.complaintTypeId == 'cancel' && complaint.deleteFlag != 1}">
+                    <tr th:each="complaint : ${complaints}"
+                        th:if="${complaint.complaintTypeId == 'cancel' && complaint.deleteFlag != 1}">
                         <td th:text="${complaint.complaintTypeId == 'cancel' ? '취소' : complaint.complaintTypeId}"></td>
                         <td th:text="${complaint.status}"></td>
                         <td th:text="${complaint.reason}"></td>
                         <td>
                             <a class="btn btn-primary btn-sm" th:href="@{'/complaint/detail/' + ${complaint.complaintId}}">확인</a>
-                            <!-- 상태가 신청일때만 수정버튼 보이게 -->
+                            <!-- 상태가 신청일때만 수정버튼 보이게, orderId, productName 값 전달 -->
                             <a class="btn btn-warning btn-sm"
                                th:if="${#strings.contains(complaint.status, '신청')}"
-                               th:href="@{'/complaint/edit/' + ${complaint.complaintId}}">수정</a>
+                               th:href="@{'/complaint/edit?complaintId=' + ${complaint.complaintId}
+                               + '&orderId=' + ${complaint.orderId}
+                               + '&productName=' + ${complaint.productName}}">수정</a>
+
                             <!-- 삭제 버튼 (POST 방식), 접수상태이면 안 보이게 -->
                             <form th:if="${!#strings.contains(complaint.status, '접수')}" th:action="@{'/complaint/delete/' + ${complaint.complaintId}}" method="post" style="display:inline;" onsubmit="return confirmDelete();">
                                 <input type="hidden" name="complaintType" value="cancel">
@@ -58,6 +62,7 @@
                             </form>
                         </td>
                     </tr>
+
                     </tbody>
                 </table>
             </div>
@@ -77,7 +82,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="complaint : ${complaints}" th:if="${complaint.complaintTypeId == 'refund' && complaint.deleteFlag != 1}">
+                    <tr th:each="complaint : ${complaints}"
+                        th:if="${complaint.complaintTypeId == 'refund' && complaint.deleteFlag != 1}">
                         <td th:text="${complaint.complaintTypeId == 'refund' ? '환불' : complaint.complaintTypeId}"></td>
                         <td th:text="${complaint.status}"></td>
                         <td th:text="${complaint.reason}"></td>
@@ -86,10 +92,12 @@
                             <!-- 상태가 신청일때만 수정버튼 보이게 -->
                             <a class="btn btn-warning btn-sm"
                                th:if="${#strings.contains(complaint.status, '신청')}"
-                               th:href="@{'/complaint/edit/' + ${complaint.complaintId}}">수정</a>
+                               th:href="@{'/complaint/edit?complaintId=' + ${complaint.complaintId}
+                               + '&orderId=' + ${complaint.orderId}
+                               + '&productName=' + ${complaint.productName}}">수정</a>
                             <!-- 삭제 버튼 (POST 방식), 접수상태이면 안 보이게 -->
                             <form th:if="${!#strings.contains(complaint.status, '접수')}" th:action="@{'/complaint/delete/' + ${complaint.complaintId}}" method="post" style="display:inline;" onsubmit="return confirmDelete();">
-                                <input type="hidden" name="complaintType" value="cancel">
+                                <input type="hidden" name="complaintType" value="refund">
                                 <button type="submit" class="btn btn-danger btn-sm">삭제</button>
                             </form>
                         </td>
@@ -113,7 +121,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="complaint : ${complaints}" th:if="${complaint.complaintTypeId == 'exchange' && complaint.deleteFlag != 1}">
+                    <tr th:each="complaint : ${complaints}"
+                        th:if="${complaint.complaintTypeId == 'exchange' && complaint.deleteFlag != 1}">
                         <td th:text="${complaint.complaintTypeId == 'exchange' ? '교환' : complaint.complaintTypeId}"></td>
                         <td th:text="${complaint.status}"></td>
                         <td th:text="${complaint.reason}"></td>
@@ -122,10 +131,12 @@
                             <!-- 상태가 신청일때만 수정버튼 보이게 -->
                             <a class="btn btn-warning btn-sm"
                                th:if="${#strings.contains(complaint.status, '신청')}"
-                               th:href="@{'/complaint/edit/' + ${complaint.complaintId}}">수정</a>
+                               th:href="@{'/complaint/edit?complaintId=' + ${complaint.complaintId}
+                               + '&orderId=' + ${complaint.orderId}
+                               + '&productName=' + ${complaint.productName}}">수정</a>
                             <!-- 삭제 버튼 (POST 방식), 접수상태이면 안 보이게 -->
                             <form th:if="${!#strings.contains(complaint.status, '접수')}" th:action="@{'/complaint/delete/' + ${complaint.complaintId}}" method="post" style="display:inline;" onsubmit="return confirmDelete();">
-                                <input type="hidden" name="complaintType" value="cancel">
+                                <input type="hidden" name="complaintType" value="exchange">
                                 <button type="submit" class="btn btn-danger btn-sm">삭제</button>
                             </form>
                         </td>
@@ -136,6 +147,7 @@
         </div>
     </div>
 </section>
+
 
 <!-- Footer-->
 <footer>
@@ -152,7 +164,19 @@
     function confirmDelete() {
         return confirm("정말로 삭제하시겠습니까?");
     }
+
 </script>
+
+<script>
+    //에러 메세지 팝업창으로 띄우기 위해 추가
+    document.addEventListener("DOMContentLoaded", function() {
+        const errorMessage = document.getElementById("errorMessageInput").value;
+        if (errorMessage) {
+            alert(errorMessage);
+        }
+    });
+</script>
+
 
 </body>
 </html>

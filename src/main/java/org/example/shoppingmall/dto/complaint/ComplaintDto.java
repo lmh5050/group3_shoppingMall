@@ -28,4 +28,6 @@ public class ComplaintDto {
     private Double shippingPrice;          // shipping_price
     private Byte deleteFlag;               // delete_flag
     private String exchangeProductId;      // exchange_product_id
+    private Long orderId;                 //order_id
+    private String productName;          //product_name
 }

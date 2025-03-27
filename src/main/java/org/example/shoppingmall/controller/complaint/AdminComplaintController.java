@@ -50,9 +50,10 @@ public class AdminComplaintController {
     public String responseCustomerComplaint(@PathVariable("complaintId") String complaintId,
                                             @RequestParam("comment") String comment,
                                             @RequestParam("complaintResponseType") String complaintResponseType,
-                                            @RequestParam("complaintType") String complaintType) {
+                                            @RequestParam("complaintType") String complaintType,
+                                            @RequestParam("orderId") Long orderId) {
 
-        adminComplaintService.responseCustomerComplaint(complaintId, comment, complaintResponseType, complaintType);
+        adminComplaintService.responseCustomerComplaint(complaintId, comment, complaintResponseType, complaintType, orderId);
 
         return "redirect:/admin/complaint/list";
     }

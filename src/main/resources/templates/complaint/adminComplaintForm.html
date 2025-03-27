@@ -13,22 +13,24 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link th:href="@{/css/homecss/homeStyles.css}" rel="stylesheet" />
 </head>
-<div th:replace="Bars/nav_bar :: nav"></div>
+<!--<div th:replace="Bars/nav_bar :: nav"></div>-->
 
 <body>
 
 <div style="border: 1px solid #ddd; padding: 20px; border-radius: 10px; width: 50%; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
     <h3>고객 민원 정보</h3>
+    <p><strong>주문 번호:</strong> <span th:text="${complaint.orderId}"></span></p>
+    <p><strong>주문 상품:</strong> <span th:text="${complaint.productName}"></span></p>
     <p><strong>민원 번호:</strong> <span th:text="${complaint.complaintId}"></span></p>
     <p><strong>신청 날짜:</strong> <span th:text="${complaint.requestDatetime}"></span></p>
     <p><strong>접수 날짜:</strong> <span th:text="${complaint.receivedDatetime}"></span></p>
-    <p><strong>고객 아이디:</strong> </p>
     <p><strong>민원 유형:</strong> <span th:text="${complaint.complaintTypeId}"></span></p>
     <p><strong>민원 제목:</strong> <span th:text="${complaint.reason}"></span></p>
     <p><strong>민원 내용:</strong> <span th:text="${complaint.description}"></span></p>
 </div>
 
 <form th:action="@{'/admin/complaint/response/' + ${complaint.complaintId}}" method="post">
+    <input type="hidden" name="orderId" th:value="${complaint.orderId}">
     <!-- 답변 시 민원Type 따라 status 값 설정위해 hidden 속성 추가 -->
     <input type="hidden" name="complaintType" th:value="${complaint.complaintTypeId}"/>
     <div class="mb-3">
