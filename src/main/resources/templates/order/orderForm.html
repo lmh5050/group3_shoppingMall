@@ -26,6 +26,7 @@
             border-radius: 8px;
             border: 1px solid #ddd;
             box-sizing: border-box;
+            line-height: 2;
         }
         .section-title {
             font-size: 20px;
@@ -36,15 +37,6 @@
 
         h1, h2, h3 {
             color: #333;
-        }
-
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            width: 100%;
-            margin: auto;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
@@ -73,11 +65,25 @@
             border-color: #6c757d;
         }
 
-        .shipping-info, .product-info, .payment-info {
-            padding: 15px;
+        .product-info {
+            margin-bottom: 20px;
+            padding: 20px;
             background-color: #f9f9f9;
             border-radius: 8px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            line-height: 2;
+        }
+
+        .payment-info {
             margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            line-height: 2;
+            font-weight: bold;
         }
 
         .shipping-info span, .product-info span {
@@ -86,7 +92,7 @@
         }
 
         button {
-            background-color: #007bff;
+            background-color: #333333;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -97,20 +103,7 @@
         }
 
         button:hover {
-            background-color: #0056b3;
-        }
-
-        .btn {
-            background-color: #6c757d;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-
-        .btn:hover {
-            background-color: #5a6268;
+            background-color: #333333;
         }
 
         #deliveryRequest {
@@ -149,7 +142,7 @@
         <h1>주문서</h1>
         <h3><input type="hidden" id="showOrderId" th:value="${showOrderId}" readonly></h3>
         <div class="section">
-            <h2>배송지</h2>
+            <div class="section-title">배송 정보</div>
             <div><span id="receivePeople" name="receive_people" th:text="${address.receivePeople}"></span>
                 <span th:text="${address.status == 1} ? '기본배송지' : '추가배송지'" style="background-color: lightgray; color: black; font-size: 12px; padding: 3px 6px; border-radius: 5px;"></span><br>
                 <!--
@@ -186,21 +179,21 @@
         </div>
 
         <div class="product-info">
-            <h2>상품정보</h2>
+            <div class="section-title">상품 정보</div>
             <div th:each="product : ${productInfo}">
-                <div>주문일련번호: <span th:text="${product.productDetailId}"></span></div>
+                <div style="display: none;">주문일련번호: <span th:text="${product.productDetailId}"></span></div>
                 <div><img th:src="@{${product.imageUrl}}" alt="상품 이미지"></div>
-                <div>상품명 <span th:text="${product.name}"></span></div>
-                <div>색상: <span th:text="${product.color}"></span></div>
-                <div>사이즈: <span th:text="${product.size}"></span></div>
-                <div>수량: <span th:text="${product.quantity}" min="1"></span></div>
-                <div>상품 금액: <span th:text="${product.price}"></span></div>
-                <div>총 상품 금액: <span th:text="${product.getTotalPrice}"></span></div>
+                <div><span th:text="${product.name}"></span></div>
+                <div><span th:text="${product.color}"></span></div>
+                <div><span th:text="${product.size}"></span></div>
+                <div><span th:text="${product.quantity}+'개'" min="1"></span></div>
+                <div style="display: none;"><span th:text="${product.price}"></span></div>
+                <div><span th:text="${product.getTotalPrice}+'원'"></span></div>
             </div>
         </div>
 
         <div class="payment-info">
-            <h2>결제 금액</h2>
+            <div class="section-title">결제 금액</div>
             <div th:with="finalAmount=${totalAmount + address.price}">
                 <div>총 주문 금액: <span th:text="${totalAmount} + '원'">0원</span></div>
                 <div>총 할인 금액: 0원</div>
