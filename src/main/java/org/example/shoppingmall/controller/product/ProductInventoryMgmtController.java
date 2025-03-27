@@ -107,6 +107,6 @@ public class ProductInventoryMgmtController {
         if (!message.equals("성공")) {
             return "redirect:/admin/product/addNewProduct";
         }
-        return "redirect:/admin/product";
+        return "/product/ProductInventoryMgmt";
     }
 }
