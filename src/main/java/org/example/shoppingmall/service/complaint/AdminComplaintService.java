@@ -46,7 +46,7 @@ public class AdminComplaintService {
     }
 
     //고객 민원 답변
-    public void responseCustomerComplaint(String complaintId, String comment, String complaintResponseType, String complaintType, Long orderId) {
+    public void responseCustomerComplaint(String complaintId, String comment, String complaintResponseType, String complaintType, Long orderId, String productName) {
         // 현재 시간을 request_datetime 으로 넣기 위해 LocalDateTime 사용
         LocalDateTime currentDateTime = LocalDateTime.now();
 
@@ -59,7 +59,7 @@ public class AdminComplaintService {
             // 'resolved' 상태에서만 환불 금액을 설정
             if ("cancel".equals(complaintType) || "refund".equals(complaintType)) {
                 // 'cancel' 또는 'refund'인 경우에만 상품 총 금액을 예상 환불 금액으로 설정
-                refundAmount = Double.parseDouble(adminComplaintRepository.findProductTotalPriceByOrderId(orderId));
+                refundAmount = Double.parseDouble(adminComplaintRepository.findProductTotalPriceByOrderIdForAdmin(orderId, productName));
             } else if ("exchange".equals(complaintType)) {
                 // 'exchange'인 경우에는 환불 금액을 0으로 설정
                 refundAmount = 0.0;

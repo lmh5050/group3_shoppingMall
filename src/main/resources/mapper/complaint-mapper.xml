@@ -91,6 +91,7 @@
             product_total_price
         FROM order_detail
         WHERE order_id = #{orderId}
+        AND product_name = #{productName}
     </select>
 
     <select id="existsByOrderIdAndProductNameAndStatusNotContaining" resultType="boolean">
