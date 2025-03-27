@@ -1,7 +1,6 @@
 package org.example.shoppingmall.controller.order;
 
 import jakarta.servlet.http.HttpSession;
-import org.example.shoppingmall.config.RequestBean;
 import org.example.shoppingmall.dto.order.*;
 import org.example.shoppingmall.service.order.OrderListService;
 import org.example.shoppingmall.service.order.OrderService;

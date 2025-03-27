@@ -100,7 +100,6 @@ public class ProductInventoryMgmtController {
         System.out.println("productUpdateDto = " + productUpdateDto);
         MultipartFile imageFile = productUpdateDto.getImage();
 
-
         if (imageFile.isEmpty()) {
             return "파일이 없습니다.";
         }
