@@ -29,6 +29,7 @@ public class PaymentInfoDto {
     private String receivePhoneNumber;
     private Integer shippingPrice;
     private String deliveryRequest;
+    private Integer zipCode;
     // 결제 정보
     private String paymentMethod;
     private Integer cardType;
