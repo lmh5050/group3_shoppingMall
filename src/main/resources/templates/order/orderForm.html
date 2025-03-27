@@ -160,8 +160,7 @@
                         <p>색상: <span th:text="${product.color}"></span></p>
                         <p>사이즈: <span th:text="${product.size}"></span></p>
                         <p>수량: <span th:text="${product.quantity}" min="1"></span></p>
-                        <p>상품 금액: <span th:text="${product.price}"></span></p>
-                        <p>총 상품 금액: <span th:text="${product.getTotalPrice}"></span></p>
+                        <p>상품 금액: <span th:text="${product.getTotalPrice}"></span></p>
                     </div>
                 </div>
             </th:block>
@@ -195,8 +194,8 @@
             </div>
         </div>
 
-        <div class="btn">
-            <button type="button" onclick="requestPay()">결제하기</button>
+        <div>
+            <button type="button" class="btn" style="width: 100%" onclick="requestPay()">결제하기</button>
         </div>
     </div>
 
