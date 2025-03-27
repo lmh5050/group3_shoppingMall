@@ -151,10 +151,11 @@
         <div class="section">
             <h2>배송지</h2>
             <div><span id="receivePeople" name="receive_people" th:text="${address.receivePeople}"></span>
-                <span th:text="${address.status == 1} ? '기본배송지' : '추가배송지'" style="background-color: lightgray; color: black; font-size: 12px; padding: 3px 6px; border-radius: 5px;"></span>
+                <span th:text="${address.status == 1} ? '기본배송지' : '추가배송지'" style="background-color: lightgray; color: black; font-size: 12px; padding: 3px 6px; border-radius: 5px;"></span><br>
                 <!--
                 <button onclick="location.href='/order/changeAddress'">배송지 변경</button><br>
                 -->
+                (<span id="zipCode" th:text="${address.zipCode}"></span>)
                 <span id="addressBasic" name="shipping_address_basic" th:text="${address.address}"></span>
                 <span id="addressDetail" name="receive_people" th:text="${address.detailAddress}"></span><br>
                 <span id="receivePhoneNumber" name="recipient_contact" th:text="${address.receivePhoneNumber}"
@@ -224,6 +225,7 @@
             const orderStatus = "MA01006";
             const totalDiscountAmount = 0;
             const productBlocks = document.querySelectorAll('.product-info > div');
+            const zipCode = document.getElementById('zipCode').textContent.trim();
             const basicAddress = document.getElementById('addressBasic').textContent.trim();
             const detailAddress = document.getElementById('addressDetail').textContent.trim();
             const receivePeople = document.getElementById('receivePeople').textContent.trim();
@@ -297,6 +299,7 @@
                 totalOrderAmount: totalOrderAmount,
                 totalQuantity: totalQuantity,
                 orderDetailList: orderDetailList,
+                zipCode: zipCode,
                 basicAddress: basicAddress,
                 detailAddress: detailAddress,
                 receivePeople: receivePeople,
