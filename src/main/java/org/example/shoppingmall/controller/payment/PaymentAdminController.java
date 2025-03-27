@@ -23,11 +23,11 @@ public class PaymentAdminController {
     private final PaymentAdminService paymentAdminService;
 
     // 결제 대기건 관리 페이지
-    @GetMapping("/pending")
+    @GetMapping
     public String getPendingPayments(Model model) {
         List<PaymentPendingDto> pendingPayments = paymentAdminService.getPendingPayments();
         model.addAttribute("pendingPayments", pendingPayments);
-        return "payment/pending";
+        return "payment/payment-admin";
     }
 
     @PutMapping("/update")
