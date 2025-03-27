@@ -25,7 +25,6 @@ public class PaymentService {
     public void processPayment(PaymentInfoDto paymentInfoDto) {
         // 이전 결제 내역 조회
         // PaymentDto existingPayment = paymentRepository.findLastPaymentByOrderId(paymentInfoDto.getOrderId());
-        
         // if (existingPayment != null && "MA01005".equals(existingPayment.getStatus())) {
         //     // 실패한 결제 내역이 있는 경우 재시도 처리
         //     retryPayment(paymentInfoDto, existingPayment);

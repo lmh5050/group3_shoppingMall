@@ -30,5 +30,7 @@ public interface ProductRepository {  // Repository
     String getLastProductId();
 
     void setProductImage(ProductDescriptionImageDto productDescriptionImageDto);
+
+    String getSeasonBySeasonId(int seasonId);
 }
 

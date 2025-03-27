@@ -1,68 +1,150 @@
-.category-nav {
+
+.card-img-top.grayscale {
+    filter: grayscale(100%); /* 회색으로 바꾸는 필터 */
+    opacity: 0.5; /* 이미지를 반투명하게 처리 */
+}
+
+.sold-out-overlay {
     position: absolute;
-    /*font-size: 140px;*/
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 10px 20px;
+    border-radius: 5px;
+}
 
-    padding: 100px;
+body {
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
     background-color: #fff;
-    border-bottom: 1px solid #ddd;
-    font-family: 'Noto Sans KR', sans-serif;
+    padding: 40px;
+    color: #111;
 }
 
-.category {
-    display: grid;
-    grid-auto-flow: column;   /* ���� �ƴ� �� �������� �帣�� */
-    gap: 20px;
+h1 {
+    margin-top: 80px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #111;
 }
 
-.main-menu {
-    display: block;
-    padding: 0;
-    margin: 0;
+ul {
     list-style: none;
+    padding: 0;
+    margin-bottom: 40px;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+button {
+    all: unset;
+    display: block;
+    width: 100%;
+    max-width: 240px;
+    padding: 12px 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 400;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+button:hover {
+    background-color: #111;
+    color: #fff;
+    border-color: #111;
+}
+
+/* 선택된 버튼 스타일 (선택 시 클래스 붙여서 적용 가능) */
+button.selected {
+    background-color: #111;
+    color: #fff;
+    border-color: #111;
+}
+
+/* 반응형 - 모바일 */
+@media (max-width: 480px) {
+    button {
+        font-size: 14px;
+        padding: 10px 16px;
+    }
+}
+.category-product-section {
+    display: flex;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+.category-section {
+    width: 250px;
+    padding-right: 30px;
+}
+
+.vertical-line {
+    width: 1px;
+    background-color: #ddd;
+    margin: 0 20px;
+}
+
+.product-section {
+    flex-grow: 1;
+}
+
+/* 검색 & 정렬 UI */
+.search-sort-container {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.search-sort-container input,
+.search-sort-container select,
+.search-sort-container button {
+    height: 44px;
+    padding: 0 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.search-sort-container input {
+    width: 280px;
+    background-color: #f9f9f9;
+    transition: border-color 0.2s ease-in-out;
+}
+
+.search-sort-container input:focus {
+    border-color: #111;
+}
+
+.search-sort-container button {
+    background-color: #111;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.search-sort-container button:hover {
+    background-color: #333;
+}
+
+.btn-search-order {
+    display: flex;
+    align-items: center;
     justify-content: center;
+    width: auto; /* 내용에 맞게 자동 조정 */
+    min-width: 80px; /* 최소 너비 설정 (너무 작아지는 걸 방지) */
+    padding: 6px 12px; /* 위아래 6px, 좌우 12px (조정 가능) */
+    font-size: 13px;
 }
 
-.main-menu > li {
-    position: relative;
-    padding: 20px 30px;
-}
-
-.main-menu > li > a {
-    text-decoration: none;
-    color: #222;
-    font-weight: 500;
-    font-size: 16px;
-}
-
-/*.submenu {*/
-/*    display: none;*/
-/*    position: absolute;*/
-/*    top: 60px;*/
-/*    left: 0;*/
-/*    background-color: #fff;*/
-/*    padding: 15px 25px;*/
-/*    border: 1px solid #ddd;*/
-/*    box-shadow: 0 4px 8px rgba(0,0,0,0.05);*/
-/*    white-space: nowrap;*/
-/*    z-index: 1000;*/
-/*}*/
-
-/*.submenu ul {*/
-/*    list-style: none;*/
-/*    padding: 0;*/
-/*    margin: 0;*/
-/*}*/
-
-/*.submenu li {*/
-/*    margin: 10px 0;*/
-/*}*/
-
-/*.submenu li a {*/
-/*    color: #555;*/
-/*    text-decoration: none;*/
-/*    font-size: 14px;*/
-/*}*/
-
-/*.main-menu > li:hover .submenu {*/
-/*    display: block;*/
-/*}*/

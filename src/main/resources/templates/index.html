@@ -1,175 +1,105 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<link rel="stylesheet" th:href="@{/css/Bars.css}">
-<link rel="stylesheet" th:href="@{/css/Login.css}">
-<link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">
 <head>
     <meta charset="UTF-8">
     <title>신사 숙녀 Home</title>
-    <style>
-        .card-img-top.grayscale {
-            filter: grayscale(100%); /* 회색으로 바꾸는 필터 */
-            opacity: 0.5; /* 이미지를 반투명하게 처리 */
-        }
-
-        .sold-out-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 24px;
-            color: white;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 10px 20px;
-            border-radius: 5px;
-        }
-
-    </style>
+    <link rel="stylesheet" th:href="@{/css/Bars.css}">
+    <link rel="stylesheet" th:href="@{/css/product-list.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
 </head>
+<body>
 <!-- 네비게이션 바 포함 -->
 <div th:replace="Bars/nav_bar :: nav"></div>
-<body>
-<!-- Section-->
-<section style="width: 3000px; height : 700px;">
-    <div class="container px-4 px-lg-5 mt-5">
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center"> <!-- row-cols-xl-5로 5개 배치 -->
-            <!-- 1. 만약 쿼리스트링 searchProduct가 있는 경우 : 필터링된 상품만 보여줘야 함 -->
-            <th:block th:if="${param.searchProduct != null}">
-                <!-- 반복문으로 상품 출력 -->
-                <div class="col mb-5" th:each="product : ${products}"
-                     th:if="${product.getName().contains(param.searchProduct) && !product.getStatus().equals('stop-display')}">
-                    <div class="card h-100">
-                        <!-- Product image -->
-                        <div class="position-relative">
-                            <img class="card-img-top"
-                                 th:src="|/images/product/@{${product.getProductId()}}.png|"
-                                 alt="Product Image"
-                                 th:classappend="${product.status == 'sold-out' ? ' grayscale' : ''}" />
-                            <!-- Sold Out overlay -->
-                            <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
-                        </div>
 
-                        <!-- Product details -->
-                        <div class="card-body p-4">
-                            <div class="text-center">
-                                <!-- Product name -->
-                                <h5 class="fw-bolder" th:text="${product.getName()}">Fancy Product</h5>
-                                <!-- Product reviews -->
-                                <div class="d-flex justify-content-center small text-warning mb-2" th:if="${product.getRating() != null}">
-                                    <div class="bi-star-fill" th:each="star : ${#numbers.sequence(1, product.getRating())}"></div>
-                                </div>
-                                <!-- Product price -->
-                                <span th:text="'$' + ${product.price}">$40.00</span>
-                            </div>
-                        </div>
+<!-- 상품 리스트 섹션 -->
+<section class="product-section">
+    <!-- 검색 및 정렬 -->
+    <div class="search-sort-container">
+        <input type="search" placeholder="Search Product Name" id="productName">
+        <button type="button" onclick="searchProductFunction()">Search</button>
 
-                        <!-- Product actions-->
-                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <div class="text-center">
-                                <a class="btn btn-outline-dark mt-auto" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </th:block>
-
-            <!-- 2. 만약 쿼리스트링 searchProduct가 없는 경우 경우 : 모든 상품만 보여줘야 함 -->
-            <th:block th:if="${param.searchProduct == null}">
-                <div class="col mb-5" th:each="product : ${products}" th:if="${!product.getStatus().equals('stop-display')}">
-                    <div class="card h-100">
-                        <!-- Product image -->
-                        <div class="position-relative">
-                            <img class="card-img-top"
-                                 th:src="|/images/product/@{${product.getProductId()}}.png|"
-                                 alt="Product Image"
-                                 th:classappend="${product.status == 'sold-out' ? ' grayscale' : ''}" />
-                            <!-- Sold Out overlay -->
-                            <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
-                        </div>
-
-                        <!-- Product details -->
-                        <div class="card-body p-4">
-                            <div class="text-center">
-                                <!-- Product name -->
-                                <h5 class="fw-bolder" th:text="${product.getName()}">Fancy Product</h5>
-                                <!-- Product reviews -->
-                                <div class="d-flex justify-content-center small text-warning mb-2" th:if="${product.getRating() != null}">
-                                    <div class="bi-star-fill" th:each="star : ${#numbers.sequence(1, product.getRating())}"></div>
-                                </div>
-                                <!-- Product price -->
-                                <span th:text="'$' + ${product.price}">$40.00</span>
-                            </div>
-                        </div>
-                        <!-- Product actions-->
-                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <div class="text-center">
-                                <a class="btn btn-outline-dark mt-auto" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </th:block>
-            <!-- 상품 반복문 끝 -->
-        </div>
+        <select id="sortOptions">
+            <option th:each="option : ${sortList}" th:value="${option.getProductSortId}"
+                    th:text="${option.getExplanation}">정렬 기준</option>
+        </select>
+        <button type="button" onclick="orderProductFunction()">Check</button>
     </div>
 
-<!--  정렬 버튼  -->
-    <label>
-        <select>
-            <option>sjdjaslkjdkasdjlaskd</option>
-        </select>
-    </label>
+    <!-- 상품 리스트 -->
+    <div class="product-grid">
+        <!-- 검색 결과 있을 때 -->
+        <th:block th:if="${param.searchProduct != null}">
+            <div class="product-card"
+                 th:each="product : ${products}"
+                 th:if="${product.getName().contains(param.searchProduct) && !product.getStatus().equals('stop-display')}">
+                <div class="product-img">
+                    <img th:src="@{'/images/product/' + ${product.getProductId()} + '.png'}"
+                         alt="Product Image"
+                         th:classappend="${product.status == 'sold-out' ? 'grayscale' : ''}" />
+                    <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
+                </div>
+                <div class="product-info">
+                    <h4 th:text="|❤ ${product.getLikeCount()}|"></h4>
+                    <h4 th:text="|💭 ${product.getReviewCount()}|"></h4>
+                    <h3 th:text="${product.getName()}">Fancy Product</h3>
+                    <span class="price" th:text="'₩ ' + ${product.price}">₩40,000</span>
+                    <a class="detail-btn" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
+                </div>
+            </div>
+        </th:block>
 
+        <!-- 모든 상품 표시 -->
+        <th:block th:if="${param.searchProduct == null}">
+            <div class="product-card"
+                 th:each="product : ${products}"
+                 th:if="${!product.getStatus().equals('stop-display')}">
+                <div class="product-img">
+                    <img th:src="@{'/images/product/' + ${product.getProductId()} + '.png'}"
+                         alt="Product Image"
+                         th:classappend="${product.status == 'sold-out' ? 'grayscale' : ''}" />
+                    <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
+                </div>
+                <div class="product-info">
+                    <h4 th:text="|❤ ${product.getLikeCount()}|"></h4>
+                    <h4 th:text="|💭 ${product.getReviewCount()}|"></h4>
+                    <h3 th:text="${product.getName()}">Fancy Product</h3>
+                    <span class="price" th:text="'₩ ' + ${product.price}">₩40,000</span>
+                    <a class="detail-btn" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
+                </div>
+            </div>
+        </th:block>
+    </div>
 </section>
 
+<!-- 푸터 -->
 <footer>
     <div th:replace="Bars/footer :: #footer"></div>
 </footer>
+
+<!-- 스크립트 -->
 <script defer>
-<!--  상품 입력 받아서 쿼리 스트링으로 검색함  -->
     function searchProductFunction() {
         let pdName = document.getElementById('productName').value;
-
         if (!pdName) {
             alert("검색어를 입력하세요.");
             return false;
         }
-
         let url = new URL(window.location.href);
-        if (url.toString().includes('searchProduct')){
-            url.searchParams.set('searchProduct', pdName);
-        } else {
-            url.searchParams.append('searchProduct', pdName);
-        }
-
+        url.searchParams.set('searchProduct', pdName);
         window.location.href = url.toString();
     }
 
-//     정렬 하는 기능
     function orderProductFunction(){
-        const sortSelect = document.getElementById("sortOptions");
-
-        // 선택된 value (예: "like_count")
-        const selectedValue = sortSelect.value;
-
+        const selectedValue = document.getElementById("sortOptions").value;
         let url = new URL(window.location.href);
         if (!selectedValue) {
-            if (url.toString().includes('orderOption'))
-                url.searchParams.delete('orderOption');
-            window.location.href = url.toString();
-            return;
-        }
-
-        if (url.toString().includes('orderOption')){
-            url.searchParams.set('orderOption', selectedValue);
+            url.searchParams.delete('orderOption');
         } else {
-            url.searchParams.append('orderOption', selectedValue);
+            url.searchParams.set('orderOption', selectedValue);
         }
-
         window.location.href = url.toString();
     }
 </script>
+
 </body>
 </html>
-
-
