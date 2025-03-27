@@ -32,9 +32,17 @@
                     <label>수량:</label>
                     <span th:text="${shipping.quantity}">수량</span>
                 </div>
+<!--                <div>-->
+<!--                    <label>배송사번호:</label>-->
+<!--                    <span th:text="${shipping.shippingCompanyId + shipping.shippingCompanyNo}">배송사번호</span>-->
+<!--                </div>-->
+                <div>
+                    <label>배송사:</label>
+                    <span th:text="${shipping.shippingCompanyId}">배송사번호</span>
+                </div>
                 <div>
                     <label>배송사번호:</label>
-                    <span th:text="${shipping.shippingCompanyId + shipping.shippingCompanyNo}">배송사번호</span>
+                    <span th:text="${shipping.shippingCompanyNo}">배송사번호</span>
                 </div>
                 <div>
                     <label>운송장번호:</label>
