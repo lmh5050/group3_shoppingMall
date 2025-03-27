@@ -8,6 +8,115 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- 커스텀 CSS -->
     <link rel="stylesheet" href="/css/admin/styles.css">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f5f5f5;
+        }
+    </style>
+    <style>
+        /* 전체 폼 스타일 */
+        #productForm {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 제목 스타일 */
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        /* 입력 필드 스타일 */
+        input[type="text"], textarea, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+
+        .select-img-btn {
+            display: block;
+            width: 100%;
+            background-color: black;
+            color: white;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+
+        /* 체크박스 스타일 */
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        /* 이미지 스타일 */
+        .product-img {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .product-img img {
+            width: 400px;
+            height: 500px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        #preview {
+            max-width: 300px;
+            margin-top: 10px;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            #productForm {
+                max-width: 100%;
+                padding: 15px;
+            }
+
+            .product-img img {
+                width: 100%;
+                height: auto;
+            }
+        }
+        .product-img-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+
+    </style>
 </head>
 <body>
 <div class="d-flex" id="wrapper">
@@ -18,18 +127,24 @@
         <!-- 상단 네비게이션 바 삽입 (별도 fragment) -->
         <div th:replace="Bars/side_bar :: topnav"></div>
         <!--   내용 시작     -->
-        <h1>관리자 - 상품 상세 정보 수정</h1>
+
         <section>
             <div>
                 <div>
+                    <h1>관리자 - 상품 상세 정보 수정</h1>
                     <form id="productForm">
                         <!-- 메인 사진 수정 -->
                         <div>
                             <input type="hidden" name="productId" th:value="${product.getProductId()}">
                             <h3>(1) 메인 사진</h3>
-                            <img style="width: 400px; height: 500px;" th:src="|/images/product/${product.productId}.png|" alt=""/>
+                            <div class="product-img-container">
+                                <img style="width: 400px; height: 500px;"
+                                     th:src="|/images/product/${product.productId}.png|"
+                                     alt="상품 이미지"/>
+                            </div>
+
                             <!-- 버튼 클릭 시 파일 선택 창 열리기 -->
-                            <button type="button" onclick="openNewFileInput()">사진 선택</button>
+                            <button type="button" onclick="openNewFileInput()" class="select-img-btn">사진 선택</button>
 
                             <!-- 파일 선택 input 태그 (숨겨놓음) -->
                             <input type="file" id="fileInput" style="display: none;" onchange="previewImage(event)">

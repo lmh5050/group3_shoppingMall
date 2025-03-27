@@ -17,7 +17,8 @@ import java.util.*;
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductDetailRepository productDetailRepository;
-    private static final String UPLOAD_DIR = "C:\\JAVA\\fast_campus_KDT\\projects\\prj_02\\group3_shoppingMall\\src\\main\\resources\\static\\images\\product\\";
+//    private static final String UPLOAD_DIR = "C:\\JAVA\\fast_campus_KDT\\projects\\prj_02\\group3_shoppingMall\\src\\main\\resources\\static\\images\\product\\";
+    private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/src/main/resources/static/images/product/";
 
     @Autowired
     public ProductService(ProductRepository productRepository,  ProductDetailRepository productDetailRepository) {
@@ -193,20 +194,29 @@ public class ProductService {
             // 파일 저장
             imageFile.transferTo(destinationFile);
 
+            // 파일 저장이 완료될 때까지 대기 (최대 3초)
+            int retries = 0;
+            System.out.println("start");
+            while (!destinationFile.exists() && retries < 30) {
+                Thread.sleep(100); // 0.1초씩 기다리면서 파일 존재 확인
+                retries++;
+                System.out.println("retries = " + retries);
+            }
+
             // 새로운 상품 DB에 등록
             productUpdateDto.setProductId(productId);
             productUpdateDto.setColorCount(productUpdateDto.getColors().size());
             productUpdateDto.setSizeCount(productUpdateDto.getColors().size());
             ProductDescriptionImageDto productDescriptionImageDto = new ProductDescriptionImageDto();
 
-            // 상품 사진 DTO 에 등록
+            // 상품 사진 DTO 에 등록order_detail
             productDescriptionImageDto.setProductId(productId);
             productDescriptionImageDto.setForm(imgForm);
 
             this.setNewProduct(productUpdateDto, productDescriptionImageDto);
             // 잘못 입력되었다는 정보를 가지고 본페이지로 redirect
             return "성공";
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             return "파일 저장 오류";
         }
