@@ -38,9 +38,8 @@
             display: flex;
             margin-bottom: 10px;
             padding: 10px;
-            background-color: #fff;
+            background-color: #f9f9f9;
             border-radius: 8px;
-            border: 1px solid #ddd;
         }
         .order-item img {
             width: 100px;
@@ -139,8 +138,9 @@
         </div>
 
         <!-- 주문 상세 항목들 -->
-        <div class="order-items">
+        <div class="section">
             <th:block th:each="orderDetail : ${entry.value}">
+                <div class="section-title">주문 상품</div>
                 <div class="order-item">
                     <img th:src="@{${orderDetail.imageUrl}}" alt="상품 이미지">
                     <div>
@@ -167,19 +167,19 @@
 
             <div class="order-summary">
                 <p>상품 금액:</p>
-                <span th:text="${#numbers.formatInteger(entry.value[0].totalDiscountAmount.add(entry.value[0].totalAmount), 0, 'COMMA')}">0</span>
+                <span th:text="${#numbers.formatInteger(entry.value[0].totalDiscountAmount.add(entry.value[0].totalAmount), 0, 'COMMA')} +'원'">0</span>
             </div>
             <div class="order-summary">
                 <p>할인 금액:</p>
-                <span th:text="${#numbers.formatInteger(entry.value[0].totalDiscountAmount.add(entry.value[0].discountAmount), 0, 'COMMA')}">0</span>
+                <span th:text="${#numbers.formatInteger(entry.value[0].totalDiscountAmount.add(entry.value[0].discountAmount), 0, 'COMMA')} +'원' ">0</span>
             </div>
             <div class="order-summary">
                 <p>배송비:</p>
-                <span th:text="${entry.value[0].shippingPrice == 0 ? '무료배송' : #numbers.formatInteger(entry.value[0].shippingPrice, 0, 'COMMA')}">무료배송</span>
+                <span th:text="${entry.value[0].shippingPrice == 0 ? '무료배송' : #numbers.formatInteger(entry.value[0].shippingPrice, 0, 'COMMA')} +'원' ">무료배송</span>
             </div>
             <div class="order-summary">
                 <p>결제 금액:</p>
-                <span th:text="${#numbers.formatInteger(entry.value[0].finalAmount, 0, 'COMMA')}">배송 중</span>
+                <span th:text="${#numbers.formatInteger(entry.value[0].finalAmount, 0, 'COMMA')} +'원'"></span>
             </div>
             <div class="order-summary">
                 <p>결제 방법:</p>
@@ -213,7 +213,7 @@
 <script>
     // 거래명세서 팝업 창 열기
     function openReceiptPopup(orderId) {
-        const width = 400, height = 650;
+        const width = 500, height = 800;
         const left = (window.screen.width - width) / 2;
         const top = (window.screen.height - height) / 2;
 
