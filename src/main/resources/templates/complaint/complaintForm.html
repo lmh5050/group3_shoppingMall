@@ -14,8 +14,9 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link th:href="@{/css/homecss/homeStyles.css}" rel="stylesheet" />
 </head>
-<div th:replace="~{Bars/nav_bar :: nav}"></div>
+<!--<div th:replace="~{Bars/nav_bar :: nav}"></div>-->
 <body>
+
 
 <!-- Header-->
 <header>
@@ -27,6 +28,38 @@
     <div>
         <form name="complaint" th:action="${complaint != null} ? '/complaint/update' : '/complaint/request'"
               method="post" onsubmit="return validateForm();">
+            <div class="mb-3">
+                <label for="orderId" class="form-label">주문 번호:</label>
+                <input type="text" id="orderId" name="orderId"
+                       th:value="${orderId}"
+                       class="form-control" disabled>
+                <!-- hidden으로 값 전송 -->
+                <input type="hidden" name="orderId" th:value="${orderId}">
+            </div>
+
+            <!-- productName (수정 모드 시 읽기 전용, 신규 모드 시 선택) -->
+            <div class="mb-3">
+                <label for="productName" class="form-label">상품 이름</label>
+
+                <!-- 신규 작성 모드 (editMode가 false일 때) -->
+                <select name="productName" id="productNameSelect" class="form-select" th:if="${editMode == false}">
+                    <option th:each="productName : ${productNames}"
+                            th:value="${productName}"
+                            th:text="${productName}"
+                            th:selected="${productName == productName}">
+                    </option>
+                </select>
+
+                <!-- 수정 모드 (editMode가 true일 때) -->
+                <input type="text" id="productName" name="productName"
+                       th:if="${editMode == true}"
+                       th:value="${productName}"
+                       class="form-control" disabled>
+
+                <!-- 수정 모드에서는 hidden으로 값 전송 -->
+                <input type="hidden" name="productName" th:value="${productName}" th:if="${editMode == true}">
+            </div>
+
             <!-- 기존 민원의 경우 complaintId를 숨김 필드로 전달 -->
             <input type="hidden" name="complaintId" th:if="${complaint != null}" th:value="${complaint.complaintId}">
 
@@ -65,6 +98,7 @@
                 <a class="btn btn-secondary" th:href="@{/complaint/list}" role="button">취소</a>
             </div>
         </form>
+
     </div>
 </section>
 

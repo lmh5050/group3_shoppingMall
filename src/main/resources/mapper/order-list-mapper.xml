@@ -3,11 +3,29 @@
 
 <mapper namespace="org.example.shoppingmall.repository.order.OrderListRepository">
    <!--모든 주문 조회(관리자)-->
-<!--    <select id="selectOrderAll">
-        SELECT *
-        FROM orders o JOIN order_detail od
+    <select id="selectOrderAll" resultType="OrderDto">
+        SELECT
+            o.created_at,
+            cd.code_name,
+            o.order_id,
+            od.serial_number,
+            o.customer_id,
+            o.total_quantity,
+            p.final_amount,
+            od.product_name,
+            od.color,
+            od.size,
+            od.quantity,
+            od.product_total_price
+        FROM orders o JOIN payment p
+                           ON o.order_id = p.order_id
+                      JOIN order_detail od
                            ON o.order_id = od.order_id
-    </select>-->
+                      JOIN code_detail cd
+                           ON o.order_status = cd.code_no
+        ORDER BY o.order_id DESC,
+                 od.serial_number
+    </select>
 
     <!--고객별 주문 목록 가져오기-->
     <select id="findOrderListByCustomerId" parameterType="String" resultType="OrderListDto">
@@ -31,7 +49,7 @@
                            ON o.order_status = cd.code_no
         WHERE o.customer_id = #{customer_id}
           AND o.active_flag = 1
-        ORDER BY o.order_id DESC;
+        ORDER BY o.order_id DESC
         </select>
 
     <!--특정 주문에 대한 주문 상세 정보 가져오기-->

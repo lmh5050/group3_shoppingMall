@@ -1,277 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
-<html xmlns:th="http://www.thymeleaf.org">
-<link rel="stylesheet" th:href="@{/css/Bars.css}">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Shop Item - Start Bootstrap Template</title>
-    <!-- Bootstrap icons-->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-    <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="/css/homecss/homeStyles.css" rel="stylesheet" />
-    <!-- Bootstrap core JS-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Core theme JS-->
-    <script src="/js/homejs/homeScripts.js"></script>
-    <style>
-        .row > * {
-            /*width: 0;*/
-            padding-right: initial;
-            padding-left: inherit;
-        }
-        .card-img-top.grayscale {
-            filter: grayscale(100%); /* 회색으로 바꾸는 필터 */
-            opacity: 0.5; /* 이미지를 반투명하게 처리 */
-        }
-
-        .sold-out-overlay {
-            position: absolute;
-            top: 50%;
-            left: 100%; /* 이미지의 오른쪽에 위치하도록 조정 */
-            transform: translate(20px, -50%); /* 오른쪽으로 조금 띄우고, 세로 중앙 정렬 */
-            font-size: 24px;
-            color: white;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 10px 20px;
-            border-radius: 5px;
-            white-space: nowrap; /* 텍스트가 한 줄로 나가게 처리 */
-        }
-    </style>
-    <style>
-        .card-img-top.grayscale {
-            filter: grayscale(100%); /* 회색으로 바꾸는 필터 */
-            opacity: 0.5; /* 이미지를 반투명하게 처리 */
-        }
-
-        .sold-out-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 24px;
-            color: white;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 10px 20px;
-            border-radius: 5px;
-        }
-
-    </style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 상세 페이지</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/Bars.css}">
+    <link rel="stylesheet" th:href="@{/css/productDetail.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
 </head>
 
-<!-- Navigation-->
-<div th:replace="Bars/nav_bar :: nav"></div>
 <body>
-<!-- Product section-->
-<section class="py-5">
-    <div class="container px-4 px-lg-5 my-5">
-        <div class="row gx-4 gx-lg-5 align-items-center">
-            <div class="col-md-6 d-flex align-items-center">
-                <div class="position-relative">
-                    <img style="width: 400px; height: 500px;" class="card-img-top mb-5 mb-md-0"
-                         th:classappend="${product.status == 'sold-out' ? ' grayscale' : ''}"
-                         th:src="|/images/product/${product.getProductId()}.png|"  alt=""/>
-                    <!-- Sold Out overlay -->
-                    <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
-                </div>
+<!-- 네비게이션 바 -->
+<div th:replace="Bars/nav_bar :: nav"></div>
+
+<!-- 상품 상세 섹션 -->
+<section class="product-detail">
+    <div class="container">
+        <div class="product-wrapper">
+            <!-- 상품 이미지 -->
+            <div class="product-image">
+                <img th:src="|/images/product/${product.getProductId()}.png|" alt="상품 이미지">
+                <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
             </div>
-            <div class="col-md-6">
-                <div class="small mb-1">SKU: BST-498</div>
-                <h1 class="display-5 fw-bolder" th:text="${product.getName()}">Shop item template</h1>
-                <div class="fs-5 mb-5">
-                    <span th:text="${product.getPrice()}">$40.00</span>
+            <!-- 상품 정보 -->
+            <div class="product-info">
+                <div class="product-meta">
+                    <h4 th:text="|❤ ${product.getLikeCount()}|"></h4>
+                    <h4 th:text="|💭 ${product.getReviewCount()}|"></h4>
+                    <h2 th:text="${season}"></h2>
                 </div>
-                <p class="lead" th:text="${product.getDescription()}">Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium at dolorem quidem modi. Nam sequi consequatur obcaecati excepturi alias magni, accusamus eius blanditiis delectus ipsam minima ea iste laborum vero?</p>
-                <div class="d-flex">
-                    <form id="buyNowForm" action="/order/order" method="post">
-                        <label for="inputQuantity"  style="margin: 0 0 0 10px;">
-                            <input name="quantity" id="inputQuantity" type="num" value="1" style="max-width: 3rem" />
-                        </label>
-                        <label>
-                            <select style="margin: 0 0 0 10px;" name="productDetailId">
-                                <option th:each="option : ${productDetailOptions}" th:value="${option.getProductDetailId()}">
-                                    <h2 th:text="|${option.getColor()} - ${option.getSize()}|"></h2>
-                                </option>
-                            </select>
-                        </label>
-                        <a href="javascript:void(0);" class="btn btn-outline-dark flex-shrink-0"
-                           th:if="${!product.getStatus().equals('sold-out')}"
-                           onclick="return addProductToCart()" style="margin: 0 0 0 10px;">
-                            <i class="bi-cart-fill me-1"></i>
-                            Add to cart
-                        </a>
-                        <button class="btn btn-outline-dark flex-shrink-0"
-                                th:if="${!product.getStatus().equals('sold-out')}"
-                                type="submit" style="margin: 0 0 0 10px;">
-                            <i class="bi-cart-fill me-1"></i>
-                            Buy Now
-                        </button>
-                    </form>
-                </div>
-                <div class="row-md-6">
-                </div>
+
+                <h1 class="product-title" th:text="${product.getName()}">상품명</h1>
+                <div class="product-price" th:text="|₩ ${product.getPrice()}|">₩40,000</div>
+                <p class="product-description" th:text="${product.getDescription()}">상품 설명</p>
+                <form id="buyNowForm" action="/order/order" method="post" class="purchase-form">
+                    <label for="inputQuantity">수량</label>
+                    <input name="quantity" id="inputQuantity" type="number" value="1" min="1">
+                    <label for="productDetail">옵션</label>
+                    <select id="productDetail" name="productDetailId">
+                        <option th:each="option : ${productDetailOptions}" th:value="${option.getProductDetailId()}">
+                            <span th:text="|${option.getColor()} - ${option.getSize()}|"></span>
+                        </option>
+                    </select>
+                    <div class="button-group">
+                        <button type="button" class="btn-cart" onclick="addProductToCart()">장바구니</button>
+                        <button type="submit" class="btn-buy">바로 구매</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Related items section-->
-<section class="py-5 bg-light">
-    <div class="container px-4 px-lg-5 mt-5">
-        <h2 class="fw-bolder mb-4">Related products</h2>
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder">Fancy Product</h5>
-                            <!-- Product price-->
-                            $40.00 - $80.00
-                        </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">View options</a></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <!-- Sale badge-->
-                    <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder">Special Item</h5>
-                            <!-- Product reviews-->
-                            <div class="d-flex justify-content-center small text-warning mb-2">
-                                <div class="bi-star-fill"></div>
-                                <div class="bi-star-fill"></div>
-                                <div class="bi-star-fill"></div>
-                                <div class="bi-star-fill"></div>
-                                <div class="bi-star-fill"></div>
-                            </div>
-                            <!-- Product price-->
-                            <span class="text-muted text-decoration-line-through">$20.00</span>
-                            $18.00
-                        </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <!-- Sale badge-->
-                    <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder">Sale Item</h5>
-                            <!-- Product price-->
-                            <span class="text-muted text-decoration-line-through">$50.00</span>
-                            $25.00
-                        </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col mb-5">
-                <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder">Popular Item</h5>
-                            <!-- Product reviews-->
-                            <div class="d-flex justify-content-center small text-warning mb-2">
-                                <div class="bi-star-fill"></div>
-                                <div class="bi-star-fill"></div>
-                                <div class="bi-star-fill"></div>
-                                <div class="bi-star-fill"></div>
-                                <div class="bi-star-fill"></div>
-                            </div>
-                            <!-- Product price-->
-                            $40.00
-                        </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Footer-->
-<footer class="py-5 bg-dark">
-    <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
+<!-- 푸터 -->
+<footer>
+    <div th:replace="Bars/footer :: #footer"></div>
 </footer>
 
 <script>
-
-    // <!--  상품 상세에서 바로 구매  -->
-    //     function buyNowProduct(){
-    //         let inputQuantity = document.getElementById('inputQuantity').value;
-    //         let optionSelector = document.getElementById('optionSelector');
-    //         let productDetailId = optionSelector.selectedOptions[0].id;
-    //
-    //         document.getElementById('buyNowForm').submit();
-    //     }
-    // 장바구니로 상품 담기
     function addProductToCart() {
-        // 폼 데이터에서 필요한 값을 가져옵니다
         const quantity = document.getElementById('inputQuantity').value;
-        const productDetailId = document.querySelector('[name="productDetailId"]').value;
-
-        // 서버에 POST 요청을 보냅니다
+        const productDetailId = document.getElementById('productDetail').value;
         axios.post('/order/addToCart', {
             quantity: quantity,
             productDetailId: productDetailId
         })
-            .then(function (response) {
-                // 성공적으로 요청이 완료된 경우
+            .then(function () {
                 alert("장바구니에 추가되었습니다.");
             })
             .catch(function (error) {
-                // 에러가 발생한 경우
-                console.error("장바구니에 추가하는 데 실패했습니다:", error);
-
-                // 서버에서 "fail"이 반환되면 로그인 페이지로 리디렉션
                 if (error.response && error.response.data === "fail") {
                     alert("로그인이 필요합니다.");
-                    window.location.replace('/user/login'); // 로그인 페이지로 리디렉션
+                    window.location.replace('/user/login');
                 } else {
-                    alert("알 수 없는 오류가 발생했습니다.");
+                    alert("오류가 발생했습니다.");
                 }
             });
     }
-
-
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </body>
 </html>
-

@@ -1,103 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <link rel="stylesheet" th:href="@{/css/Bars.css}">
-<link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">
-
+<link rel="stylesheet" th:href="@{/css/product-list.css}">
+<link rel="stylesheet" th:href="@{/css/category.css}">
+<link rel="stylesheet" th:href="@{/css/footer.css}">
 <head>
     <meta charset="UTF-8">
     <title>신사 숙녀 category</title>
 </head>
-<style>
-    body {
-        font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
-        background-color: #fff;
-        padding: 40px;
-        color: #111;
-    }
 
-    h1 {
-        margin-top: 80px;
-        font-size: 1.4rem;
-        font-weight: 600;
-        margin-bottom: 20px;
-        color: #111;
-    }
-
-    ul {
-        list-style: none;
-        padding: 0;
-        margin-bottom: 40px;
-    }
-
-    li {
-        margin-bottom: 10px;
-    }
-
-    button {
-        all: unset;
-        display: block;
-        width: 100%;
-        max-width: 240px;
-        padding: 12px 20px;
-        background-color: #f9f9f9;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        font-size: 15px;
-        font-weight: 400;
-        color: #333;
-        cursor: pointer;
-        transition: all 0.25s ease;
-    }
-
-    button:hover {
-        background-color: #111;
-        color: #fff;
-        border-color: #111;
-    }
-
-    /* 선택된 버튼 스타일 (선택 시 클래스 붙여서 적용 가능) */
-    button.selected {
-        background-color: #111;
-        color: #fff;
-        border-color: #111;
-    }
-
-    /* 반응형 - 모바일 */
-    @media (max-width: 480px) {
-        button {
-            font-size: 14px;
-            padding: 10px 16px;
-        }
-    }
-
-
-
-
-</style>
-/*  section  */
-<style>
-    .category-product-section {
-        display: flex;
-        max-width: 1600px;
-        margin: 0 auto;
-        padding: 60px 20px;
-    }
-
-    .category-section {
-        width: 250px;
-        padding-right: 30px;
-    }
-
-    .vertical-line {
-        width: 1px;
-        background-color: #ddd;
-        margin: 0 20px;
-    }
-
-    .product-section {
-        flex-grow: 1;
-    }
-</style>
 
 <body>
 <!-- 네비게이션 바 포함 -->
@@ -164,36 +75,72 @@
     <div class="vertical-line"></div>
 
     <!--th:if="${}"  카테고리에 맞는 조건들을 보여줄 곳  -->
-    <th:block >
 
-        <!-- 오른쪽: 상품 리스트 -->
-        <div class="product-section container px-4 px-lg-5 mt-5">
-            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center">
-                <div class="col mb-5" th:each="product : ${products}">
-                    <div class="card h-100">
-                        <img class="card-img-top" th:src="|/images/product/@{${product.getProductId()}}.png|" alt="Product Image" />
-                        <div class="card-body p-4">
-                            <div class="text-center">
-                                <h5 class="fw-bolder" th:text="${product.getName()}">Fancy Product</h5>
-                                <div class="d-flex justify-content-center small text-warning mb-2" th:if="${product.getRating() != null}">
-                                    <div class="bi-star-fill" th:each="star : ${#numbers.sequence(1, product.getRating())}"></div>
-                                </div>
-                                <span th:text="'$' + ${product.price}">$40.00</span>
-                            </div>
-                        </div>
-                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <div class="text-center">
-                                <a class="btn btn-outline-dark mt-auto" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Add to cart</a>
-                            </div>
-                        </div>
+    <!-- 오른쪽: 상품 리스트 -->
+    <div class="product-section">
+        <!-- 검색 및 정렬 -->
+        <div class="search-sort-container">
+            <input type="search" placeholder="Search Product Name" id="productName">
+            <button type="button" onclick="searchProductFunction()" class="btn-search-order">Search</button>
+
+
+            <select id="sortOptions">
+                <option th:each="option : ${sortList}" th:value="${option.getProductSortId}"
+                        th:text="${option.getExplanation}">정렬 기준</option>
+            </select>
+            <button type="button" onclick="orderProductFunction()" class="btn-search-order">Check</button>
+        </div>
+
+        <!-- 상품 리스트 -->
+        <div class="product-grid">
+            <!-- 검색 결과 있을 때 -->
+            <th:block th:if="${param.searchProduct != null}">
+                <div class="product-card"
+                     th:each="product : ${products}"
+                     th:if="${product.getName().contains(param.searchProduct) && !product.getStatus().equals('stop-display')}">
+                    <div class="product-img">
+                        <img th:src="@{'/images/product/' + ${product.getProductId()} + '.png'}"
+                             alt="Product Image"
+                             th:classappend="${product.status == 'sold-out' ? 'grayscale' : ''}" />
+                        <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
+                    </div>
+                    <div class="product-info">
+                        <h4 th:text="|❤ ${product.getLikeCount()}|"></h4>
+                        <h4 th:text="|💭 ${product.getReviewCount()}|"></h4>
+                        <h3 th:text="${product.getName()}">Fancy Product</h3>
+                        <span class="price" th:text="'₩ ' + ${product.price}">₩40,000</span>
+                        <a class="detail-btn" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
                     </div>
                 </div>
-            </div>
-        </div>
-    </th:block>
+            </th:block>
 
+            <!-- 모든 상품 표시 -->
+            <th:block th:if="${param.searchProduct == null}">
+                <div class="product-card"
+                     th:each="product : ${products}"
+                     th:if="${!product.getStatus().equals('stop-display')}">
+                    <div class="product-img">
+                        <img th:src="@{'/images/product/' + ${product.getProductId()} + '.png'}"
+                             alt="Product Image"
+                             th:classappend="${product.status == 'sold-out' ? 'grayscale' : ''}" />
+                        <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
+                    </div>
+                    <div class="product-info">
+                        <h4 th:text="|❤ ${product.getLikeCount()}|"></h4>
+                        <h4 th:text="|💭 ${product.getReviewCount()}|"></h4>
+                        <h3 th:text="${product.getName()}">Fancy Product</h3>
+                        <span class="price" th:text="'₩ ' + ${product.price}">₩40,000</span>
+                        <a class="detail-btn" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </div>
+
+    <!-- 상품 반복문 끝 -->
 </section>
 
+<!-- 푸터 -->
 <footer>
     <div th:replace="Bars/footer :: #footer"></div>
 </footer>
