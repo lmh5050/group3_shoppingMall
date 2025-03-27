@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>배송 정보 수정</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<!-- 배송 상세 페이지 수정 후 저장 -->
+<form id="shippingForm" th:action="@{/update/{id}(id=${updateShipping.shippingId})}" method="post">
+
+  <!-- 운송장 번호 조회 버튼 -->
+  <button type="button" id="generateTrackingNumberBtn" onclick="return generateNumber()">운송장 번호 조회</button>
+  <span id="trackingNumberDisplay">
+
+    <!-- 생성된 운송장 번호가 여기에 표시-->
+<!--    <span th:text="${updateShipping != null && updateShipping.trackingNumber != null ? updateShipping.trackingNumber : '미등록'}"></span>-->
+  </span>
+
+  <!-- 운송장 번호를 숨겨진 필드에 설정 -->
+  <input type="hidden" id="trackingNumberInput" name="trackingNumber" value=""/>
+  <input type="text" name="shippingId" th:value="${updateShipping.shippingId}" />
+
+<!-- 업데이트 버튼 -->
+  <button type="submit">업데이트</button>
+  <!-- 출발일시, 예정일시, 도착일시 입력 폼 -->
+  <br>
+
+  <label>출발일시:</label>
+  <input type="date" name="shippingDatetime" th:value="${#dates.format(updateShipping.shippingDatetime, 'yyyy-MM-dd')}"/>
+
+  <br>
+
+  <label>예정일시:</label>
+  <input type="date" name="expectedDatetime" th:value="${#dates.format(updateShipping.expectedDatetime, 'yyyy-MM-dd')}" />
+  <br>
+
+  <label>도착일시:</label>
+  <input type="date" name="endDatetime" th:value="${#dates.format(updateShipping.endDatetime, 'yyyy-MM-dd')}" />
+  <br>
+
+
+  <!-- 비고 입력 -->
+    <label>비고:</label>
+    <textarea name="note" th:text="${updateShipping.note ?: ''}"></textarea><br>
+
+  <!-- 지연 사유 선택 -->
+  <label>지연 사유:</label>
+  <select name="delayReason">
+    <option value="">선택하기</option> <!-- 기본 선택 옵션 -->
+    <th:block th:each="code : ${codeDetail}">
+      <option th:value="${code.getCodeNo()}"
+              th:text="${code.getCodeName()}"
+              th:selected="${updateShipping.delayReason == code.getCodeNo()}">
+      </option>
+    </th:block>
+  </select>
+
+  <input type="submit" value="등록">
+</form>
+<script>
+  function generateNumber() {
+    // 기존 자식 요소가 있을 경우 제거
+    const existingInput = document.querySelector("#generateTrackingNumberBtn input[name='trackingNumber']");
+    if (existingInput) {
+      existingInput.remove();  // 기존 input 제거
+    }
+
+    // 새로운 input 요소 생성
+    const inputN = document.createElement("input");
+    inputN.type = "text";
+    inputN.name = "trackingNumber";
+    inputN.value = generateRandomTrackingNumber();  // 랜덤 번호 생성
+
+    // 새로운 input을 버튼 아래에 추가
+    document.getElementById("generateTrackingNumberBtn").appendChild(inputN);
+  }
+
+  //운송장 번호를 AJAX로 생성하고 화면에 표시하는 함수
+  function generateRandomTrackingNumber() {
+    let trackingNumber = '';
+
+    // 첫 번째 자리는 1~9 사이의 랜덤 숫자
+    trackingNumber += Math.floor(Math.random() * 9) + 1;
+
+    // 나머지 11자리는 0~9 사이의 랜덤 숫자
+    for (let i = 1; i < 12; i++) {
+      trackingNumber += Math.floor(Math.random() * 10);
+    }
+
+    return trackingNumber;
+  }
+
+  //
+  // $('#generateTrackingNumberBtn').click(function() {
+  //   $.ajax({
+  //     url: '/generate/tracking/no',  // 서버에 운송장 번호 생성 요청
+  //     type: 'POST',
+  //     success: function(trackingNumber) {
+  //       // 서버에서 반환된 운송장 번호로 화면 갱신
+  //       $('#trackingNumberDisplay').text(trackingNumber);
+  //       $('#trackingNumberInput').val(trackingNumber);  // 숨겨진 필드에 운송장 번호 저장
+  //     },
+  //   });
+  // });
+</script>
+</body>
+</html>
