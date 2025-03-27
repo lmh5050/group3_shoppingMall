@@ -23,5 +23,4 @@ public class PaymentOrderDetailDto {
     private Integer discountAmount;
     private Integer productPrice;
     private Integer productTotalPrice;
-    private String status;
 } 
