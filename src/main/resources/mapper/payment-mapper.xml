@@ -219,9 +219,9 @@
     <!-- 배송 정보 저장 -->
     <insert id="insertShipping">
         INSERT INTO shipping (
-            shipping_id, order_id, basic_address, detail_address, receive_people, receive_phone_number, shipping_price, delivery_request
+            shipping_id, order_id, basic_address, detail_address, receive_people, receive_phone_number, shipping_price, delivery_request, zip_code
         ) VALUES (
-            #{shippingId}, #{orderId}, #{basicAddress}, #{detailAddress}, #{receivePeople}, #{receivePhoneNumber}, #{shippingPrice}, #{deliveryRequest}
+            #{shippingId}, #{orderId}, #{basicAddress}, #{detailAddress}, #{receivePeople}, #{receivePhoneNumber}, #{shippingPrice}, #{deliveryRequest}, #{zipCode}
         )
     </insert>
 
@@ -236,9 +236,9 @@
     <!-- 배송 이력 저장 -->
     <insert id="insertShippingHistory">
         INSERT INTO shipping_history (
-            shipping_id, order_id, basic_address, detail_address, receive_people, receive_phone_number, shipping_price, delivery_request
+            shipping_id, order_id, basic_address, detail_address, receive_people, receive_phone_number, shipping_price, delivery_request, zip_code
         ) VALUES (
-            #{shippingId}, #{orderId}, #{basicAddress}, #{detailAddress}, #{receivePeople}, #{receivePhoneNumber}, #{shippingPrice}, #{deliveryRequest}
+            #{shippingId}, #{orderId}, #{basicAddress}, #{detailAddress}, #{receivePeople}, #{receivePhoneNumber}, #{shippingPrice}, #{deliveryRequest}, #{zipCode}
         )
     </insert>
 
