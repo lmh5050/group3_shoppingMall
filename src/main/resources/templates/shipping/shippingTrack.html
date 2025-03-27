@@ -16,7 +16,7 @@
         <!-- 상단 네비게이션 바 삽입 (별도 fragment) -->
         <div th:replace="Bars/side_bar :: topnav"></div>
         <!--   내용 시작     -->
-        배송 정보 출력
+<!--        배송 정보 출력-->
         <div th:each="detail : ${getShippingTrack}" th:if="${detail != null}">
             <p><strong>추적 번호:</strong> <span th:text="${detail.trackingNumber != null ? detail.trackingNumber : ''}"></span></p>
             <p><strong>상태:</strong> <span th:text="${detail.status}"></span></p>
