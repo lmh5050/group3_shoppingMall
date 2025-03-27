@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <title>Side Bar Fragments</title>
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- <link rel="icon" type="image/x-icon" href="assets/favicon.ico" /> -->
     <!-- 필요시 추가 CSS 링크 -->
     <link href="css/styles.css" rel="stylesheet" />
   </head>
@@ -13,12 +13,11 @@
       <div class="border-end bg-white" id="sidebar-wrapper">
         <div class="sidebar-heading border-bottom bg-light">신사숙녀 관리자 페이지</div>
         <div class="list-group list-group-flush">
-          <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Dashboard</a>
-          <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Shortcuts</a>
-          <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Overview</a>
-          <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Events</a>
-          <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Profile</a>
+          <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/admin/product">상품 관리</a>
+          <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/admin/order">전체 주문 조회</a>
           <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/admin/payment">가상계좌 결제 관리</a>
+          <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/admin/shipping/list">배송 관리</a>
+          <a class="list-group-item list-group-item-action list-group-item-light p-3" href="/admin/complaint/list">고객 민원 관리</a>
         </div>
       </div>
     </div>
@@ -26,7 +25,7 @@
     <div th:fragment="topnav">
       <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
         <div class="container-fluid">
-          <button class="btn btn-primary" id="sidebarToggle">관리자 페이지</button>
+          <button class="btn btn-primary" id="sidebarToggle">관리자 페이지 탭</button>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
                   data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
                   aria-expanded="false" aria-label="Toggle navigation">
@@ -34,8 +33,8 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
-              <li class="nav-item active"><a class="nav-link" href="#!">Home</a></li>
-              <li class="nav-item"><a class="nav-link" href="#!">Link</a></li>
+              <li class="nav-item active"><a class="nav-link" href="/">Home</a></li>
+              <!-- <li class="nav-item"><a class="nav-link" href="#!">Link</a></li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" 
                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -47,7 +46,7 @@
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" href="#!">Something else here</a>
                 </div>
-              </li>
+              </li> -->
             </ul>
           </div>
         </div>
