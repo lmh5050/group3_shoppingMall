@@ -49,11 +49,12 @@
     </update>
 
     <!-- order_id에 해당하는 상품 가격 조회 -->
-    <select id="findProductTotalPriceByOrderId">
+    <select id="findProductTotalPriceByOrderIdForAdmin">
         SELECT
             product_total_price
         FROM order_detail
         WHERE order_id = #{orderId}
+        AND product_name = #{productName}
     </select>
 
 </mapper>

@@ -32,7 +32,7 @@ public interface ComplaintRepository {
     List<String> findProductNameByOrderId(Long orderId);
 
     //상품 가격 조회
-    String findProductTotalPriceByOrderId(Long orderId);
+    String findProductTotalPriceByOrderId(Long orderId, String productName);
 
     boolean existsByOrderIdAndProductNameAndStatusNotContaining(Long orderId, String productName, String status);
 
