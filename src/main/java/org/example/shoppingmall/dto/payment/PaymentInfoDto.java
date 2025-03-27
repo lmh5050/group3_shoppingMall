@@ -28,7 +28,7 @@ public class PaymentInfoDto {
     private String receivePeople;
     private String receivePhoneNumber;
     private Integer shippingPrice;
-
+    private String deliveryRequest;
     // 결제 정보
     private String paymentMethod;
     private Integer cardType;

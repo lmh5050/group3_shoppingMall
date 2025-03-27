@@ -393,7 +393,7 @@
             axios.post('/payment', paymentData)
                 .then(response => {
                     if (paymentData.paymentMethod == '가상계좌') {
-                        alert('계좌번호는 거래명세서에서 확인하실 수 있습니다.');
+                        alert('입금 계좌번호는 주문상세 페이지에서 확인하실 수 있습니다.');
                         window.close();
                         // 부모 창에 리디렉션 요청
                         if (window.opener) {
