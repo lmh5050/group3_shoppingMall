@@ -4,6 +4,7 @@ package org.example.shoppingmall.repository.shipping;
 import org.apache.ibatis.annotations.Mapper;
 import org.example.shoppingmall.dto.shipping.ShippingDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Mapper
@@ -24,16 +25,19 @@ public interface ShippingListRepository {
     //배송 리스트 삭제
     void deleteShippingList(String id);
 
+    //배송 이력 리스트
+    ArrayList<ShippingDto> getShippingDetail(String orderId);
 
-    //  void test(ShippingDto shippingDto);
-//
-//    List<ShippingDto> findAll2();
-//
-//    ShippingDto findById(Long id);
-//
-//    void update(ShippingDto shippingDto);
-//
-//    void delete(Long id);
+    //배송 이력 저장
+    void insertShippingHistory(ShippingDto shippingDto);
+
+    //배송 이력 찾기
+    ShippingDto getShippingDtoByPk(String shippingId);
+
+    //고객 배송 조회
+    ArrayList<ShippingDto> getShippingTrack(String orderId);
+
 }
+
 
 

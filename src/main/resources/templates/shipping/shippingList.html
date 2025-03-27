@@ -1,120 +1,78 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title></title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    /* 네비게이션 바 */
-    nav {
-      background-color: #333;
-      padding: 10px;
-      text-align: center;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 0 15px;
-      font-weight: bold;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    /* 게시판 항목 */
-    .board-container {
-      padding: 20px;
-    }
-
-    .board-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px;
-      border: 1px solid black;
-      margin-bottom: 10px;
-      background-color: #fff;
-    }
-
-    .board-item div {
-      flex: 1;
-      text-align: center;
-    }
-
-    .board-item a {
-      text-decoration: none;
-      color: black;
-    }
-
-    .board-item a:hover {
-      text-decoration: underline;
-    }
-
-    /* 제목 행 스타일 */
-    .board-item-header {
-      font-weight: bold;
-      background-color: #f0f0f0;
-      border-bottom: 2px solid black;
-    }
-
-    /* 게시글 내용 */
-    .board-item-content {
-      background-color: #fafafa;
-    }
-
-  </style>
+<meta charset="UTF-8">
+<title></title>
+<!-- Bootstrap CSS (CDN 이용) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- 커스텀 CSS -->
+<link rel="stylesheet" href="/css/admin/styles.css">
 </head>
 <body>
-
-<!-- 네비게이션 바 -->
-<nav>
-  <a href="/shipping/list">접수</a>
-  <a href="/shipping/list">삭제</a>
-</nav>
-
-<!-- 게시판 항목 -->
-<div class="board-container">
-  <form action="/delete" method="post">
-    <table>
-      <thead>
-      <tr class="board-item board-item-header">
-        <th>선택</th>
-        <th>배송번호</th>
-        <th>주문번호</th>
-        <th>수령자</th>
-        <th>운송장번호</th>
-        <th>비고</th>
-        <th>배송일시</th>
-        <th>배송완료일시</th>
-        <th>수거일시</th>
-        <th>설명</th>
-        <th>상태</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="shipping : ${shippingList}" class="board-item board-item-content">
-        <td><input type="checkbox" name="shippingIds" th:value="${shipping.shippingId}"/></td>
-        <td><a th:text="${shipping.shippingId}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
-        <td><a th:text="${shipping.orderDetailId}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
-        <td><a th:text="${shipping.deliveryName}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
-        <td><a th:text="${shipping.trackingNumber}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
-        <td><a th:text="${shipping.note}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
-        <td><a th:text="${#dates.format(shipping.shippingDatetime, 'yyyy-MM-dd')}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
-        <td><a th:text="${#dates.format(shipping.endDatetime, 'yyyy-MM-dd')}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
-        <td><a th:text="${#dates.format(shipping.deliveryDatetime, 'yyyy-MM-dd')}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
-        <td><a th:text="${shipping.description}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
-        <td><a th:text="${shipping.status}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
-      </tr>
-      </tbody>
-    </table>
-  </form>
+<div class="d-flex" id="wrapper">
+  <!-- 사이드바 삽입 (별도 fragment) -->
+  <div th:replace="Bars/side_bar :: sidebar"></div>
+  <!-- 페이지 콘텐츠 영역 -->
+  <div id="page-content-wrapper">
+    <!-- 상단 네비게이션 바 삽입 (별도 fragment) -->
+    <div th:replace="Bars/side_bar :: topnav"></div>
+    <!--   내용 시작     -->
+    <!-- 게시판 항목 -->
+    <div class="board-container">
+      <form action="/delete" method="post">
+        <table>
+          <thead>
+          <tr class="board-item board-item-header">
+            <th>선택</th>
+            <th>배송번호</th>
+            <th>주문번호</th>
+            <th>수령자</th>
+            <th>운송장번호</th>
+            <th>비고</th>
+            <th>배송일시</th>
+            <th>배송완료일시</th>
+            <th>수거일시</th>
+            <th>설명</th>
+            <th>상태</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="shipping : ${shippingList}" class="board-item board-item-content">
+            <td><input type="checkbox" name="shippingId" th:value="${shipping.shippingId}"/></td>
+            <td><a th:text="${shipping.shippingId}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
+            <td><a th:text="${shipping.orderId}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
+            <td><a th:text="${shipping.deliveryName}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
+            <td><a th:text="${shipping.trackingNumber}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
+            <td><a th:text="${shipping.note}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
+            <td><a th:text="${#dates.format(shipping.shippingDatetime, 'yyyy-MM-dd')}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
+            <td><a th:text="${#dates.format(shipping.endDatetime, 'yyyy-MM-dd')}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
+            <td><a th:text="${#dates.format(shipping.deliveryDatetime, 'yyyy-MM-dd')}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
+            <td><a th:text="${shipping.description}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
+            <td><a th:text="${shipping.status}" th:href="@{|/detail/${shipping.shippingId}|}"></a></td>
+          </tr>
+          </tbody>
+        </table>
+      </form>
+    </div>
+  </div>
 </div>
+
+
+<!-- Bootstrap JS (CDN 이용) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- 인라인 JavaScript -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // 사이드바 토글 이벤트 등록
+    const sidebarToggle = document.getElementById("sidebarToggle");
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener("click", function (e) {
+        e.preventDefault();
+        document.body.classList.toggle("sb-sidenav-toggled");
+      });
+    }
+  });
+</script>
 </body>
 </html>
+

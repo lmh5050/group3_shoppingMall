@@ -15,18 +15,24 @@ import java.util.Date;
 public class ShippingDto {
 
     private String shippingId;
-    private String orderDetailId;
+    private String orderId;
+    private String serialNumber;
     private String shippingCompanyId;
     private Integer quantity;
     private Double amount;
     private Double weight;
     private String trackingNumber;
     private String status;
-    private String address;
+    private String basicAddress;
+    private String detailAddress;
+    private String receivePeople;
+    private String receivePhoneNumber;
+    private String zipCode;
+    private String deliveryRequest;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date  shippingDatetime;
+    private Date shippingDatetime;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date  expectedDatetime;
+    private Date expectedDatetime;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endDatetime;
     private String supplier;
@@ -38,13 +44,13 @@ public class ShippingDto {
     private String region;
     private String deliveryName;
     private String deliveryNumber;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date deliveryDatetime;
     private String returnAddress;
     private String returnNumber;
     private String returnName;
     private Date createdAt;
     private Date updatedAt;
-    private Boolean deleteFlag;
     private Long shippingCompanyNo;
-
+    private String activeFlag;
 }
