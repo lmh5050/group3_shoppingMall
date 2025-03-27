@@ -2,138 +2,306 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="">
 <head>
     <meta charset="UTF-8">
-    <title>상품 상세 정보 수정</title>
+    <title>상품 등록</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- Bootstrap CSS (CDN 이용) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 커스텀 CSS -->
+    <link rel="stylesheet" href="/css/admin/styles.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .admin-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        #newProductForm {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #444;
+        }
+
+        /* 버튼 컨테이너 스타일 */
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* 파일 업로드 버튼 */
+        #newImg {
+            display: none;
+        }
+
+        #newImgPreview {
+            max-width: 100%;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        /* 색상 및 사이즈 입력 필드 컨테이너 */
+        #colorContainer, #sizeContainer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        #colorContainer input, #sizeContainer input {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        /* 관리자 스타일 느낌 추가 */
+        .admin-header {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #000;
+        }
+
+    </style>
 </head>
 <body>
-<h1>관리자 - 상품 추가 등록</h1>
-<section>
-    <div>
-        <div>
-            <form id="newProductForm">
-                <!-- 메인 사진 수정 -->
-                <div>
-                    <h3>(1) 메인 사진</h3>
-                    <!-- 버튼 클릭 시 파일 선택 창 열리기 -->
-                    <button type="button" onclick="openNewFileInput()">사진 선택</button>
+<div class="d-flex" id="wrapper">
+    <!-- 사이드바 삽입 (별도 fragment) -->
+    <div th:replace="Bars/side_bar :: sidebar"></div>
+    <!-- 페이지 콘텐츠 영역 -->
+    <div id="page-content-wrapper">
+        <!-- 상단 네비게이션 바 삽입 (별도 fragment) -->
+        <div th:replace="Bars/side_bar :: topnav"></div>
+        <!--   내용 시작     -->
 
-                    <!-- 파일 선택 input 태그 (숨겨놓음) -->
-                    <input type="file" id="newImg" style="display: none;" onchange="storeFileInLocalStorage(event)">
+        <h1>관리자 - 상품 추가 등록</h1>
+        <section>
+            <div>
+                <div class="admin-container">
+                    <form id="newProductForm" >
+                        <!-- 메인 사진 수정 -->
+                        <div>
+                            <h3>(1) 메인 사진</h3>
+                            <!-- 버튼 클릭 시 파일 선택 창 열리기 -->
+                            <button type="button" onclick="openNewFileInput()">사진 선택</button>
 
-                    <!-- 선택한 이미지 미리보기 -->
-                    <div>
-                        <h3>선택된 이미지 미리보기:</h3>
-                        <img id="newImgPreview" src="" alt="미리보기 이미지" style="max-width: 300px;">
-                    </div>
+                            <!-- 파일 선택 input 태그 (숨겨놓음) -->
+                            <input type="file" id="newImg" style="display: none;" onchange="storeFileInLocalStorage(event)">
+
+                            <!-- 선택한 이미지 미리보기 -->
+                            <div>
+                                <h3>선택된 이미지 미리보기:</h3>
+                                <img id="newImgPreview" src="" alt="미리보기 이미지" style="max-width: 300px;">
+                            </div>
+                        </div>
+                        <br>
+                        <!-- 상품 이름 수정 -->
+                        <div>
+                            <h3>(2) 등록된 상품 이름</h3>
+                            <input type="text" name="productName" id="productName">
+                        </div>
+                        <br>
+                        <!-- 상품 가격 수정 -->
+                        <div>
+                            <h3>(3) 상품 가격 (원)</h3>
+                            <input type="text" name="productPrice" id="productPrice">
+                        </div>
+                        <br>
+                        <!-- 상품 상세 설명 수정 -->
+                        <div>
+                            <h3>(4) 상품 상세 설명</h3>
+                            <textarea name="productDescription" id="productDescription"></textarea>
+                        </div>
+                        <br>
+                        <!-- 카테고리 수정 -->
+                        <div>
+                            <h3>(5) 카테고리</h3>
+                            <select name="productCategoryId" id="productCategoryId">
+                                <option value="default">카테고리 선택</option>
+                                <th:block th:each="category : ${productCategory}">
+                                    <option th:text="${category.getName()}" th:value="${category.getCategoryId()}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <br>
+                        <!-- 시즌 수정 -->
+                        <div>
+                            <h3>(6) 시즌</h3>
+                            <select name="productSeasonId" id="productSeasonId">
+                                <option value="default">시즌 선택</option>
+                                <th:block th:each="season : ${productSeason}">
+                                    <option th:text="|이름 : ${season.getName()} / 시작 월 : ${season.getPeriodMonth()} / 진행 월 : ${season.getDurationPeriod()}|" th:value="${season.getSeasonId()}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <br>
+                        <!-- 비고 수정 -->
+                        <div>
+                            <h3>(7) 비고</h3>
+                            <textarea name="productNotes" id="productNotes"></textarea >
+                        </div>
+                        <br>
+                        <!-- 성별 수정 -->
+                        <div>
+                            <h3>(8) 성별</h3>
+                            <select name="productGender" id="productGender">
+                                <option value="default">성별 선택</option>
+                                <option value="ALL">전체</option>
+                                <option value="MALE">여자</option>
+                                <option value="FEMALE">남자</option>
+                            </select>
+                        </div>
+                        <br>
+                        <!-- 핏 정보 수정 -->
+                        <div>
+                            <h3>(9) 핏</h3>
+                            <select name="productFit" id="productFit">
+                                <option value="default">핏 선택</option>
+                                <option value="Regular">레귤러</option>
+                                <option value="Slim">슬림</option>
+                                <option value="Oversized">오버사이즈</option>
+                            </select>
+                        </div>
+                        <br>
+                        <!-- 촉감 정보 수정 -->
+                        <div>
+                            <h3>(10) 촉감</h3>
+                            <select name="productTexture" id="productTexture">
+                                <option value="default">촉감 선택</option>
+                                <option value="Soft">부드러움</option>
+                                <option value="Slightly Soft">약간 부드러움</option>
+                                <option value="Slightly Stiff">약간 뻣뻣함</option>
+                                <option value="Stiff">뻣뻣함</option>
+                            </select>
+                        </div>
+                        <br>
+                        <!-- 두께 정보 수정 -->
+                        <div>
+                            <h3>(11) 두께</h3>
+                            <select name="productThickness" id="productThickness">
+                                <option value="default">촉감 선택</option>
+                                <option value="Slightly thin">약간 얇음</option>
+                                <option value="Thin">얇음</option>
+                                <option value="Slightly Thick">약간 두꺼움</option>
+                                <option value="Thick">두꺼움</option>
+                            </select>
+                        </div>
+                        <br>
+                        <!-- 제조사 수정 -->
+                        <div>
+                            <h3>(12) 제조사</h3>
+                            <input type="text" name="productManufacturer" id="productManufacturer">
+                        </div>
+                        <br>
+                        <!-- 원산지 수정 -->
+                        <div>
+                            <h3>(13) 원산지</h3>
+                            <input type="text" name="productOrigin" id="productOrigin">
+                        </div>
+                        <br>
+                        <!-- 품질 보증 기준 수정 -->
+                        <div>
+                            <h3>(14) 품질 보증 기준</h3>
+                            <select name="productQualityAssuranceStandard" id="productQualityAssuranceStandard">
+                                <option value="default">품질 보증 기준 선택</option>
+                                <option value="OEKO-TEX Standard 100">국제 섬유 및 환경 인증 : OEKO-TEX Standard 100</option>
+                                <option value="GOTS (Global Organic Textile Standard)">국제 섬유 및 환경 인증 : GOTS (Global Organic Textile Standard)</option>
+                                <option value="BLUESIGN®">국제 섬유 및 환경 인증 : BLUESIGN®</option>
+                                <option value="ISO 9001 (품질경영시스템)">국제 섬유 및 환경 인증 : ISO 9001 (품질경영시스템)</option>
+                                <option value="ISO 14001 (환경경영시스템)">국제 섬유 및 환경 인증 : ISO 14001 (환경경영시스템)</option>
+                                <option value="REACH (EU 화학물질 규제)">국제 섬유 및 환경 인증 : REACH (EU 화학물질 규제)</option>
+                                <option value="ZDHC (Zero Discharge of Hazardous Chemicals)">국제 섬유 및 환경 인증 : ZDHC (Zero Discharge of Hazardous Chemicals)</option>
+                                <option value="RWS (Responsible Wool Standard)">친환경 및 지속 가능성 인증 : RWS (Responsible Wool Standard)</option>
+                                <option value="RDS (Responsible Down Standard)">친환경 및 지속 가능성 인증 : RDS (Responsible Down Standard)</option>
+                                <option value="GRS (Global Recycled Standard)">친환경 및 지속 가능성 인증 : GRS (Global Recycled Standard)</option>
+                                <option value="B-Corp 인증">친환경 및 지속 가능성 인증 : B-Corp 인증</option>
+                                <option value="KC 인증 (한국)">한국 및 국가별 의류 관련 인증 : KC 인증 (한국)</option>
+                                <option value="KS K ISO 105 (한국산업표준 섬유 색상 견뢰도 시험법)">한국 및 국가별 의류 관련 인증 : KS K ISO 105 (한국산업표준 섬유 색상 견뢰도 시험법)</option>
+                                <option value="JIS L 0844 (일본 섬유 품질 인증)">한국 및 국가별 의류 관련 인증 : JIS L 0844 (일본 섬유 품질 인증)</option>
+                                <option value="ASTM D123 (미국 섬유 품질 표준)">한국 및 국가별 의류 관련 인증 : ASTM D123 (미국 섬유 품질 표준)</option>
+                                <option value="EN 14682 (유럽 아동복 안전 기준)">한국 및 국가별 의류 관련 인증 : EN 14682 (유럽 아동복 안전 기준)</option>
+                                <option value="CPSIA (미국 소비자제품안전법)">한국 및 국가별 의류 관련 인증 : CPSIA (미국 소비자제품안전법)</option>
+                                <option value="CAN/CGSB 4.2 (캐나다 섬유 표준)">한국 및 국가별 의류 관련 인증 : CAN/CGSB 4.2 (캐나다 섬유 표준)</option>
+                            </select>
+                        </div>
+                        <br>
+                        <!-- 색상 수정 -->
+                        <div>
+                            <h3>(15) 색상</h3>
+                            <div id="colorContainer">
+                                <input type="text" name="colors">
+                            </div>
+                            <button type="button" onclick="return addColorInput('colors')">추가</button>
+                        </div>
+                        <br>
+                        <!-- 사이즈 수정 -->
+                        <div>
+                            <h3>(16) 사이즈</h3>
+                            <div id="sizeContainer">
+                                <input type="text" name="sizes">
+                            </div>
+                            <button type="button" onclick="return addSizeInput('sizes')">추가</button>
+                        </div>
+                        <br>
+                        <button type="submit" onclick="return validateNewProductInfo();">등록 완료</button>
+                    </form>
                 </div>
-                <br>
-                <!-- 상품 이름 수정 -->
-                <div>
-                    <h3>(2) 등록된 상품 이름</h3>
-                    <input type="text" name="productName">
-                </div>
-                <br>
-                <!-- 상품 가격 수정 -->
-                <div>
-                    <h3>(3) 상품 가격</h3>
-                    <input type="text" name="productPrice">
-                </div>
-                <br>
-                <!-- 상품 상세 설명 수정 -->
-                <div>
-                    <h3>(4) 상품 상세 설명</h3>
-                    <textarea name="productDescription"></textarea>
-                </div>
-                <br>
-                <!-- 카테고리 수정 -->
-                <div>
-                    <h3>(5) 카테고리</h3>
-                    <select name="productCategoryId">
-                        <option>분류</option>
-                        <th:block th:each="category : ${productCategory}">
-                            <option th:text="${category.getName()}" th:value="${category.getCategoryId()}"></option>
-                        </th:block>
-                    </select>
-                </div>
-                <br>
-                <!-- 시즌 수정 -->
-                <div>
-                    <h3>(6) 시즌</h3>
-                    <input type="text" name="productSessionId">
-                </div>
-                <br>
-                <!-- 비고 수정 -->
-                <div>
-                    <h3>(7) 비고</h3>
-                    <textarea name="productNotes"></textarea >
-                </div>
-                <br>
-                <!-- 성별 수정 -->
-                <div>
-                    <h3>(8) 성별</h3>
-                    <input type="text" name="productGender">
-                </div>
-                <br>
-                <!-- 핏 정보 수정 -->
-                <div>
-                    <h3>(9) 핏</h3>
-                    <input type="text" name="productFit">
-                </div>
-                <br>
-                <!-- 촉감 정보 수정 -->
-                <div>
-                    <h3>(10) 촉감</h3>
-                    <input type="text" name="productTexture">
-                </div>
-                <br>
-                <!-- 두께 정보 수정 -->
-                <div>
-                    <h3>(11) 두께</h3>
-                    <input type="text" name="productThickness">
-                </div>
-                <br>
-                <!-- 제조사 수정 -->
-                <div>
-                    <h3>(12) 제조사</h3>
-                    <input type="text" name="productManufacturer">
-                </div>
-                <br>
-                <!-- 원산지 수정 -->
-                <div>
-                    <h3>(13) 원산지</h3>
-                    <input type="text" name="productOrigin">
-                </div>
-                <br>
-                <!-- 품질 보증 기준 수정 -->
-                <div>
-                    <h3>(14) 품질 보증 기준</h3>
-                    <input type="text" name="productQualityAssuranceStandard">
-                </div>
-                <br>
-                <!-- 색상 수정 -->
-                <div>
-                    <h3>(15) 색상</h3>
-                    <div id="colorContainer">
-                        <input type="text" name="colors">
-                    </div>
-                    <button type="button" onclick="return addColorInput('colors')">추가</button>
-                </div>
-                <br>
-                <!-- 사이즈 수정 -->
-                <div>
-                    <h3>(16) 사이즈</h3>
-                    <div id="sizeContainer">
-                        <input type="text" name="sizes">
-                    </div>
-                    <button type="button" onclick="return addSizeInput('sizes')">추가</button>
-                </div>
-                <br>
-                <button type="submit">등록 완료</button>
-            </form>
-        </div>
+            </div>
+        </section>
     </div>
-</section>
-
+</div>
+<!-- Bootstrap JS (CDN 이용) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- 인라인 JavaScript -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 사이드바 토글 이벤트 등록
+        const sidebarToggle = document.getElementById("sidebarToggle");
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener("click", function (e) {
+                e.preventDefault();
+                document.body.classList.toggle("sb-sidenav-toggled");
+            });
+        }
+    });
+</script>
 <script>
     function storeFileInLocalStorage(event) {
 
@@ -171,36 +339,119 @@
         document.getElementById('newImg').click();  // 파일 선택 input 클릭
     }
 
+    function validateNewProductInfo() {
+        let image = document.getElementById("newImg")?.files?.[0] || null; // 파일 입력
+        let productName = document.getElementById("productName")?.value?.trim() || "";
+        let productDescription = document.getElementById("productDescription")?.value?.trim() || "";
+        let productCategoryId = document.getElementById("productCategory")?.value;
+        let productSeasonId = document.getElementById("productSeason")?.value;
+        let productNotesElement = document.getElementById("productNotes");
+        let productNotes = productNotesElement?.value?.trim() || "";
+        let productGender = document.getElementById("productGender")?.value ;
+        let productFit = document.getElementById("productFit")?.value ;
+        let productTexture = document.getElementById("productTexture")?.value ;
+        let productThickness = document.getElementById("productThickness")?.value;
+        let productManufacturer = document.getElementById("productManufacturer")?.value?.trim() || "";
+        let productOrigin = document.getElementById("productOrigin")?.value?.trim() || "";
+        let productQualityAssuranceStandard = document.getElementById("productQualityAssuranceStandard")?.value?.trim();
+        // let colors = document.getElementById("colorContainer")?.value?.trim() || "";
+        // let sizes = document.getElementById("sizeContainer")?.value?.trim() || "";
+
+        // 상품 사진 체크
+        if (!image) {
+            alert("상품 사진이 비어있습니다.");
+            return false;
+        }
+
+        // 상품 이름 체크
+        if (productName.length === 0) {
+            alert("상품 이름이 비어있습니다.");
+            return false;
+        }
+        if (productName.length < 5) {
+            alert("상품 이름은 5글자 이상으로 등록되어야 합니다.");
+            return false;
+        }
+        if (productName.length > 50) {
+            alert("상품 이름은 50자 이하로 등록되어야 합니다.");
+            return false;
+        }
+
+        // 상품 상세 설명 체크
+        if (productDescription.length === 0) {
+            alert("상품 상세 설명이 비어있습니다.");
+            return false;
+        }
+        if (productDescription.length < 20) {
+            alert("상품 상세 설명은 20자 이상이어야 합니다.");
+            return false;
+        }
+        if (productDescription.length > 100) {
+            alert("상품 상세 설명은 100자 이하이어야 합니다.");
+            return false;
+        }
+
+        // 필수 선택 항목 체크
+        if (productCategoryId === "default") {
+            alert("상품의 카테고리는 필수로 선택되어야 합니다.");
+            return false;
+        }
+        if (productSeasonId === "default") {
+            alert("상품의 시즌은 필수로 선택되어야 합니다.");
+            return false;
+        }
+        if (productGender === "default") {
+            alert("상품의 성별은 필수로 선택되어야 합니다.");
+            return false;
+        }
+        if (productFit === "default") {
+            alert("상품의 핏은 필수로 선택되어야 합니다.");
+            return false;
+        }
+        if (productTexture === "default") {
+            alert("상품의 촉감은 필수로 선택되어야 합니다.");
+            return false;
+        }
+        if (productThickness === "default") {
+            alert("상품의 두께는 필수로 선택되어야 합니다.");
+            return false;
+        }
+
+        // 제조사, 원산지, 품질 보증 기준 체크
+        if (productManufacturer.length === 0) {
+            alert("상품의 제조사는 필수로 입력되어야 합니다.");
+            return false;
+        }
+        if (productOrigin.length === 0) {
+            alert("상품의 원산지는 필수로 입력되어야 합니다.");
+            return false;
+        }
+        if (productQualityAssuranceStandard.length === 0) {
+            alert("상품의 품질 보증 기준은 필수로 입력되어야 합니다.");
+            return false;
+        }
+
+        // 색상 & 사이즈 체크
+        // if (colors.length === 0) {
+        //     alert("상품의 색상은 필수로 작성되어야 합니다.");
+        //     return false;
+        // }
+        // if (sizes.length === 0) {
+        //     alert("상품의 사이즈는 필수로 작성되어야 합니다.");
+        //     return false;
+        // }
+        return true; // 모든 유효성 검사를 통과하면 true 반환
+    }
 
     document.getElementById('newProductForm').addEventListener('submit', function(event) {
         event.preventDefault(); // 기본 폼 제출 방지
 
         let confirmUpdate = confirm("상품을 추가하시겠습니까?");
         if (!confirmUpdate) return;
+        validateNewProductInfo();
 
         // const formData = new FormData();
         const formData = new FormData(document.getElementById("newProductForm"));
-        // DTO 데이터 수집
-        // const productData = {
-        //     productName: document.querySelector('[name="productName"]').value,
-        //     productPrice: document.querySelector('[name="productPrice"]').value,
-        //     productDescription: document.querySelector('[name="productDescription"]').value,
-        //     productSessionId: document.querySelector('[name="productSessionId"]').value,
-        //     productNotes: document.querySelector('[name="productNotes"]').value,
-        //     productGender: document.querySelector('[name="productGender"]').value,
-        //     productFit: document.querySelector('[name="productFit"]').value,
-        //     productTexture: document.querySelector('[name="productTexture"]').value,
-        //     productThickness: document.querySelector('[name="productThickness"]').value,
-        //     productManufacturer: document.querySelector('[name="productManufacturer"]').value,
-        //     productOrigin: document.querySelector('[name="productOrigin"]').value,
-        //     productQualityAssuranceStandard: document.querySelector('[name="productQualityAssuranceStandard"]').value,
-        //     productDetailColor: document.querySelector('[name="colors"]').value,
-        //     productDetailSize: document.querySelector('[name="sizes"]').value,
-        // };
-
-        // JSON을 Blob으로 변환 후 FormData에 추가
-        // const productBlob = new Blob([JSON.stringify(productData)], { type: "application/json" });
-        // formData.append("product", productBlob);
 
         // 이미지 파일 추가
         const fileInput = document.getElementById("newImg");
@@ -216,11 +467,16 @@
         }
 
         // 서버로 요청 보내기
-        axios.post("/manager/addNewProduct", formData)
-            .then(response => console.log("성공:", response))
-            .catch(error => console.error("실패:", error.response?.data || error));
+        axios.post("/admin/addNewProduct", formData)
+            .then(response => {
+                console.log("성공:", response);
+                // 리다이렉트 처리
+                window.location.href = "/admin/productInventoryMgmt"; // 상품 관리 페이지로 이동
+            })
+            .catch(error => {
+                console.error("실패:", error.response?.data || error);
+            });
     });
-
 
 
     function addSizeInput(name) {
@@ -244,6 +500,7 @@
         // 부모 요소에 추가
         document.getElementById("colorContainer").appendChild(newInput);
     }
+
 </script>
 
 </body>
