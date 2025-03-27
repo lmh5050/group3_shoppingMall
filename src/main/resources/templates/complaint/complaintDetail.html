@@ -7,52 +7,74 @@
     <meta name="author" content="" />
     <link rel="stylesheet" th:href="@{/css/Bars.css}">
     <link rel="stylesheet" th:href="@{/css/Login.css}">
-    <title th:text="${pageTitle}">Shop Homepage - Start Bootstrap Template</title>
-    <!-- Bootstrap icons-->
+    <title th:text="${pageTitle}">Complaint Detail</title>
     <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-icons1.5.0/font/bootstrap-icons.css}" rel="stylesheet" />
-    <!-- Core theme CSS (includes Bootstrap)-->
     <link th:href="@{/css/homecss/homeStyles.css}" rel="stylesheet" />
+    <style>
+        .complaint-container {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .complaint-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .complaint-detail {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        .complaint-detail strong {
+            display: inline-block;
+            width: 150px;
+        }
+        .btn-primary {
+            margin-top: 15px;
+        }
+    </style>
 </head>
-<!--<div th:replace="Bars/nav_bar :: nav"></div>-->
+<div th:replace="Bars/nav_bar :: nav"></div>
 <body>
 
-<!-- Section-->
 <section class="py-5">
-    <!-- 민원 상세 페이지 출력 정보-->
-    <div class="container">
-        <h2>민원 상세</h2>
-        <p><strong>주문 번호:</strong> <span th:text="${complaint.orderId}"></span></p>
-        <p><strong>상품 이름:</strong> <span th:text="${complaint.productName}"></span></p>
-        <p><strong>민원 번호:</strong> <span th:text="${complaint.complaintId}"></span></p>
-        <p><strong>민원 유형:</strong> <span th:text="${complaint.complaintTypeId}"></span></p>
-        <p><strong>민원 상태:</strong> <span th:text="${complaint.status}"></span></p>
-        <!-- 회수지, 배송지 null or 빈 문자열이면 안보이게 -->
-        <p th:if="${complaint.pickupAddress != null && complaint.pickupAddress != ''}">
+    <div class="container complaint-container">
+        <div class="complaint-header">민원 상세</div>
+        <div class="complaint-detail"><strong>주문 번호:</strong> <span th:text="${complaint.orderId}"></span></div>
+        <div class="complaint-detail"><strong>상품 이름:</strong> <span th:text="${complaint.productName}"></span></div>
+        <div class="complaint-detail"><strong>민원 번호:</strong> <span th:text="${complaint.complaintId}"></span></div>
+        <div class="complaint-detail"><strong>민원 유형:</strong> <span th:text="${complaint.complaintTypeId}"></span></div>
+        <div class="complaint-detail"><strong>민원 상태:</strong> <span th:text="${complaint.status}"></span></div>
+
+        <div th:if="${complaint.pickupAddress != null && complaint.pickupAddress != ''}" class="complaint-detail">
             <strong>반품 회수지:</strong> <span th:text="${complaint.pickupAddress}"></span>
-        </p>
-        <p th:if="${complaint.returnAddress != null && complaint.returnAddress != ''}">
-            <strong>반품 회수지:</strong> <span th:text="${complaint.returnAddress}"></span>
-        </p>
-        <p><strong>신청 날짜:</strong> <span th:text="${complaint.requestDatetime}"></span></p>
-        <p><strong>접수 날짜:</strong> <span th:text="${complaint.receivedDatetime}"></span></p>
-        <p><strong>완료 날짜:</strong> <span th:text="${complaint.endDatetime}"></span></p>
-        <p><strong>민원 내용:</strong> <span th:text="${complaint.description}"></span></p>
-        <p><strong>직원 답변:</strong> <span th:text="${complaint.comment}"></span></p>
-        <p><strong>환불 예상 금액:</strong> <span th:text="${complaint.expectedRefundAmount}"></span></p>
-        <p><strong>실제 환불 금액:</strong> <span th:text="${complaint.refundAmount}"></span></p>
-        <p><strong>배송비:</strong> <span th:text="${#numbers.formatInteger(complaint.shippingPrice, 0)}"></span></p>
-        <!-- 확인 버튼 추가 -->
-        <a class="btn btn-primary" th:href="@{/complaint/list}" role="button">고객리스트확인</a>
-        <a class="btn btn-primary" th:href="@{/admin/complaint/list}" role="button">관리자리스트확인</a>
+        </div>
+        <div th:if="${complaint.returnAddress != null && complaint.returnAddress != ''}" class="complaint-detail">
+            <strong>반품 배송지:</strong> <span th:text="${complaint.returnAddress}"></span>
+        </div>
+
+        <div class="complaint-detail"><strong>신청 날짜:</strong> <span th:text="${#dates.format(complaint.requestDatetime, 'yyyy-MM-dd HH:mm:ss')}"></span></div>
+        <div class="complaint-detail"><strong>접수 날짜:</strong> <span th:text="${#dates.format(complaint.receivedDatetime, 'yyyy-MM-dd HH:mm:ss')}"></span></div>
+        <div class="complaint-detail"><strong>완료 날짜:</strong> <span th:text="${#dates.format(complaint.endDatetime, 'yyyy-MM-dd HH:mm:ss')}"></span></div>
+
+        <div class="complaint-detail"><strong>민원 내용:</strong> <span th:text="${complaint.description}"></span></div>
+        <div class="complaint-detail"><strong>직원 답변:</strong> <span th:text="${complaint.comment}"></span></div>
+
+        <div class="complaint-detail"><strong>환불 예상 금액:</strong> <span th:text="${complaint.expectedRefundAmount != null ? #numbers.formatDecimal(complaint.expectedRefundAmount, 0, 0) + '원' : '0원'}"></span></div>
+        <div class="complaint-detail"><strong>실제 환불 금액:</strong> <span th:text="${complaint.refundAmount != null ? #numbers.formatDecimal(complaint.refundAmount, 0, 0) + '원' : '0원'}"></span></div>
+        <div class="complaint-detail"><strong>배송비:</strong> <span th:text="${complaint.shippingPrice != null ? #numbers.formatDecimal(complaint.shippingPrice, 0, 0) + '원' : '0원'}"></span></div>
+
+        <a class="btn btn-primary" th:href="@{/complaint/list}" role="button">민원 리스트 확인</a>
     </div>
 </section>
+
 <footer>
     <div th:replace="Bars/footer :: #footer"></div>
 </footer>
 
-<!-- Bootstrap core JS-->
 <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap5.2.3/dist/js/bootstrap.bundle.min.js}"></script>
-<!-- Core theme JS-->
 <script th:src="@{/js/homejs/homeScripts.js}"></script>
 </body>
 </html>
