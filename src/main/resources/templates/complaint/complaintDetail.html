@@ -11,6 +11,14 @@
     <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-icons1.5.0/font/bootstrap-icons.css}" rel="stylesheet" />
     <link th:href="@{/css/homecss/homeStyles.css}" rel="stylesheet" />
     <style>
+        html, body {
+            display: block;
+        }
+
+         .container {
+            max-width: 500px;
+        }
+
         .complaint-container {
             background-color: #f8f9fa;
             padding: 20px;
@@ -22,6 +30,7 @@
             font-size: 1.5rem;
             font-weight: bold;
             margin-bottom: 15px;
+            text-align: center;
         }
         .complaint-detail {
             margin-bottom: 10px;
@@ -32,7 +41,12 @@
             width: 150px;
         }
         .btn-primary {
-            margin-top: 15px;
+            background-color: #007bff;
+            border: none;
+            font-size: 1rem;
+            padding: 10px;
+            width: 95%;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -41,11 +55,11 @@
 
 <section class="py-5">
     <div class="container complaint-container">
-        <div class="complaint-header">민원 상세</div>
+        <div class="complaint-header">민원 상세 정보</div>
         <div class="complaint-detail"><strong>주문 번호:</strong> <span th:text="${complaint.orderId}"></span></div>
         <div class="complaint-detail"><strong>상품 이름:</strong> <span th:text="${complaint.productName}"></span></div>
         <div class="complaint-detail"><strong>민원 번호:</strong> <span th:text="${complaint.complaintId}"></span></div>
-        <div class="complaint-detail"><strong>민원 유형:</strong> <span th:text="${complaint.complaintTypeId}"></span></div>
+        <div class="complaint-detail"><strong>민원 유형:</strong> <span th:text="${complaint.complaintTypeId == 'cancel' ? '취소' : (complaint.complaintTypeId == 'refund' ? '환불' : (complaint.complaintTypeId == 'exchange' ? '교환' : '기타'))}"></span></div>
         <div class="complaint-detail"><strong>민원 상태:</strong> <span th:text="${complaint.status}"></span></div>
 
         <div th:if="${complaint.pickupAddress != null && complaint.pickupAddress != ''}" class="complaint-detail">
