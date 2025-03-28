@@ -39,7 +39,6 @@ public class OrderController {
         AddressDto address = orderService.getDefaultAddress(customerId);
         model.addAttribute("address", address);
 
-
         //주문상품정보 가져오기
         List<ProductInfoDto> productInfo =
                 orderService.getProductInfoByProductDetailId(productDetailId, quantity);
