@@ -29,7 +29,6 @@ public class ProductInventoryMgmtController {
         this.productCategoryService = productCategoryService;
     }
 
-
 //    관리자 - 상품 관리 화면
     @GetMapping("/product")
     public String productInventoryMgmt(Model model) {
@@ -39,6 +38,7 @@ public class ProductInventoryMgmtController {
 
         return "/product/ProductInventoryMgmt";
     }
+
 
 //    관리자 - 관리자가 상품의 진열 상태를 변경할 때
     @PostMapping("/product")
