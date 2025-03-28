@@ -141,6 +141,17 @@
                         checkboxCell.appendChild(checkbox);
                         row.appendChild(checkboxCell);
 
+                        var imageCell = document.createElement('td');
+                        var image = document.createElement('img');
+
+                        image.src = '/images/product/' + item.image + "." +item.form;
+                        image.style.width = '100px';  // 이미지 크기 설정
+                        image.style.height = 'auto';  // 비율에 맞게 이미지 높이 자동 설정
+
+                        imageCell.appendChild(image);
+                        row.appendChild(imageCell);
+
+
                         // Product Detail ID
                         var productDetailIdCell = document.createElement('td');
                         productDetailIdCell.textContent = item.productDetailId;
