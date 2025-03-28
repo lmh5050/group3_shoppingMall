@@ -273,10 +273,6 @@
     const nameInput = document.querySelector('#name');
     validateInput(nameInput, /^[가-힣a-zA-Z]+$/); // 한글 또는 영문자만 허용
 
-    // 별명 입력값 검사 적용 (한글, 영문, 숫자만 허용)
-    const nicknameInput = document.querySelector('#nickname');
-    validateInput(nicknameInput, /^[가-힣a-zA-Z0-9]+$/); // 한글, 영문, 숫자만 허용
-
     // 전화번호 입력값 검사 적용 (숫자와 하이픈만 허용)
     const phoneNumberInput = document.querySelector('#phoneNumber');
     validateInput(phoneNumberInput, /^010-\d{0,4}-\d{0,4}$/);

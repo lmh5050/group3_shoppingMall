@@ -1,4 +1,4 @@
-package org.example.shoppingmall.service.login;
+package org.example.shoppingmall.service.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

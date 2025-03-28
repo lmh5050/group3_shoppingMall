@@ -7,7 +7,7 @@
     <link th:href="@{/css/homecss/homeStyles.css}" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <title>로그인</title>
+    <title>장바구니</title>
     <style>
         /* 오른쪽 하단에 버튼을 고정시키기 위한 스타일 */
         .order-button {
@@ -24,6 +24,43 @@
         .order-button:hover {
             background-color: #0056b3;
         }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            vertical-align: middle;  /* 세로 가운데 정렬 */
+            border-bottom: 1px solid #ddd;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            border-top: 2px solid #dee2e6;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        tr:hover, tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        /* 테이블 스타일 */
+        th:nth-child(1), td:nth-child(1) { width: 10%; }
+        th:nth-child(2), td:nth-child(2) { width: 12%; }
+        th:nth-child(3), td:nth-child(3) { width: 15%; }
+        th:nth-child(4), td:nth-child(4) { width: 20%; }
+        th:nth-child(5), td:nth-child(5) { width: 15%; }
+        th:nth-child(6), td:nth-child(6) { width: 15%; }
+        th:nth-child(7), td:nth-child(7) { width: 13%; }
     </style>
 </head>
 
@@ -38,11 +75,12 @@
 
             <h1><span id="displayCustomerId" th:text="${customerId}"></span> 님</h1>
             <!-- 데이터 표시 부분 (예: 테이블) -->
-            <div id="cartData" class="table-responsive">
+            <div id="cartData" class="table-responsive" style="margin-right:90px;">
                 <table class="table">
                     <thead>
                     <tr>
                         <th>선택</th> <!-- 체크박스 열 추가 -->
+                        <th>이미지</th>
                         <th>Product Detail ID</th>
                         <th>상품명</th> <!-- 상품명 추가 -->
                         <th>색상</th> <!-- 색상 추가 -->
@@ -60,7 +98,7 @@
             </div>
 
             <!-- 주문하기 버튼을 로그인 폼 안에 추가 -->
-            <button id="orderButton" class="order-button">주문하기</button>
+            <button id="orderButton" class="order-button">구매하기</button>
         </div>
     </div>
 </div>
@@ -100,6 +138,17 @@
 
                         checkboxCell.appendChild(checkbox);
                         row.appendChild(checkboxCell);
+
+                        var productImageCell = document.createElement('td');
+                        var imgElement = document.createElement('img'); // 이미지 경로 설정
+                        imgElement.src = '/images/product/' + item.image +"."+ item.form; // data.images는 파일 이름을 담고 있다고 가정
+
+                        imgElement.alt = 'Product Image';  // 대체 텍스트 설정
+                        imgElement.style.width = '100px';  // 이미지 크기 설정 (필요에 따라 조정)
+
+                        productImageCell.appendChild(imgElement); // 이미지 태그를 셀에 추가
+                        row.appendChild(productImageCell);        // 셀을 행에 추가
+
 
                         // Product Detail ID
                         var productDetailIdCell = document.createElement('td');
@@ -175,7 +224,6 @@
                 axios.post('/order/cart/cartOrder', selectedItems) // selectedItems를 전송
                     .then(response => {
                         console.log(response.data);
-                        alert('주문이 완료되었습니다.');
                     })
                     .catch(error => {
                         console.error('주문 처리 중 오류 발생:', error);

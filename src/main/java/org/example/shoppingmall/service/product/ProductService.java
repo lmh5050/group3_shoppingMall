@@ -1,6 +1,5 @@
 package org.example.shoppingmall.service.product;
 
-import org.example.shoppingmall.dto.User.UserInfoDto;
 import org.example.shoppingmall.dto.product.*;
 import org.example.shoppingmall.repository.product.ProductDetailRepository;
 import org.example.shoppingmall.repository.product.ProductRepository;
