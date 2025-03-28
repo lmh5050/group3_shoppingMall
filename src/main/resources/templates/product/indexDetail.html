@@ -75,9 +75,12 @@
                             <span th:text="|${option.getColor()} - ${option.getSize()}|"></span>
                         </option>
                     </select>
-                    <div class="button-group">
+                    <div class="button-group" th:if="${product.getStatus().equals('display')}">
                         <button type="button" class="btn-cart" onclick="addProductToCart()">장바구니</button>
                         <button type="submit" class="btn-buy">바로 구매</button>
+                    </div>
+                    <div th:if="${product.getStatus().equals('sold-out')}">
+                        <h3 style="color: red">sold-out</h3>
                     </div>
                 </form>
             </div>
