@@ -18,14 +18,14 @@ public class PaymentService {
         this.paymentRepository = paymentRepository;
     }
 
-    private int rightCardNumber = 1234;
+    private String rightCardNumber = "3000313570007733";
 
     // 결제 처리
     @Transactional
     public void processPayment(PaymentInfoDto paymentInfoDto) {
         LocalDateTime now = LocalDateTime.now();  // 현재 시간을 변수로 저장
 
-        if (paymentInfoDto.getPaymentMethod().equals("가상계좌") || paymentInfoDto.getCardNumber() == rightCardNumber) {
+        if (paymentInfoDto.getPaymentMethod().equals("가상계좌") || paymentInfoDto.getCardNumber().equals(rightCardNumber)) {
             // 결제 정보 저장
             savePayment(paymentInfoDto, now);
             // 주문 관련 정보 저장
@@ -89,7 +89,7 @@ public class PaymentService {
         newPaymentId = generatePaymentId();
 
         // 결제 방법/결과에 따른 처리
-        if (paymentInfoDto.getPaymentMethod().equals("신용/체크카드") && paymentInfoDto.getCardNumber() == rightCardNumber) {
+        if (paymentInfoDto.getPaymentMethod().equals("신용/체크카드") && paymentInfoDto.getCardNumber().equals(rightCardNumber)) {
             paymentMethod = paymentInfoDto.getCardType();
             status = "MA01003";  // 결제 완료
         } else {

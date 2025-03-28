@@ -34,7 +34,7 @@ public class PaymentInfoDto {
     private String paymentMethod;
     private Integer cardType;
     private Integer cardInstallment;
-    private Integer cardNumber;
+    private String cardNumber;
     private String cashBankName;
     private Integer cashReceiptType;
     private Integer cashReceiptNumber;
