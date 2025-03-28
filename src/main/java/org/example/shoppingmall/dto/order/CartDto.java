@@ -24,4 +24,7 @@ public class CartDto {
     private String name;    // 상품명
     private String description;    // 상품 설명
     private double price;          // 상품 가격
+
+    private String image;
+    private String form;
 }

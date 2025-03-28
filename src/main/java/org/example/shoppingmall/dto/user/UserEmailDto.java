@@ -1,4 +1,4 @@
-package org.example.shoppingmall.dto.User;
+package org.example.shoppingmall.dto.user;
 
 import lombok.Data;
 

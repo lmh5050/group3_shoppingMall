@@ -13,19 +13,23 @@
             c.register_date,
             pd.color,  -- 예시로 color를 추가
             pd.size,   -- 예시로 size를 추가
+            pdi.image ,
+            pdi.form,
             p.name, -- 예시로 product_name을 추가
             p.description,
             p.price-- 예시로 product_price를 추가
         FROM
             cart c
-        JOIN
+                JOIN
             product_detail pd ON c.product_detail_id = pd.product_detail_id
-        JOIN
+                JOIN
             product p ON pd.product_id = p.product_id
+                JOIN
+            product_description_image pdi on pdi.product_id = pd.product_id
         WHERE
-            c.customer_id = #{customerId}
-        and p.active_flag = 1
-        and c.delete_flag != 1;
+            c.customer_id = #{cusotmerId}
+          and p.active_flag = 1
+          and c.delete_flag != 1;
     </select>
 
     <update id="updateCartData" parameterType="list">
