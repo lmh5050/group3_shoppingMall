@@ -29,8 +29,7 @@ public class ProductInventoryMgmtController {
         this.productCategoryService = productCategoryService;
     }
 
-
-    //    관리자 - 상품 관리 화면
+//    관리자 - 상품 관리 화면
     @GetMapping("/product")
     public String productInventoryMgmt(Model model) {
         // 저장되어 있는 상품들 가져오기
@@ -40,7 +39,8 @@ public class ProductInventoryMgmtController {
         return "/product/ProductInventoryMgmt";
     }
 
-    //    관리자 - 관리자가 상품의 진열 상태를 변경할 때
+
+//    관리자 - 관리자가 상품의 진열 상태를 변경할 때
     @PostMapping("/product")
     @ResponseBody
     public ResponseEntity<Boolean> changeProductStatus(
@@ -51,7 +51,7 @@ public class ProductInventoryMgmtController {
     }
 
 
-    //    관리자 - 상품 정보 수정 화면
+//    관리자 - 상품 정보 수정 화면
     @GetMapping("/product/updateProductDetail")
     public String productInventoryMgmtUpdateProductDetail(
             @RequestParam(required = false, name = "prdId") String productId,
@@ -69,7 +69,7 @@ public class ProductInventoryMgmtController {
         model.addAttribute("detailSize", detailSize);
 
         // 카테고리 정보 가져오기
-        return "/product/ProductDetailUpdate";
+       return "/product/ProductDetailUpdate";
     }
 
     // 상품 정보 수정
