@@ -35,9 +35,10 @@ public interface ShippingListRepository {
     ShippingDto getShippingDtoByPk(String shippingId);
 
     //고객 배송 조회
-    ArrayList<ShippingDto> getShippingTrack(String orderId);
-
+//    ArrayList<ShippingDto> getShippingTrack(String orderId);
+      ShippingDto getShippingTrack(String orderId);
 }
+
 
 
 

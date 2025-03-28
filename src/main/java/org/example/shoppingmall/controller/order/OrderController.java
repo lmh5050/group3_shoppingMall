@@ -108,7 +108,7 @@ public class OrderController {
 
         List<OrderListDto> orders = orderListService.getOrderListByCustomerId(customerId);
 
-        // 주문번호별로 그룹화 (Long 타입의 키 사용)
+        // 주문번호별로 그룹화
         Map<Long, List<OrderListDto>> groupedOrders = orders.stream()
                 .collect(Collectors.groupingBy(OrderListDto::getOrderId));
 
@@ -126,8 +126,43 @@ public class OrderController {
     //주문상세
     @GetMapping("/detail/{orderId}")
     public String showOrderDetail(@PathVariable Long orderId, HttpSession session, Model model) {
+        String customerId = (String) session.getAttribute("customerId");
+        model.addAttribute("customerId", customerId);
+
+        if (customerId == null) {
+            return "redirect:/user/login";
+        }
+        System.out.println("customerId = " + customerId);
+        System.out.println("orderId = " + orderId);
+
+        // 주문 상세 정보 가져오기
+        List<OrderDetailDto> orderDetails = orderListService.getOrderDetailByOrderId(orderId);
+        System.out.println("orderDetails = " + orderDetails);
+
+        // 주문이 존재하지 않거나, 고객 ID가 일치하지 않는 경우
+        String orderCustomerId = orderDetails.stream()
+                .findFirst()
+                .map(OrderDetailDto::getCustomerId)
+                .orElse(null);
+
+        if (orderCustomerId == null || !customerId.equals(orderCustomerId)) {
+            return "redirect:/user/login";
+        }
+
+        // 주문번호별로 그룹화
+        Map<Long, List<OrderDetailDto>> groupedOrderDetails = orderDetails.stream()
+                .collect(Collectors.groupingBy(OrderDetailDto::getOrderId));
+
+        model.addAttribute("groupedOrderDetails", groupedOrderDetails);
+        System.out.println("groupedOrderDetails = " + groupedOrderDetails);
+
+        return "order/orderDetail";
+    }
+    /*@GetMapping("/detail/{orderId}")
+    public String showOrderDetail(@PathVariable Long orderId, HttpSession session, Model model) {
 
         String customerId = (String) session.getAttribute("customerId");
+        model.addAttribute("customerId", customerId);
 
         if (customerId == null) {
             return "redirect:/user/login";
@@ -138,7 +173,6 @@ public class OrderController {
 
 
         if (orderDetails.isEmpty() || !customerId.equals(orderDetails.getFirst().getCustomerId())) {
-            model.addAttribute("message", "해당 주문을 조회할 권한이 없습니다.");
             return "redirect:/user/login";
         }
 
@@ -150,7 +184,7 @@ public class OrderController {
         System.out.println("groupedOrderDetails = " + groupedOrderDetails);
 
         return "order/orderDetail";
-    }
+    }*/
 
     //주문내역삭제
     @GetMapping("/delete/{orderId}")

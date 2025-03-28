@@ -3,6 +3,7 @@ package org.example.shoppingmall.controller.shipping;
 import org.example.shoppingmall.dto.CodeDetailDto;
 import org.example.shoppingmall.dto.shipping.ShippingDto;
 import org.example.shoppingmall.service.CodeDetailService;
+//import org.example.shoppingmall.service.Shipping.ShippingService;
 import org.example.shoppingmall.service.Shipping.ShippingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import java.util.List;
 @Controller
 //@RequiredArgsConstructor
 public class ShippingController {
+    @Autowired
     private final ShippingService shippingService;
     private final CodeDetailService codeDetailService;
 
@@ -35,7 +37,7 @@ public class ShippingController {
     @GetMapping("/detail/{id}")
     public String detailShippingList(@PathVariable("id") String id, Model model) {
         ShippingDto shippingDto = shippingService.getDetailShipping(id);
-        model.addAttribute("findDetailShippingId", shippingDto);
+        model.addAttribute("shipping", shippingDto);
         return "shipping/detailShipping";
     }
     //배송 상세 페이지 수정
@@ -50,12 +52,25 @@ public class ShippingController {
     //배송 상세 페이지 수정 후 저장
     @PostMapping("/update/{id}")
     public String updateShippingId(@PathVariable("id") String id,
-                                   @ModelAttribute ShippingDto shippingDto){
+                                   @ModelAttribute ShippingDto shippingDto,
+                                   @RequestParam("deliveryCompany") String deliveryCompany){
         shippingDto.setShippingId(id);
+        shippingDto.setShippingCompanyId(deliveryCompany);
         shippingService.updateShippingListId(shippingDto);
+        System.out.println(shippingDto.getShippingCompanyId());
         return "redirect:/detail/"+id;
     }
 
+    //고객 배송 조회 페이지
+    @GetMapping("shipping/track")
+    public String trackShipping(@RequestParam(name = "orderId") String orderId, Model model) {
+        ShippingDto shippingDto = shippingService.getShippingListTrack(orderId);
+        if (shippingDto == null) {
+            shippingDto = new ShippingDto();
+        }
+        model.addAttribute("getShippingTrack", shippingDto);
+        return "shipping/shippingTrack";
+    }
     //배송 목록 삭제
     @PostMapping("/delete/{id}")
     public String deleteShippingId(@PathVariable("id") String id){
@@ -63,28 +78,21 @@ public class ShippingController {
         return "redirect:/detail/"+id;
     }
 
-    //배송 이력 리스트 페이지 /shipping/order?id=SHP003
+    //배송 이력 리스트 페이지 /Shipping/order?id=SHP003
     @GetMapping("/shipping/order")
     public String getShipping(@RequestParam(name = "id") String id, Model model) {
         ArrayList<ShippingDto> shippingDto = shippingService.getShippingDetailList(id);
         model.addAttribute("getShippingDetail", shippingDto);
         return "shipping/shippingHistory";
     }
-
-    //고객 배송 조회 페이지 -고객
-    @GetMapping("/shipping/track")
-    public String trackShipping(@RequestParam(name = "orderId") String orderId, Model model) {
-        ArrayList<ShippingDto> shippingDto = shippingService.getShippingListTrack(orderId);
-        model.addAttribute("getShippingTrack", shippingDto);
-        return "shipping/shippingTrack";
-    }
-
-//    @GetMapping("shippnig/track")
-//    public String trackShippingOrderId(@RequestParam(name = "id") String orderId, Model model) {
-//        // 최신 배송 정보만 가져오기
-//        ShippingDto latestShippingDetail = shippingService.getLatestShippingDetail(orderId);
-//        model.addAttribute("getShippingTrack", latestShippingDetail);
-//        return "shipping/shippingTrack";
+//
+//    //고객 배송 조회 페이지 -고객
+//    @GetMapping("/Shipping/track")
+//    public String trackShipping(@RequestParam(name = "orderId") String orderId, Model model) {
+//        ArrayList<ShippingDto> shippingDto = shippingService.getShippingListTrack(orderId);
+//        model.addAttribute("getShippingTrack", shippingDto);
+//        System.out.println("shippingDto = " + shippingDto);
+//        return "Shipping/shippingTrack";
 //    }
 
 }
