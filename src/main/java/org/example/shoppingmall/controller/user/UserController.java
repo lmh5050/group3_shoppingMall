@@ -1,4 +1,4 @@
-package org.example.shoppingmall.controller.User;
+package org.example.shoppingmall.controller.user;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -213,7 +213,7 @@ public class UserController {
         return userinfo;
     }
 
-    @PostMapping("/user/addressmanage") //주소 정보 수정 완료 눌릴때 쓰는 api
+    @PostMapping("/user/addressmanage") //주소 정보 등록 완료 눌릴때 쓰는 api
     @ResponseBody
     public String insertUserAddressInfo(@RequestBody UserAddressDto UserAddress ,
                                                 HttpSession session) {
