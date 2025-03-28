@@ -22,4 +22,5 @@ public class PaymentShippingDto {
     private String receivePhoneNumber;
     private Integer shippingPrice;
     private String deliveryRequest;
+    private Integer zipCode;
 } 

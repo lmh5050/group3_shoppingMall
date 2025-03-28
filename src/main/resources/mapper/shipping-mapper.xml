@@ -1,25 +1,185 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.shoppingmall.repository.shipping.ManagementRepository">  <!-- 어떤 리포지토리를 볼지 정하는 곳 -->
+<mapper namespace="org.example.shoppingmall.repository.shipping.ShippingListRepository">
 
-    <select id="selectTest" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
-        select * from test
+    <!--배송리스트 전체 조회-->
+    <select id="selectAllShipping" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
+        select * from shipping
     </select>
 
+    <!--배송 상세 페이지-->
+    <select id="findDetailShippingId" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
+        select * from shipping
+        where shipping_id = #{id}
+    </select>
 
-    <insert id="test" parameterType="org.example.shoppingmall.dto.shipping.ShippingDto">
-        INSERT INTO test (boardWriter, boardPass, boardTitle, boardContents)
-        VALUES (#{boardWriter}, #{boardPass}, #{boardTitle}, #{boardContents});
+    <!--배송 상세 페이지 수정 페이지-->
+    <select id="updateShipping" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
+        select
+            shipping_id,
+            tracking_number,
+            shipping_datetime,
+            expected_datetime,
+            end_datetime,
+            note,
+            delay_reason,
+            description,
+            delivery_name,
+            delivery_number,
+            delivery_datetime,
+            updated_at
+        from shipping where shipping_id = #{id}
+    </select>
+
+    <!--배송 상세 페이지 수정 후 업데이트-->
+    <update id="updateShippingList" parameterType="org.example.shoppingmall.dto.shipping.ShippingDto">
+        update shipping
+        <set>
+            <if test="trackingNumber != null">tracking_number = #{trackingNumber},</if>
+            <if test="shippingDatetime != null">shipping_datetime = #{shippingDatetime},</if>
+            <if test="expectedDatetime != null">expected_datetime = #{expectedDatetime},</if>
+            <if test="endDatetime != null">end_datetime = #{endDatetime},</if>
+            <if test="note != null">note = #{note},</if>
+            <if test="delayReason != null">delay_reason = #{delayReason},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="deliveryName != null">delivery_name = #{deliveryName},</if>
+            <if test="deliveryNumber != null">delivery_number = #{deliveryNumber},</if>
+            <if test="deliveryDatetime != null">delivery_datetime = #{deliveryDatetime},</if>
+            updated_at = NOW()
+        </set>
+        where shipping_id = #{shippingId}
+    </update>
+
+    <!--배송 리스트 삭제-->
+    <delete id="deleteShippingList">
+        delete from shipping where shipping_id = #{shippingId}
+    </delete>
+
+    <!--배송 이력-->
+    <insert id="insertShippingHistory" parameterType="org.example.shoppingmall.dto.shipping.ShippingDto">
+        insert into shipping_history(
+            shipping_id,
+            order_id,
+            serial_number,
+            shipping_company_id,
+            quantity,
+            amount,
+            weight,
+            tracking_number,
+            status,
+            basic_address,
+            detail_address,
+            receive_people,
+            receive_phone_number,
+            zip_code,
+            delivery_request,
+            shipping_datetime,
+            expected_datetime,
+            end_datetime,
+            supplier,
+            note,
+            delay_reason,
+            description,
+            tracking_url,
+            shipping_price,
+            region,
+            delivery_name,
+            delivery_number,
+            delivery_datetime,
+            return_address,
+            return_number,
+            return_name,
+            active_flag,
+            shipping_company_no,
+            created_at
+        )
+        values(
+                  #{shippingId},
+                  #{orderId},
+                  #{serialNumber},
+                  #{shippingCompanyId},
+                  #{quantity},
+                  #{amount},
+                  #{weight},
+                  #{trackingNumber},
+                  #{status},
+                  #{basicAddress},
+                  #{detailAddress},
+                  #{receivePeople},
+                  #{receivePhoneNumber},
+                  #{zipCode},
+                  #{deliveryRequest},
+                  #{shippingDatetime},
+                  #{expectedDatetime},
+                  #{endDatetime},
+                  #{supplier},
+                  #{note},
+                  #{delayReason},
+                  #{description},
+                  #{trackingUrl},
+                  #{shippingPrice},
+                  #{region},
+                  #{deliveryName},
+                  #{deliveryNumber},
+                  #{deliveryDatetime},
+                  #{returnAddress},
+                  #{returnNumber},
+                  #{returnName},
+                  #{activeFlag},
+                  #{shippingCompanyNo},
+                  #{createdAt}
+              )
     </insert>
 
-    <select id="findAll2" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
-        select Id, boardTitle, boardWriter, boardHits, createdAt as createdAt
-        from test order by id desc
+    <!--배송 이력 찾기-->
+    <select id="getShippingDtoByPk" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
+        select * from shipping
+        where shipping_id = #{shippingId}
     </select>
 
-    <select id="findById" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
-        select Id, boardTitle, boardWriter, boardHits, createdAt as createdAt
-        from test where id=#{id}
+    <!--이력 조회 페이지-->
+    <select id="getShippingDetail">
+        select
+            tracking_number,
+            status,
+            shipping_company_id,
+            shipping_datetime,
+            expected_datetime,
+            end_datetime
+        from shipping_history where order_id = #{orderId}
     </select>
+
+    <!--고객 배송 조회 페이지-->
+    <select id="getShippingTrack" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
+        select
+            tracking_number,
+            status,
+            shipping_company_id,
+            shipping_datetime,
+            expected_datetime,
+            end_datetime
+        from shipping_history where order_id = #{orderId}
+    </select>
+
+
+    <!--    &lt;!&ndash; 최신 배송 정보 가져오기 &ndash;&gt;-->
+    <!--    <select id="getLatestShippingDetail" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">-->
+    <!--        select * from shipping_history-->
+    <!--        where order_id = #{orderId}-->
+    <!--        order by shipping_datetime desc-->
+    <!--&#45;&#45;             limit 1-->
+    <!--    </select>-->
+
+    <!--        &lt;!&ndash;고객 배송 조회 페이지&ndash;&gt;-->
+    <!--    <select id="findShippingOrderId">-->
+    <!--        select-->
+    <!--            tracking_number,-->
+    <!--            status,-->
+    <!--            shipping_company_id,-->
+    <!--            shipping_datetime,-->
+    <!--            expected_datetime,-->
+    <!--            end_datetime-->
+    <!--        from shipping_history where order_id = #{orderId}-->
+    <!--    </select>-->
 
 </mapper>

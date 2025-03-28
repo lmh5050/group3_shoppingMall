@@ -103,7 +103,7 @@ public class ComplaintService {
         //취소, 환불인 경우에만 product_total_price = expectedRefundAmount
         if (complaintType.equals("cancel") || complaintType.equals("refund")) {
             //예상 환불 금액에 상품 금액 대입, ProductTotalPrice 는 String형이여서 형변환
-            expectedRefundAmount = Double.parseDouble(complaintRepository.findProductTotalPriceByOrderId(orderId));
+            expectedRefundAmount = Double.parseDouble(complaintRepository.findProductTotalPriceByOrderId(orderId, productName));
             complaintDto.setExpectedRefundAmount((expectedRefundAmount));
         } else complaintDto.setExpectedRefundAmount(expectedRefundAmount); //교환인 경우 예상 금액 = 0;
 
