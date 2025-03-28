@@ -31,10 +31,11 @@
 <div th:replace="Bars/nav_bar :: nav"></div>
 
 <!-- 상품 상세 섹션 -->
-<section class="product-detail">
+<section class="product-detail" style="height: 1000px;">
     <div class="container">
         <div class="product-wrapper">
             <!-- 상품 이미지 -->
+            <input type="hidden" id="productId" th:value="${product.getProductId()}">
             <div class="product-image">
                 <img th:src="|/images/product/${product.getProductId()}.png|" alt="상품 이미지">
                 <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
@@ -110,6 +111,5 @@
             });
     }
 </script>
-
 </body>
 </html>

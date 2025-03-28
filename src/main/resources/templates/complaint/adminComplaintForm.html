@@ -32,6 +32,7 @@
     <div class="card shadow-lg rounded-4 p-4 bg-white w-80 mx-auto">
         <h3 class="mb-4">고객 민원 정보</h3>
         <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>고객 ID:</strong> <span th:text="${complaint.customerId}"></span></li>
             <li class="list-group-item"><strong>주문 번호:</strong> <span th:text="${complaint.orderId}"></span></li>
             <li class="list-group-item"><strong>주문 상품:</strong> <span th:text="${complaint.productName}"></span></li>
             <li class="list-group-item"><strong>민원 번호:</strong> <span th:text="${complaint.complaintId}"></span></li>

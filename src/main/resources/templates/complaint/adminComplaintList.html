@@ -51,6 +51,7 @@
                         <thead>
                         <tr>
                             <th>삭제 활성화 여부</th>
+                            <th>고객 ID</th>
                             <th>신청 날짜</th>
                             <th>완료 날짜</th>
                             <th style="white-space: nowrap;">민원 유형</th>
@@ -62,6 +63,7 @@
                         <tbody id="complaintTable">
                         <tr th:each="complaint : ${complaints}">
                             <td th:text="${complaint.deleteFlag == 1 ? '활성화' : '비활성화'}"></td>
+                            <td th:text="${complaint.customerId}"></td>
                             <td th:text="${complaint.requestDatetime}"></td>
                             <td th:text="${complaint.endDatetime}"></td>
                             <td th:text="${complaint.complaintTypeId == 'cancel' ? '취소' : (complaint.complaintTypeId == 'refund' ? '환불' : (complaint.complaintTypeId == 'exchange' ? '교환' : complaint.complaintTypeId))}"></td>
@@ -185,7 +187,7 @@
         let visibleCount = 0;
 
         rows.forEach(row => {
-            const complaintType = row.querySelector('td:nth-child(4)')?.innerText.trim();
+            const complaintType = row.querySelector('td:nth-child(5)')?.innerText.trim();
             const isEmptyRow = row.id.startsWith('no');
 
             // 빈 상태 메시지는 숨기지 않음

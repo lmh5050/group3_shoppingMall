@@ -134,7 +134,7 @@
 
       <div class="order-actions">
         <button class="btn" th:onclick="|location.href='/shipping/track?orderId=' + ${entry.value[0].orderId}|">배송조회</button>
-        <button class="btn" th:onclick="|location.href='/complaint/' + ${entry.value[0].orderId}|">교환/반품 신청</button>
+        <button class="btn" th:onclick="|location.href='/complaint/' + ${entry.value[0].orderId}|">취소/환불/교환 신청</button>
         <!--<button class="btn">리뷰 작성하기</button>-->
 
       </div>

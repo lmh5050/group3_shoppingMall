@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,128 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- 커스텀 CSS -->
     <link rel="stylesheet" href="/css/admin/styles.css">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8f9fa; /* 밝은 배경색 */
+        }
+        .board-container {
+            margin-top: 20px;
+        }
+        .table th, .table td {
+            vertical-align: middle; /* 테이블 셀 텍스트 가운데 정렬 */
+        }
+        .board-item-header {
+            background-color: #333333;
+            color: white;
+        }
+        .table th {
+            text-align: center;
+        }
+        .table td {
+            text-align: center;
+        }
+        .table td a {
+            text-decoration: none;
+            color: #000000;
+        }
+        .table td a:hover {
+            color: #000000;
+        }
+        .btn {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+            min-width: 120px;
+            text-align: center;
+            text-decoration: none; /* 링크 스타일 제거 */
+        }
+
+        .btn:hover {
+            background-color: #333333; /* 호버 시 버튼 배경색을 좀 더 어두운 색으로 변경 */
+        }
+
+        .btn-container {
+            margin-top: 20px;
+        }
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .shipping-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .shipping-info div {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .shipping-info label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .shipping-info span {
+            color: #555;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+
+        .btn:first-child:hover {
+            background-color: #5a6268;
+        }
+
+        .btn:last-child {
+            background-color: #333333;
+            color: white;
+        }
+
+        .btn:last-child:hover {
+            background-color: #333333;
+        }
+
+    </style>
 </head>
 <body>
 <div class="d-flex" id="wrapper">
@@ -19,118 +141,116 @@
         <div th:replace="Bars/side_bar :: topnav"></div>
         <!--   내용 시작     -->
         <div class="container">
-            <div th:each="shipping : ${findDetailShippingId}" class="shipping-info">
-                <div>
-                    <label>배송번호:</label>
-                    <span th:text="${shipping.shippingId}">배송번호</span>
-                </div>
-                <div>
-                    <label>주문상세번호:</label>
-                    <span th:text="${shipping.orderId}">주문상세번호</span>
-                </div>
-                <div>
-                    <label>수량:</label>
-                    <span th:text="${shipping.quantity}">수량</span>
-                </div>
-<!--                <div>-->
-<!--                    <label>배송사번호:</label>-->
-<!--                    <span th:text="${shipping.shippingCompanyId + shipping.shippingCompanyNo}">배송사번호</span>-->
-<!--                </div>-->
-                <div>
-                    <label>배송사:</label>
-                    <span th:text="${shipping.shippingCompanyId}">배송사번호</span>
-                </div>
-                <div>
-                    <label>배송사번호:</label>
-                    <span th:text="${shipping.shippingCompanyNo}">배송사번호</span>
-                </div>
-                <div>
-                    <label>운송장번호:</label>
-                    <span th:text="${shipping.trackingNumber}">운송장번호</span>
-                </div>
-                <div>
-                    <label>배송상태:</label>
-                    <span th:text="${shipping.status}">배송상태</span>
-                </div>
-                <div>
-                    <label>배송지주소:</label>
-                    <!--        <span th:text="${shipping.basicAddress}">배송지주소</span>-->
-                    <span th:text="|${shipping.basicAddress} ${shipping.detailAddress}|">배송지주소</span>
-                </div>
-
-                <div>
-                    <label>배송일시:</label>
-                    <span th:text="${shipping.shippingDatetime}">배송일시</span>
-                </div>
-                <div>
-                    <label>배송 예정일시:</label>
-                    <span th:text="${shipping.expectedDatetime}">배송 예정일시</span>
-                </div>
-                <div>
-                    <label>배송 완료 일시:</label>
-                    <span th:text="${shipping.endDatetime}">배송 완료 일시</span>
-                </div>
-                <div>
-                    <label>공급사:</label>
-                    <span th:text="${shipping.supplier}">공급사</span>
-                </div>
-                <div>
-                    <label>비고:</label>
-                    <span th:text="${shipping.note}">비고</span>
-                </div>
-                <div>
-                    <label>지연사유:</label>
-                    <span th:text="${shipping.delayReason}">지연사유</span>
-                </div>
-                <div>
-                    <label>설명:</label>
-                    <span th:text="${shipping.description}">설명</span>
-                </div>
-                <div>
-                    <label>배송비:</label>
-                    <span th:text="${shipping.shippingPrice}">배송비</span>
-                </div>
-                <div>
-                    <label>지역:</label>
-                    <span th:text="${shipping.region}">지역</span>
-                </div>
-                <div>
-                    <label>(수거)업체기사명:</label>
-                    <span th:text="${shipping.deliveryName}">(수거)업체기사명</span>
-                </div>
-                <div>
-                    <label>(수거)업체기사님번호:</label>
-                    <span th:text="${shipping.deliveryNumber}">(수거)업체기사님번호</span>
-                </div>
-                <div>
-                    <label>업체수거일시:</label>
-                    <span th:text="${shipping.deliveryDatetime}">업체수거일시</span>
-                </div>
-                <div>
-                    <label>반품지주소:</label>
-                    <span th:text="${shipping.returnAddress}">반품지주소</span>
-                </div>
-                <div>
-                    <label>반품지전화번호:</label>
-                    <span th:text="${shipping.returnNumber}">반품지전화번호</span>
-                </div>
-                <div>
-                    <label>반품지:</label>
-                    <span th:text="${shipping.returnName}">반품지</span>
-                </div>
-                <div>
-                    <label>생성일:</label>
-                    <span th:text="${shipping.createdAt}">생성일</span>
-                </div>
-                <div>
-                    <label>변경일:</label>
-                    <span th:text="${shipping.updatedAt}">변경일</span>
-
-                    <!--버튼 추가-->
-                </div>
-                <a class="btn" href="/admin/shipping/list">목록</a>
-                <a class="btn" th:href="@{/update/{id}(id=${shipping.shippingId})}">세부정보등록</a>
+            <div>
+                <label>배송번호:</label>
+                <span th:text="${shipping.shippingId}">배송번호</span>
+            </div>
+            <div>
+                <label>주문번호:</label>
+                <span th:text="${shipping.orderId}">주문상세번호</span>
+            </div>
+            <div>
+                <label>운송장번호:</label>
+                <span th:text="${shipping.trackingNumber}">운송장번호</span>
+            </div>
+            <div>
+                <label>배송상태:</label>
+                <span th:text="${shipping.status}">배송상태</span>
+            </div>
+            <div>
+                <label>수령자:</label>
+                <span th:text="${shipping.receivePeople}">수령자</span>
+            </div>
+            <div>
+                <label>수령자전화번호:</label>
+                <span th:text="${shipping.receivePhoneNumber}">수령자 전화번호</span>
+            </div>
+            <div>
+                <label>배송지주소:</label>
+                <span th:text="|${shipping.basicAddress} ${shipping.detailAddress}|">배송지주소</span>
+            </div>
+            <div>
+                <label>우편번호:</label>
+                <span th:text="${shipping.zipCode}">우편번호</span>
+            </div>
+<!--            <div>-->
+<!--                <label>수량:</label>-->
+<!--                <span th:text="${shipping.quantity}">수량</span>-->
+<!--            </div>-->
+            <div>
+                <label>배송비:</label>
+                <span th:text="${shipping.shippingPrice}">배송비</span>
+            </div>
+            <div>
+                <label>배송요청사항:</label>
+                <span th:text="${shipping.deliveryRequest}">배송요청</span>
+            </div>
+            <div>
+                <label>지연사유:</label>
+                <span th:text="${shipping.delayReason}">지연사유</span>
+            </div>
+            <div>
+                <label>설명:</label>
+                <span th:text="${shipping.description}">설명</span>
+            </div>
+            <div>
+                <label>배송예정일:</label>
+                <span th:text="${#dates.format(shipping.expectedDatetime, 'yyyy-MM-dd')}">배송 예정일</span>
+            </div>
+            <div>
+                <label>배송시작일:</label>
+                <span th:text="${#dates.format(shipping.shippingDatetime, 'yyyy-MM-dd')}">배송일</span>
+            </div>
+            <div>
+                <label>배송완료일:</label>
+                <span th:text="${#dates.format(shipping.endDatetime, 'yyyy-MM-dd')}">배송 완료일</span>
+            </div>
+            <div>
+                <label>배송사:</label>
+                <span th:text="${shipping.shippingCompanyId}">배송사번호</span>
+            </div>
+            <div>
+                <label>(수거)업체기사명:</label>
+                <span th:text="${shipping.deliveryName}">(수거)업체기사명</span>
+            </div>
+            <div>
+                <label>(수거)업체기사님번호:</label>
+                <span th:text="${shipping.deliveryNumber}">(수거)업체기사님번호</span>
+            </div>
+            <div>
+                <label>업체수거일:</label>
+                <span th:text="${#dates.format(shipping.deliveryDatetime, 'yyyy-MM-dd')}">업체수거일시</span>
+            </div>
+            <div>
+                <label>생성일:</label>
+                <span th:text="${shipping.createdAt}">생성일</span>
+            </div>
+            <div>
+                <label>변경일:</label>
+                <span th:text="${shipping.updatedAt}">변경일</span>
+            </div>
+            <!-- 버튼 추가 -->
+            <div class="btn-container">
+                <a class="btn" href="/admin/shipping/list" style="background-color: black; color: white">목록 </a>
+                <a class="btn" th:href="@{/update/{id}(id=${shipping.shippingId})}"  style="background-color: black; color: white">세부정보등록</a>
             </div>
         </div>
     </div>
 </div>
+<!-- Bootstrap JS (CDN 이용) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- 인라인 JavaScript -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 사이드바 토글 이벤트 등록
+        const sidebarToggle = document.getElementById("sidebarToggle");
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener("click", function (e) {
+                e.preventDefault();
+                document.body.classList.toggle("sb-sidenav-toggled");
+            });
+        }
+    });
+</script>
+</body>
+</html>
