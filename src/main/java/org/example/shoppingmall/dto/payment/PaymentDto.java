@@ -25,7 +25,7 @@ public class PaymentDto {
     private Integer discountAmount;
     private LocalDateTime paymentDatetime;
     private String failureReason;   
-    private Integer cardNumber;
+    private String cardNumber;
     private Integer cardInstallment;
     private String cashBankName;    
     private Integer cashReceiptType;
