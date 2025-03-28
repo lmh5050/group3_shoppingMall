@@ -57,6 +57,7 @@
         SELECT DISTINCT
             o.created_at,
             o.order_id,
+            o.customer_id,
             o.total_amount,
             o.total_discount_amount,
             p.discount_amount,
@@ -93,7 +94,7 @@
                            ON pd.product_id = pdi.product_id
                       JOIN code_detail cd
                            ON o.order_status = cd.code_no
-        WHERE o.order_id = #{order_id}
+        WHERE o.order_id = #{orderId}
           AND o.active_flag = 1
     </select>
 
