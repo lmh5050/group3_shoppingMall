@@ -7,17 +7,24 @@
     <!-- 모든 민원 찾기 -->
     <select id="findCustomerComplaints" resultType="org.example.shoppingmall.dto.complaint.ComplaintDto">
         SELECT
-            *
-        FROM  complaint
-        ORDER BY request_datetime ASC
+            c.*,                        -- Complaint 테이블의 모든 컬럼
+            o.customer_id               -- Orders 테이블의 customer_id
+        FROM complaint c
+                 JOIN orders o
+                      ON c.order_id = o.order_id    -- order_id 기준 JOIN
+        ORDER BY c.request_datetime ASC
     </select>
+
 
     <!-- 특정 민원 찾기 -->
     <select id="findCustomerComplaintById" resultType="org.example.shoppingmall.dto.complaint.ComplaintDto">
         SELECT
-            *
-        FROM complaint
-        WHERE complaint_id = #{complaintId}
+            c.*,                        -- Complaint 테이블의 모든 컬럼
+            o.customer_id               -- Orders 테이블의 customer_id
+        FROM complaint c
+                 JOIN orders o
+                      ON c.order_id = o.order_id    -- order_id 기준 JOIN
+        WHERE c.complaint_id = #{complaintId}
     </select>
 
     <!-- 민원 접수 시 데이터 수정 -->
