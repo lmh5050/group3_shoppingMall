@@ -22,7 +22,7 @@ public class OrderController {
     @Autowired
     private OrderListService orderListService;
 
-    // 주문서 페이지
+    // 주문서 (장바구니)
     @GetMapping("/order")
     public String showOrder(@RequestParam("productDetailId") List<String> productDetailId,
                             @RequestParam("quantity") List<Integer> quantity,
@@ -55,6 +55,7 @@ public class OrderController {
 
     }
 
+    //주문서 (상품페이지)
     @PostMapping("/order")
     public String showOrder(@ModelAttribute("productInfo") ProductInfoDto productInfoDto,
                             HttpSession session, Model model) {
@@ -123,47 +124,24 @@ public class OrderController {
         return "order/orderList";
     }
 
-/*    //주문목록
-    @GetMapping(value = "/list")
-    public String showOrderList(HttpSession session, Model model) {
+    //주문상세
+    @GetMapping("/detail/{orderId}")
+    public String showOrderDetail(@PathVariable Long orderId, HttpSession session, Model model) {
 
         String customerId = (String) session.getAttribute("customerId");
-        model.addAttribute("customerId", customerId);
 
         if (customerId == null) {
             return "redirect:/user/login";
         }
 
-        // 주문 목록을 가져온다
-        List<OrderListDto> orders = orderListService.getOrderListByCustomerId(customerId);
-
-        // 주문번호별로 그룹화
-        Map<Long, List<OrderListDto>> groupedOrders = orders.stream()
-                .collect(Collectors.groupingBy(OrderListDto::getOrderId));
-
-        // Map 자체에서 정렬 (내림차순)
-        Map<Integer, List<OrderListDto>> sortedGroupedOrders = groupedOrders.entrySet().stream()
-                .sorted((entry1, entry2) -> Long.compare(entry2.getKey(), entry1.getKey()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e1, e2) -> e1,  // 충돌을 처리하는 방식 (이 경우, 충돌이 발생하지 않음)
-                        LinkedHashMap::new // 정렬된 순서를 유지하는 LinkedHashMap 사용
-                ));
-
-        // 정렬된 groupedOrders를 모델에 추가
-        model.addAttribute("groupedOrders", sortedGroupedOrders);
-        System.out.println("sortedGroupedOrders = " + sortedGroupedOrders);
-
-        return "order/orderList";
-    }*/
-
-
-    //주문상세
-    @RequestMapping("/detail")
-    public String showOrderDetail(@RequestParam("orderId") Long orderId, Model model) {
-
+        // 주문 상세 정보 가져오기
         List<OrderDetailDto> orderDetails = orderListService.getOrderDetailByOrderId(orderId);
+
+
+        if (orderDetails.isEmpty() || !customerId.equals(orderDetails.getFirst().getCustomerId())) {
+            model.addAttribute("message", "해당 주문을 조회할 권한이 없습니다.");
+            return "redirect:/user/login";
+        }
 
         //주문번호별로 그룹화
         Map<Long, List<OrderDetailDto>> groupedOrderDetails = orderDetails.stream()
@@ -182,7 +160,6 @@ public class OrderController {
         String customerId = (String) session.getAttribute("customerId");
         if (customerId != null) {
             orderListService.deleteOrder(orderId, customerId);  // 서비스 호출
-            model.addAttribute("message", "주문이 삭제되었습니다.");
         } else {
             return "redirect:/user/login";
         }

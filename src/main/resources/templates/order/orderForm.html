@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${pageTitle}">Shop Homepage - Start Bootstrap Template</title>
+    <title>주문서</title>
     <link rel="stylesheet" th:href="@{/css/Bars.css}">
     <style>
         body {
@@ -19,6 +19,7 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         .section {
             margin-bottom: 20px;
             padding: 20px;
@@ -28,6 +29,7 @@
             box-sizing: border-box;
             line-height: 2;
         }
+
         .section-title {
             font-size: 20px;
             font-weight: bold;
@@ -144,7 +146,8 @@
         <div class="section">
             <div class="section-title">배송 정보</div>
             <div><span id="receivePeople" name="receive_people" th:text="${address.receivePeople}"></span>
-                <span th:text="${address.status == 1} ? '기본배송지' : '추가배송지'" style="background-color: lightgray; color: black; font-size: 12px; padding: 3px 6px; border-radius: 5px;"></span><br>
+                <span th:text="${address.status == 1} ? '기본배송지' : '추가배송지'"
+                      style="background-color: lightgray; color: black; font-size: 12px; padding: 3px 6px; border-radius: 5px;"></span><br>
                 <!--
                 <button onclick="location.href='/order/changeAddress'">배송지 변경</button><br>
                 -->
@@ -237,51 +240,55 @@
                 deliveryRequest = customRequestInput.value.trim();  // 사용자 입력값 가져오기
             }
 
-            let orderDetailList = [];
+
+            // 주문 금액 및 수량을 계산할 변수들
             let totalOrderAmount = 0;
             let totalQuantity = 0;
+            let orderDetailList = [];
 
+            // 가격을 계산하는 함수
+            function calculatePrice(price, quantity) {
+                return price * quantity || 0;
+            }
+
+            // 일련번호를 추적할 변수
+            let serialNumber = 1;
+
+            // 모든 productBlock을 순회하며 처리
             productBlocks.forEach((productBlock, index) => {
                 const children = productBlock.children;
                 let productDetailId = "", productName = "", size = "", color = "";
                 let quantity = 0, price = 0, productTotalPrice = 0;
 
-                if (children.length >= 1) {
-                    productDetailId = children[0].querySelector('span').textContent.trim();
-                }
-                if (children.length >= 3) {
-                    productName = children[2].querySelector('span').textContent.trim();
-                }
-                if (children.length >= 4) {
-                    color = children[3].querySelector('span').textContent.trim();
-                }
-                if (children.length >= 5) {
-                    size = children[4].querySelector('span').textContent.trim();
-                }
-                if (children.length >= 6) {
-                    quantity = parseInt(children[5].querySelector('span').textContent) || 0;
-                }
+                // 필수 데이터가 모두 있는지 체크
                 if (children.length >= 7) {
-                    price = parseFloat(children[6].querySelector('span').textContent.replace(/[^0-9.-]+/g, "")) || 0;
-                }
-                if (children.length >= 8) {
-                    productTotalPrice = parseFloat(price * quantity) || 0;
-                }
+                    productDetailId = children[0].querySelector('span') ? children[0].querySelector('span').textContent.trim() : "";
+                    productName = children[2].querySelector('span') ? children[2].querySelector('span').textContent.trim() : "";
+                    color = children[3].querySelector('span') ? children[3].querySelector('span').textContent.trim() : "";
+                    size = children[4].querySelector('span') ? children[4].querySelector('span').textContent.trim() : "";
+                    quantity = children[5].querySelector('span') ? parseInt(children[5].querySelector('span').textContent) || 0 : 0;
+                    price = children[6].querySelector('span') ? parseFloat(children[6].querySelector('span').textContent.replace(/[^0-9.-]+/g, "")) || 0 : 0;
+                    productTotalPrice = calculatePrice(price, quantity);
 
-                totalOrderAmount += productTotalPrice;
-                totalQuantity += quantity;
-                orderDetailList.push({
-                    serialNumber: index + 1,
-                    productDetailId: productDetailId,
-                    productName: productName,
-                    size: size,
-                    color: color,
-                    quantity: quantity,
-                    price: price,
-                    discountAmount: 0,
-                    productPrice: price,
-                    productTotalPrice: productTotalPrice
-                });
+                    totalOrderAmount += productTotalPrice;
+                    totalQuantity += quantity;
+
+                    // 필수 값이 모두 있을 경우에만 추가
+                    if (productDetailId && productName && size && color && quantity && price) {
+                        orderDetailList.push({
+                            serialNumber: serialNumber++, // serialNumber가 1부터 시작하도록 설정
+                            productDetailId: productDetailId,
+                            productName: productName,
+                            size: size,
+                            color: color,
+                            quantity: quantity,
+                            price: price,
+                            discountAmount: 0,
+                            productPrice: price,
+                            productTotalPrice: productTotalPrice
+                        });
+                    }
+                }
             });
 
             const orderData = {

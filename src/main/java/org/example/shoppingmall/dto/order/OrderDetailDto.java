@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 public class OrderDetailDto {
     private Timestamp createdAt;
     private Long orderId;
+    private String customerId;
     private String codeName;
     private BigDecimal totalAmount; //전체상품총금액
     private BigDecimal totalDiscountAmount; //상품총할인
