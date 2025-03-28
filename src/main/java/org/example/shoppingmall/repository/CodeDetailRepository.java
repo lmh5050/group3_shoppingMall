@@ -12,4 +12,10 @@ public interface CodeDetailRepository {
 
     //codeNo 값으로 CodeName 값 찾기(complaint)
     CodeDetailDto findCodeNameByCodeNo(String codeNo);
+
+    //status 값으로 CodeName 값 찾기(Shipping)
+    CodeDetailDto findCodeNameByStatus(String status);
+
+    //delayReason 값으로 CodeName 값 찾기(Shipping)
+    CodeDetailDto findCodeNameByDelayReason(String delayReason);
 }
