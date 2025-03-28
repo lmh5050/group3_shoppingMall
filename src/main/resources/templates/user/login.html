@@ -76,10 +76,9 @@
         }
 
         /* ✅ 버튼 크기 및 스타일 통일 */
-        .small-button, .signup-button {
+        .btn-dark, .signup-button {
             width: 100% !important;
             padding: 16px !important;
-            background-color: #1ec800;
             color: white;
             border: none;
             border-radius: 10px !important;
@@ -89,10 +88,6 @@
             transition: background-color 0.3s;
             outline: none;
             margin-top: 8px !important;
-        }
-
-        .small-button:hover, .signup-button:hover {
-            background-color: #17b000 !important;
         }
 
         .signup-container {
@@ -107,7 +102,7 @@
             }
 
             .input-container input,
-            .small-button,
+            .btn-dark,
             .signup-button {
                 font-size: 16px;
                 padding: 14px;
@@ -132,7 +127,7 @@
         <input type="password" name="password" id="password" placeholder="비밀번호" required th:value="${password}" />
     </div>
     <div class="input-container">
-        <button class="small-button" onclick="login()">로그인</button>
+        <button class="btn btn-dark" onclick="login()">로그인</button>
     </div>
     <div class="signup-container">
         <button type="button" class="signup-button" id="signupButton">회원가입</button>
