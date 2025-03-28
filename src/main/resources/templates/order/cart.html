@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/Bars.css}">
+    <link rel="stylesheet" th:href="@{/css/Login.css}">
+    <link th:href="@{/css/homecss/homeStyles.css}" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <title>로그인</title>
+    <style>
+        /* 오른쪽 하단에 버튼을 고정시키기 위한 스타일 */
+        .order-button {
+            right: 20px;
+            padding: 15px 30px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .order-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+<div th:replace="Bars/nav_bar :: nav"></div>
+
+<div class="login-container" style="width: 900px; height: 800px;">
+    <div class="container px-4 px-lg-5 mt-5" style="display: flex; justify-content: center; align-items: center; height: 50vh;">
+        <div class="d-flex flex-column align-items-center gap-3" style="width: 600px;">
+            <!-- Hidden input 필드로 customerId 추가 -->
+            <input type="hidden" id="customerId" th:value="${customerId}" />
+
+            <h1><span id="displayCustomerId" th:text="${customerId}"></span> 님</h1>
+            <!-- 데이터 표시 부분 (예: 테이블) -->
+            <div id="cartData" class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>선택</th> <!-- 체크박스 열 추가 -->
+                        <th>Product Detail ID</th>
+                        <th>상품명</th> <!-- 상품명 추가 -->
+                        <th>색상</th> <!-- 색상 추가 -->
+                        <th>사이즈</th> <!-- 사이즈 추가 -->
+                        <th>가격</th> <!-- 가격 추가 -->
+                        <th>수량</th>
+                        <th>최종 가격</th>
+                        <th>등록일</th>
+                    </tr>
+                    </thead>
+                    <tbody id="cartDataBody">
+                    <!-- 데이터가 여기서 동적으로 추가됩니다 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 주문하기 버튼을 로그인 폼 안에 추가 -->
+            <button id="orderButton" class="order-button">주문하기</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div th:replace="Bars/footer :: #footer"></div>
+</footer>
+
+<!-- JS SCRIPT -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // hidden input 태그에서 customerId 값을 가져옴
+        var customerId = document.getElementById("customerId").value.trim();
+
+        // axios 요청 예시
+        if (customerId) {
+            axios.get('/order/cart/data', { params: { customerId: customerId } })
+                .then(function (response) {
+                    console.log('Data fetched:', response.data);
+
+                    var cartData = response.data;
+                    var cartDataBody = document.getElementById("cartDataBody");
+
+                    cartData.forEach(function (item) {
+                        var row = document.createElement('tr');
+
+                        // 체크박스 셀
+                        var checkboxCell = document.createElement('td');
+                        var checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.name = 'cartItem';
+                        checkbox.value = item.no;  // 체크박스의 값 (예시로 productDetailId 사용)
+                        checkbox.checked = item.checkFlag === 1;  // checkFlag 값에 따라 체크 여부 설정
+
+                        // response.data.no 값을 체크박스의 id로 설정
+                        checkbox.id = item.no; // item.no 값을 부여
+
+                        checkboxCell.appendChild(checkbox);
+                        row.appendChild(checkboxCell);
+
+                        // Product Detail ID
+                        var productDetailIdCell = document.createElement('td');
+                        productDetailIdCell.textContent = item.productDetailId;
+                        row.appendChild(productDetailIdCell);
+
+                        // Product Name
+                        var productNameCell = document.createElement('td');
+                        productNameCell.textContent = item.name;  // 상품명 표시
+                        row.appendChild(productNameCell);
+
+                        // Color
+                        var colorCell = document.createElement('td');
+                        colorCell.textContent = item.color;  // 색상 표시
+                        row.appendChild(colorCell);
+
+                        // Size
+                        var sizeCell = document.createElement('td');
+                        sizeCell.textContent = item.size;  // 사이즈 표시
+                        row.appendChild(sizeCell);
+
+                        // Price
+                        var priceCell = document.createElement('td');
+                        priceCell.textContent = item.price.toLocaleString();  // 가격 표시
+                        row.appendChild(priceCell);
+
+                        // Quantity
+                        var quantityCell = document.createElement('td');
+                        quantityCell.textContent = item.quantity;
+                        row.appendChild(quantityCell);
+
+                        // Final Price (가격 * 수량)
+                        var finalPriceCell = document.createElement('td');
+                        var finalPrice = item.price * item.quantity;  // 가격 * 수량
+                        finalPriceCell.textContent = finalPrice.toLocaleString();  // 최종 가격 표시
+                        row.appendChild(finalPriceCell);
+
+                        // Register Date
+                        var registerDateCell = document.createElement('td');
+                        registerDateCell.textContent = new Date(item.registerDate).toLocaleString();
+                        row.appendChild(registerDateCell);
+
+                        // 행 추가
+                        cartDataBody.appendChild(row);
+                    });
+                })
+                .catch(function (error) {
+                    console.error('Error fetching data:', error);
+                });
+        } else {
+            console.log('No customerId available');
+        }
+
+        // 주문하기 버튼 클릭 이벤트
+        document.getElementById("orderButton").addEventListener("click", function () {
+            var selectedItems = [];
+            // 체크된 항목을 선택하여 배열에 저장
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            checkboxes.forEach(function (checkbox) {
+                var row = checkbox.closest('tr');
+                var productDetailId = row.querySelector('td:nth-child(2)').textContent; // Product Detail ID
+                var quantity = row.querySelector('td:nth-child(7)').textContent; // Quantity
+                var no = checkbox.id;  // 체크박스의 id (no 값)을 가져옴
+
+                selectedItems.push({ productDetailId: productDetailId, quantity: quantity, no: no });
+            });
+
+            if (selectedItems.length > 0) {
+                // selectedItems를 sessionStorage에 저장
+                sessionStorage.setItem('selectedItems', JSON.stringify(selectedItems));
+                console.log(selectedItems)
+                // 주문 데이터 전송
+                axios.post('/order/cart/cartOrder', selectedItems) // selectedItems를 전송
+                    .then(response => {
+                        console.log(response.data);
+                        alert('주문이 완료되었습니다.');
+                    })
+                    .catch(error => {
+                        console.error('주문 처리 중 오류 발생:', error);
+                        alert('주문 처리 중 오류가 발생했습니다.');
+                    });
+
+                // 주문 상품의 정보로 파라미터 생성 (예시: customerId, productDetailId, quantity)
+                const customerId = document.getElementById("customerId").value.trim();  // 예시: 실제 customerId를 가져와야 함
+                const productDetailId = selectedItems.map(item => item.productDetailId).join(',');
+                const quantity = selectedItems.map(item => item.quantity).join(',');
+                const no = selectedItems.map(item => item.no).join(',');  // no 값을 파라미터로 추가
+
+                // GET 요청으로 URL 전달
+                window.location.href = `/order/order?customerId=${customerId}&productDetailId=${productDetailId}&quantity=${quantity}&no=${no}`;
+            } else {
+                alert('주문할 상품을 선택해 주세요.');
+            }
+        });
+    });
+</script>
+</body>
+</html>

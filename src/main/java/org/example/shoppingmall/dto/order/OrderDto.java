@@ -3,32 +3,21 @@ package org.example.shoppingmall.dto.order;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class OrderDto {
-    private String orderId;
-    private String customerId;
-    private String orderStatus;
-    private String paymentStatus;
-    private BigDecimal totalOrderAmount;
-    private BigDecimal totalDiscountAmount;
-    private BigDecimal shippingFee;
-    private Integer totalQuantity;
-    private BigDecimal finalPaymentAmount;
-    private String paymentTransactionId;
-    private String recipient;
-    private Integer postalCode;
-    private String shippingAddressBasic;
-    private String shippingAddressDetail;
-    private String recipientContact;
-    private String shippingRequest;
-    private Timestamp orderDatetime;
-    private Timestamp paymentCompletionDatetime;
-    private Timestamp shippingStartDatetime;
-    private Timestamp shippingCompletionDatetime;
-    private Timestamp orderCancellationDatetime;
-    private Timestamp refundCompletionDatetime;
-    private String adminNote;
     private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private String codeName;
+    private Long orderId;
+    private Long serialNumber;
+    private String customerId;
+    private Integer totalQuantity;
+    private BigDecimal finalAmount;
+    private String productName;
+    private String color;
+    private String size;
+    private Integer quantity;
+    private BigDecimal productTotalPrice;
 }

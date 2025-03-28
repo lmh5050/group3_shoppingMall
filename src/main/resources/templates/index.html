@@ -1,52 +1,115 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<link rel="stylesheet" th:href="@{/css/Bars.css}">
-<link rel="stylesheet" th:href="@{/css/Login.css}">
-<link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>신사 숙녀 Home</title>
+    <link rel="stylesheet" th:href="@{/css/Bars.css}">
+    <link rel="stylesheet" th:href="@{/css/product-list.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <style>
+
+    </style>
 </head>
+<body>
 <!-- 네비게이션 바 포함 -->
 <div th:replace="Bars/nav_bar :: nav"></div>
-<body>
-<!-- Section-->
-<section style="width: 3000px; height : 700px;">
-    <div class="container px-4 px-lg-5 mt-5">
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-5 justify-content-center"> <!-- row-cols-xl-5로 5개 배치 -->
-            <!-- 반복문으로 상품 출력 -->
-            <div class="col mb-5" th:each="product : ${products}">
-                <div class="card h-100">
-                    <!-- Product image-->
-                    <img class="card-img-top" th:src="|/images/product/@{${product.getProductId()}}.png|" alt="Product Image" />
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder" th:text="${product.getName()}">Fancy Product</h5>
-                            <!-- Product reviews-->
-                            <div class="d-flex justify-content-center small text-warning mb-2" th:if="${product.getRating() != null}">
-                                <div class="bi-star-fill" th:each="star : ${#numbers.sequence(1, product.getRating())}"></div>
-                            </div>
-                            <!-- Product price-->
-                            <span th:text="'$' + ${product.price}">$40.00</span>
-                        </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                        <div class="text-center">
-                            <a class="btn btn-outline-dark mt-auto" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Add to cart</a>
-                        </div>
+
+<!-- 상품 리스트 섹션 -->
+<section class="product-section">
+    <!-- 검색 및 정렬 -->
+    <div class="search-sort-container">
+        <input type="search" placeholder="Search Product Name" id="productName">
+        <button type="button" onclick="searchProductFunction()">Search</button>
+
+        <select id="sortOptions">
+            <option th:each="option : ${sortList}" th:value="${option.getProductSortId}"
+                    th:text="${option.getExplanation}">정렬 기준</option>
+        </select>
+        <button type="button" onclick="orderProductFunction()">Check</button>
+    </div>
+
+    <!-- 상품 리스트 -->
+    <div class="product-grid">
+        <!-- 검색 결과 있을 때 -->
+        <th:block th:if="${param.searchProduct != null}">
+            <div class="product-card"
+                 th:each="product : ${products}"
+                 th:if="${product.getName().contains(param.searchProduct)
+                 && !product.getStatus().equals('stop-display')}">
+                <div class="product-img">
+                    <img th:src="@{'/images/product/' + ${product.getProductId()} + '.png'}"
+                         alt="Product Image"
+                         th:classappend="${product.status == 'sold-out' ? 'grayscale' : ''}" />
+                    <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
+                    <!-- 좋아요 수, 후기 수 -->
+                    <div class="product-stats">
+                        <span class="like-count"  th:text="|❤ ${product.getLikeCount()}|"></span>
+                        <span class="review-count" th:text="|💭 ${product.getReviewCount()}|"></span>
                     </div>
                 </div>
+                <div class="product-info">
+                    <h3 th:text="${product.getName()}">Fancy Product</h3>
+                    <span class="price" th:text="|${product.price} 원|">₩40,000</span>
+                    <a class="detail-btn" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
+                </div>
             </div>
-            <!-- 상품 반복문 끝 -->
-        </div>
+        </th:block>
+
+        <!-- 모든 상품 표시 -->
+        <th:block th:if="${param.searchProduct == null}">
+            <div class="product-card"
+                 th:each="product : ${products}"
+                 th:if="${!product.getStatus().equals('stop-display')}">
+                <div class="product-img">
+                    <img th:src="@{'/images/product/' + ${product.getProductId()} + '.png'}"
+                         alt="Product Image"
+                         th:classappend="${product.status == 'sold-out' ? 'grayscale' : ''}" />
+                    <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
+                    <!-- 좋아요 수, 후기 수 -->
+                    <div class="product-stats">
+                        <span class="like-count" th:text="|❤ ${product.getLikeCount()}|"></span>
+                        <span class="review-count" th:text="|💭 ${product.getReviewCount()}|"></span>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 th:text="${product.getName()}">Fancy Product</h3>
+                    <span class="price" th:text="|${product.price} 원|">₩40,000</span>
+                    <a class="detail-btn" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
+                </div>
+            </div>
+        </th:block>
     </div>
 </section>
 
+<!-- 푸터 -->
 <footer>
     <div th:replace="Bars/footer :: #footer"></div>
 </footer>
+
+<!-- 스크립트 -->
+<script defer>
+    function searchProductFunction() {
+        let pdName = document.getElementById('productName').value;
+        if (!pdName) {
+            alert("검색어를 입력하세요.");
+            return false;
+        }
+        let url = new URL(window.location.href);
+        url.searchParams.set('searchProduct', pdName);
+        window.location.href = url.toString();
+    }
+
+    function orderProductFunction(){
+        const selectedValue = document.getElementById("sortOptions").value;
+        let url = new URL(window.location.href);
+        if (!selectedValue) {
+            url.searchParams.delete('orderOption');
+        } else {
+            url.searchParams.set('orderOption', selectedValue);
+        }
+        window.location.href = url.toString();
+    }
+</script>
+
 </body>
 </html>

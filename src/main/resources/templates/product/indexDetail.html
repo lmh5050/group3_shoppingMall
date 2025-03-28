@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 상세 페이지</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/Bars.css}">
+    <link rel="stylesheet" th:href="@{/css/productDetail.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <style>
+        .product-info-container {
+            display: flex;
+            justify-content: space-between;  /* 항목들 사이에 여백을 균등하게 배분 */
+            align-items: center;  /* 항목들이 세로로 가운데 정렬되게 설정 */
+            gap: 20px;  /* 항목들 사이에 일정한 간격을 추가 */
+        }
+
+        .product-info h2 {
+            font-size: 18px;  /* 글씨 크기 */
+            font-weight: 600;  /* 글씨 두께 */
+            color: #333;  /* 글씨 색 */
+            margin: 0;  /* 기본 마진 제거 */
+
+        }
+    </style>
+</head>
+
+<body>
+<!-- 네비게이션 바 -->
+<div th:replace="Bars/nav_bar :: nav"></div>
+
+<!-- 상품 상세 섹션 -->
+<section class="product-detail">
+    <div class="container">
+        <div class="product-wrapper">
+            <!-- 상품 이미지 -->
+            <div class="product-image">
+                <img th:src="|/images/product/${product.getProductId()}.png|" alt="상품 이미지">
+                <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
+            </div>
+            <!-- 상품 정보 -->
+            <div class="product-info">
+                <div class="product-meta">
+                    <h4 th:text="|❤ ${product.getLikeCount()}|"></h4>
+                    <h4 th:text="|💭 ${product.getReviewCount()}|"></h4>
+                    <br>
+                </div>
+                <div class="product-info-container">
+                    <div class="product-info">
+                        <h3 th:text="|Season : ${season}|"></h3>
+                    </div>
+                    <div class="product-info">
+                        <h3 th:text="|Fit : ${product.getFit()}|"></h3>
+                    </div>
+                    <div class="product-info">
+                        <h3 th:text="|Feature : ${product.getFeatures()}|"></h3>
+                    </div>
+                    <div class="product-info">
+                        <h3 th:text="|Texture : ${product.getTexture()}|"></h3>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <h1 class="product-title" th:text="${product.getName()}">상품명</h1>
+                <div class="product-price" th:text="|${product.getPrice()} 원|">₩40,000</div>
+                <p class="product-description" th:text="${product.getDescription()}">상품 설명</p>
+                <form id="buyNowForm" action="/order/order" method="post" class="purchase-form">
+                    <label for="inputQuantity">수량</label>
+                    <input name="quantity" id="inputQuantity" type="number" value="1" min="1">
+                    <label for="productDetail">옵션</label>
+                    <select id="productDetail" name="productDetailId">
+                        <option th:each="option : ${productDetailOptions}" th:value="${option.getProductDetailId()}">
+                            <span th:text="|${option.getColor()} - ${option.getSize()}|"></span>
+                        </option>
+                    </select>
+                    <div class="button-group">
+                        <button type="button" class="btn-cart" onclick="addProductToCart()">장바구니</button>
+                        <button type="submit" class="btn-buy">바로 구매</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 푸터 -->
+<footer>
+    <div th:replace="Bars/footer :: #footer"></div>
+</footer>
+
+<script>
+    function addProductToCart() {
+        const quantity = document.getElementById('inputQuantity').value;
+        const productDetailId = document.getElementById('productDetail').value;
+        axios.post('/order/addToCart', {
+            quantity: quantity,
+            productDetailId: productDetailId
+        })
+            .then(function () {
+                alert("장바구니에 추가되었습니다.");
+            })
+            .catch(function (error) {
+                if (error.response && error.response.data === "fail") {
+                    alert("로그인이 필요합니다.");
+                    window.location.replace('/user/login');
+                } else {
+                    alert("오류가 발생했습니다.");
+                }
+            });
+    }
+</script>
+
+</body>
+</html>

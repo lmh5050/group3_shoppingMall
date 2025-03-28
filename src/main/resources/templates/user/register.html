@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/Bars.css}">
     <link rel="stylesheet" th:href="@{/css/Login.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
     <link th:href="@{/css/homecss/homeStyles.css}" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -19,43 +20,84 @@
 
             <!-- 아이디 입력 + 중복 확인 버튼 -->
             <div class="d-flex gap-2" style="width: 100%; max-width: 600px;">
-                <input id="customerId" class="form-control flex-grow-1" type="text" placeholder="아이디 (필수)" style="width: 100%; max-width: 450px;" />
+                <input id="customerId" class="form-control flex-grow-1"
+                       type="text" placeholder="아이디 (필수)" style="width: 100%; max-width: 450px;"
+                       pattern="^[a-zA-Z0-9]{5,}$"
+                       title="아이디는 영문, 숫자 포함 최소 5자 이상이어야 합니다."
+                       required />
                 <button class="btn btn-outline-primary" onclick="duplicateCheck()" style="width: 100%; max-width: 150px;">중복 확인</button>
             </div>
-            <!-- 중복 확인 메시지 -->
             <div id="idCheckMessage" style="margin-top: 5px;"></div>
+
             <!-- 비밀번호 -->
-            <input id="password" class="form-control" type="password" placeholder="비밀번호 (필수)" style="width: 100%; max-width: 600px;" />
-            <input id="confirmPassword" class="form-control" type="password" placeholder="비밀번호 확인 (필수)" style="width: 100%; max-width: 600px;" />
+            <input id="password" class="form-control" type="password"
+                   placeholder="비밀번호 (필수)" style="width: 100%; max-width: 600px;"
+                   pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$"
+                   title="비밀번호는 영문, 숫자, 특수문자를 포함한 최소 8자 이상이어야 합니다."
+                   required />
+
+            <input id="confirmPassword" class="form-control" type="password"
+                   placeholder="비밀번호 확인 (필수)" style="width: 100%; max-width: 600px;"
+                   required />
+
             <!-- 이름 -->
-            <input id="name" class="form-control" type="text" placeholder="이름 (필수)" style="width: 100%; max-width: 600px;" />
-            <!-- 별명 입력 -->
+            <input id="name" class="form-control" type="text"
+                   placeholder="이름 (필수)" style="width: 100%; max-width: 600px;"
+                   pattern="^[가-힣a-zA-Z]+$"
+                   title="이름은 한글 또는 영문만 입력 가능합니다."
+                   required />
+
+            <!-- 별명 입력 + 중복 확인 버튼 -->
             <div class="d-flex gap-2" style="width: 100%; max-width: 600px;">
-            <input id="nickname" class="form-control" type="text" placeholder="별명 (필수)" style="width: 100%; max-width: 450px;" />
-            <button class="btn btn-outline-primary" onclick="checkNicknameAvailability()" style="width: 100%; max-width: 150px;">중복 확인</button>
+                <input id="nickname" class="form-control" type="text"
+                       placeholder="별명 (필수)" style="width: 100%; max-width: 450px;"
+                       pattern="^[가-힣a-zA-Z0-9]+$"
+                       title="별명은 한글, 영문, 숫자만 입력 가능합니다."
+                       required />
+                <button class="btn btn-outline-primary" onclick="checkNicknameAvailability()" style="width: 100%; max-width: 150px;">중복 확인</button>
             </div>
-            <!-- 중복 확인 메시지 -->
             <div id="nicknameCheckMessage" style="margin-top: 5px;"></div>
+
             <!-- 생년월일 -->
-            <input id="birth" class="form-control" type="text" placeholder="생년월일 (필수)" style="width: 100%; max-width: 600px;" />
+            <input id="birth" class="form-control" type="date"
+                   placeholder="생년월일 (필수) ex) 1999-11-21" style="width: 100%; max-width: 600px;"
+                   pattern="^\d{4}-\d{2}-\d{2}$"
+                   title="생년월일은 YYYY-MM-DD 형식이어야 합니다."
+                   required />
+
             <!-- 이메일 -->
-            <input id="email" class="form-control" type="text" placeholder="이메일 (필수)" style="width: 100%; max-width: 600px;" />
-            <!-- 우편 번호 -->
+            <input id="email" class="form-control" type="email"
+                   placeholder="이메일 (필수)" style="width: 100%; max-width: 600px;"
+                   required />
+
+            <!-- 우편번호 -->
             <div class="d-flex gap-2" style="width: 100%; max-width: 600px;">
-                <input id="zipCode" class="form-control" type="text" placeholder="우편번호 (필수)" style="width: 100%; max-width: 600px;" disabled />
+                <input id="zipCode" class="form-control" type="text"
+                       placeholder="우편번호 (필수)" style="width: 100%; max-width: 600px;"
+                       disabled required />
                 <input type="button" onclick="execDaumPostcode()" value="우편번호 찾기">
             </div>
+
             <!-- 주소 -->
-                <input id="address" class="form-control" type="text" placeholder="주소 (필수)" style="width: 100%; max-width: 600px;" disabled />
+            <input id="address" class="form-control" type="text"
+                   placeholder="주소 (필수)" style="width: 100%; max-width: 600px;"
+                   disabled required />
 
             <!-- 상세주소 -->
-            <input id="extraAddress" class="form-control" type="text" placeholder="상세주소 (필수)" style="width: 100%; max-width: 600px;" />
+            <input id="detailAddress" class="form-control" type="text"
+                   placeholder="상세주소 (필수)" style="width: 100%; max-width: 600px;"
+                   required />
 
             <!-- 전화번호 -->
-            <input id="phoneNumber" class="form-control" type="text" placeholder="전화번호 (필수)" style="width: 100%; max-width: 600px;" />
+            <input id="phoneNumber" class="form-control" type="text"
+                   placeholder="전화번호 (필수)" style="width: 100%; max-width: 600px;"
+                   pattern="^010-\d{4}-\d{4}$"
+                   title="전화번호는 010-1234-5678 형식이어야 합니다."
+                   required />
 
             <!-- 추천인 -->
-            <input id="recommender" class="form-control" type="text" placeholder="추천인 (선택)" style="width: 100%; max-width: 600px;" />
+            <input id="recommender" class="form-control" type="text"
+                   placeholder="추천인 (선택)" style="width: 100%; max-width: 600px;" />
 
             <!-- 가입 완료 버튼 -->
             <button class="btn btn-dark" style="width: 100%; max-width: 600px;" onclick="registerSubmit()">가입 완료</button>
@@ -76,24 +118,14 @@
         const customerId = document.querySelector('#customerId').value.trim();
         let message = document.querySelector("#idCheckMessage");
 
-        if (!customerId) {
-            message.textContent = "잘못된 입력값입니다";
+        if (!/^[a-zA-Z0-9]{5,}$/.test(customerId)) {
+            message.textContent = "아이디는 영문, 숫자 포함 최소 5자 이상이어야 합니다.";
             message.style.color = "red";
             return;
         }
 
-        axios({
-            method: "post",
-            url: "/user/registerCheck",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {
-                customerId: customerId,
-            }
-        })
+        axios.post('/user/registerCheck', { customerId })
             .then(res => {
-                console.log("res", res);
                 if (res.data === "불일치") {
                     message.textContent = "사용 가능한 아이디입니다";
                     message.style.color = "green";
@@ -104,9 +136,7 @@
                     isIdValidate = false;
                 }
             })
-            .catch(err => {
-                console.error("err", err);
-            });
+            .catch(err => console.error("err", err));
     };
 
     // 다음 주소 API 함수
@@ -132,9 +162,9 @@
                     if (extraAddr !== '') {
                         extraAddr = ' (' + extraAddr + ')';
                     }
-                    document.getElementById("extraAddress").value = extraAddr;
+                    document.getElementById("detailAddress").value = extraAddr;
                 } else {
-                    document.getElementById("extraAddress").value = '';
+                    document.getElementById("detailAddress").value = '';
                 }
                 document.getElementById('zipCode').value = data.zonecode;
                 document.getElementById("address").value = addr;
@@ -149,20 +179,12 @@
         const name = document.querySelector('#name').value.trim();
         const nickName = document.querySelector('#nickname').value.trim();
         const birth = document.querySelector('#birth').value.trim();
-        const confirmPassword = document.querySelector('#confirmPassword').value.trim();
         const email = document.querySelector('#email').value.trim();
         const zipCode = document.querySelector('#zipCode').value.trim();
         const address = document.querySelector('#address').value.trim();
-        const extraAddress = document.querySelector('#extraAddress').value.trim();
+        const detailAddress = document.querySelector('#detailAddress').value.trim();
         const phoneNumber = document.querySelector('#phoneNumber').value.trim();
         const recommendId = document.querySelector('#recommender').value.trim();
-        console.log(nickName)
-
-        // 비밀번호 확인
-        if (pw !== confirmPassword) {
-            alert('비밀번호가 다릅니다. 확인해주세요.');
-            return;
-        }
 
         // 아이디 중복 확인 체크
         if (!isIdValidate) {
@@ -170,28 +192,26 @@
             return;
         }
 
-        // 빈 값 체크 (추천인은 nullable)
+        // 필수 값 체크
         if (!customerId || !pw || !email || !address || !phoneNumber) {
             alert('모든 필수 항목을 입력해주세요.');
             return;
         }
 
-        // 서버로 전송할 데이터 설정
         const data = {
             customerId,
             pw,
             email,
             name,
-            nickName : nickName,
+            nickName,
             phoneNumber,
             birth,
             zipCode,
             recommendId: recommendId || null, // 추천인은 nullable
             address: address,
-            extraAddress : extraAddress
+            detailAddress : detailAddress
         };
 
-        // Axios POST 요청
         axios.post('/user/register', data)
             .then(res => {
                 if (res.data === 'success') {
@@ -211,24 +231,15 @@
         const nickName = document.querySelector('#nickname').value.trim();
         let message = document.querySelector("#nicknameCheckMessage");
 
-        if (!nickName) {
-            message.textContent = "별명을 입력해주세요.";
+        if (!/^[가-힣a-zA-Z0-9]+$/.test(nickName)) {
+            message.textContent = "별명은 한글, 영문, 숫자만 입력 가능합니다.";
             message.style.color = "red";
             return;
         }
 
-        axios({
-            method: "post",
-            url: "/user/checkNickname",  // 서버에 닉네임 중복 확인을 위한 API 엔드포인트
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: {
-                nickName: nickName
-            }
-        })
+        axios.post('/user/checkNickname', { nickname: nickName })
             .then(res => {
-                if (res.data === "사용 가능") {
+                if (res.data === "사용가능") {
                     message.textContent = "사용 가능한 별명입니다.";
                     message.style.color = "green";
                 } else {
@@ -236,10 +247,65 @@
                     message.style.color = "red";
                 }
             })
-            .catch(err => {
-                console.error("닉네임 중복 확인 오류", err);
-            });
+            .catch(err => console.error("닉네임 중복 확인 오류", err));
     };
+
+
+
+    const validateInput = (input, regex) => {
+        input.addEventListener('input', () => {
+            // 입력된 값이 유효한지 검사하고, 유효하지 않으면 유효한 문자만 남기고 나머지는 제거
+            if (!regex.test(input.value)) {
+                // 한글, 영문, 숫자, 공백을 제외한 문자만 제거
+                input.value = input.value.replace(/[^가-힣a-zA-Z0-9\s]/g, '');
+            }
+        });
+    };
+
+    // 아이디 입력값 검사 적용
+    const customerIdInput = document.querySelector('#customerId');
+    validateInput(customerIdInput, /^[a-zA-Z0-9]{0,}$/); // 영문, 숫자만 허용
+
+    // 비밀번호 입력값 검사 적용 (특수문자 포함)
+    const passwordInput = document.querySelector('#password');
+    validateInput(passwordInput, /^[A-Za-z\d!@#$%^&*]{0,}$/);
+
+    // 이름 입력값 검사 적용 (한글, 영문만 허용)
+    const nameInput = document.querySelector('#name');
+    validateInput(nameInput, /^[가-힣a-zA-Z]+$/); // 한글 또는 영문자만 허용
+
+    // 별명 입력값 검사 적용 (한글, 영문, 숫자만 허용)
+    const nicknameInput = document.querySelector('#nickname');
+    validateInput(nicknameInput, /^[가-힣a-zA-Z0-9]+$/); // 한글, 영문, 숫자만 허용
+
+    // 전화번호 입력값 검사 적용 (숫자와 하이픈만 허용)
+    const phoneNumberInput = document.querySelector('#phoneNumber');
+    validateInput(phoneNumberInput, /^010-\d{0,4}-\d{0,4}$/);
+    phoneNumberInput.addEventListener('input', () => {
+        let inputValue = phoneNumberInput.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
+        if (inputValue.length <= 3) {
+            phoneNumberInput.value = inputValue.replace(/(\d{3})(\d{0,})/, '$1-$2');
+        } else if (inputValue.length <= 7) {
+            phoneNumberInput.value = inputValue.replace(/(\d{3})(\d{4})(\d{0,})/, '$1-$2-$3');
+        } else {
+            phoneNumberInput.value = inputValue.replace(/(\d{3})(\d{4})(\d{4})(\d{0,})/, '$1-$2-$3');
+        }
+    });
+
+    // 생년월일 입력값 검사 적용 (숫자와 하이픈만 허용)
+    const birthInput = document.querySelector('#birth');
+    validateInput(birthInput, /^\d{0,4}-?\d{0,2}-?\d{0,2}$/);
+    birthInput.addEventListener('input', () => {
+        let inputValue = birthInput.value.replace(/[^0-9]/g, ''); // 숫자만 남기기
+        if (inputValue.length <= 4) {
+            birthInput.value = inputValue.replace(/(\d{4})(\d{0,})/, '$1-$2');
+        } else if (inputValue.length <= 6) {
+            birthInput.value = inputValue.replace(/(\d{4})(\d{2})(\d{0,})/, '$1-$2-$3');
+        } else {
+            birthInput.value = inputValue.replace(/(\d{4})(\d{2})(\d{2})(\d{0,})/, '$1-$2-$3');
+        }
+    });
+
 </script>
 
 </body>

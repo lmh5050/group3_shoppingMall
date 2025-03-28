@@ -6,24 +6,20 @@ import org.example.shoppingmall.dto.order.OrderDto;
 import org.example.shoppingmall.dto.order.ProductInfoDto;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 @Mapper
 public interface OrderRepository {
 
-    // 주문 저장
-    void saveOrder(OrderDto orderDto);
+    //주문번호 생성
+    Long generateOrderId();
 
     //기본배송지 가져오기
     AddressDto findDefaultAddressByCustomerId(String customerId);
 
     //상품정보가져오기
-    ProductInfoDto findProductInfoByProductDetailId(String productDetailId);
+    List<ProductInfoDto> findProductInfoByProductDetailId(Map<String, Object> params);
 
-
-    /*// 전체 주문 목록 조회
-    List<OrderDto> findAllOrders();
-
-    // 주문 ID로 주문 상세 조회
-    OrderDto findOrderById(String orderId);*/
 }

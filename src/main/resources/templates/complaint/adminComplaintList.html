@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+<!--    <link rel="stylesheet" th:href="@{/css/Bars.css}">-->
+<!--    <link rel="stylesheet" th:href="@{/css/Login.css}">-->
+<!--    <title th:text="${pageTitle}">Shop Homepage - Start Bootstrap Template</title>-->
+<!--    &lt;!&ndash; Bootstrap icons&ndash;&gt;-->
+<!--    <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap-icons1.5.0/font/bootstrap-icons.css}" rel="stylesheet" />-->
+<!--    &lt;!&ndash; Core theme CSS (includes Bootstrap)&ndash;&gt;-->
+<!--    <link th:href="@{/css/homecss/homeStyles.css}" rel="stylesheet" />-->
+    <title>고객 민원 관리</title>
+
+    <!-- Bootstrap CSS (CDN 이용) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 커스텀 CSS -->
+    <link rel="stylesheet" href="/css/admin/styles.css">
+    <style>
+        /* 추가 스타일 (필요시 수정) */
+        body {
+          font-family: 'Noto Sans KR', sans-serif;
+          background-color: #f5f5f5;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="d-flex" id="wrapper">
+    <!-- 사이드바 삽입 (별도 fragment) -->
+    <div th:replace="Bars/side_bar :: sidebar"></div>
+    <!-- 페이지 콘텐츠 영역 -->
+    <div id="page-content-wrapper">
+        <!-- 상단 네비게이션 바 삽입 (별도 fragment) -->
+        <div th:replace="Bars/side_bar :: topnav"></div>
+        <div class="container">
+            <div style="display: flex; flex-direction: column; margin-bottom: 15px; align-items: center;">
+                <h2 style="text-align: center;">고객 민원 관리</h2>
+                <div style="margin-bottom: 10px; text-align: center;">
+                    <button class="btn btn-outline-primary mb-2" onclick="filterComplaints('all')">전체</button>
+                    <button class="btn btn-outline-secondary mb-2" onclick="filterComplaints('cancel')">취소</button>
+                    <button class="btn btn-outline-warning mb-2" onclick="filterComplaints('refund')">환불</button>
+                    <button class="btn btn-outline-info mb-2" onclick="filterComplaints('exchange')">교환</button>
+                </div>
+
+                <div style="max-height: 500px; width: 1500px; overflow-y: auto;">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>삭제 활성화 여부</th>
+                            <th>신청 날짜</th>
+                            <th>완료 날짜</th>
+                            <th style="white-space: nowrap;">민원 유형</th>
+                            <th>상태</th>
+                            <th>제목</th>
+                            <th>액션</th>
+                        </tr>
+                        </thead>
+                        <tbody id="complaintTable">
+                        <tr th:each="complaint : ${complaints}">
+                            <td th:text="${complaint.deleteFlag == 1 ? '활성화' : '비활성화'}"></td>
+                            <td th:text="${complaint.requestDatetime}"></td>
+                            <td th:text="${complaint.endDatetime}"></td>
+                            <td th:text="${complaint.complaintTypeId == 'cancel' ? '취소' : (complaint.complaintTypeId == 'refund' ? '환불' : (complaint.complaintTypeId == 'exchange' ? '교환' : complaint.complaintTypeId))}"></td>
+                            <td th:text="${complaint.status}"></td>
+                            <td th:text="${complaint.reason}"></td>
+                            <td>
+                                <a class="btn btn-primary btn-sm" th:href="@{'/admin/complaint/detail/' + ${complaint.complaintId}}">정보 확인</a>
+                                <form th:action="@{'/admin/complaint/receive/' + ${complaint.complaintId}}" method="post" style="display:inline;" onsubmit="return confirmReceive();"
+                                      th:if="${#strings.contains(complaint.status, '신청')}">
+                                    <input type="hidden" name="complaintType" th:value="${complaint.complaintTypeId}">
+                                    <button type="submit" class="btn btn-success btn-sm">접수</button>
+                                </form>
+                                <a class="btn btn-warning btn-sm" th:href="@{'/admin/complaint/edit/' + ${complaint.complaintId} + '?complaintType=' + ${complaint.complaintTypeId}}"
+                                   th:if="${#strings.contains(complaint.status, '접수')}">답변</a>
+                                <form th:action="@{'/admin/complaint/delete/' + ${complaint.complaintId}}" method="post" style="display:inline;" onsubmit="return confirmDelete();">
+                                    <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+
+                        <!-- 빈 상태 메시지 -->
+                        <tr id="noCancel" style="display: none;">
+                            <td colspan="7" style="text-align: center;">취소 신청된 민원이 없습니다.</td>
+                        </tr>
+                        <tr id="noRefund" style="display: none;">
+                            <td colspan="7" style="text-align: center;">환불 신청된 민원이 없습니다.</td>
+                        </tr>
+                        <tr id="noExchange" style="display: none;">
+                            <td colspan="7" style="text-align: center;">교환 신청된 민원이 없습니다.</td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    <!-- 민원 유형별로 민원 출력 -->
+    function filterComplaints(type) {
+        const rows = document.querySelectorAll('#complaintTable tr');
+        rows.forEach(row => {
+            const complaintType = row.querySelector('td:nth-child(4)').innerText.trim();
+            if (type === 'all' ||
+                (type === 'cancel' && complaintType === '취소') ||
+                (type === 'refund' && complaintType === '환불') ||
+                (type === 'exchange' && complaintType === '교환')) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    function confirmReceive() {
+        return confirm("정말로 접수하시겠습니까?");
+    }
+
+    function confirmDelete() {
+        return confirm("정말로 삭제하시겠습니까?");
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- 인라인 JavaScript -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 사이드바 토글 이벤트 등록
+        const sidebarToggle = document.getElementById("sidebarToggle");
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener("click", function (e) {
+                e.preventDefault();
+                document.body.classList.toggle("sb-sidenav-toggled");
+            });
+        }
+
+        // 결제 상태 업데이트 처리
+        document.querySelectorAll('.update-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const paymentId = this.getAttribute('data-payment-id');
+                const orderId = this.getAttribute('data-order-id');
+                const newStatus = document.getElementById("statusSelect_" + paymentId).value;
+
+                fetch('/admin/payment/update', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ paymentId, orderId, status: newStatus })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.success ? '결제상태가 변경되었습니다.' : '결제상태 변경에 실패했습니다.');
+                        if (data.success) location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('상태 변경에 오류가 발생했습니다.');
+                    });
+            });
+        });
+    });
+
+    // 결제 상태 선택 토글 함수
+    function toggleStatusSelect(button) {
+        const paymentId = button.getAttribute('data-payment-id');
+        const container = document.getElementById("statusSelectContainer_" + paymentId);
+        container.style.display = (container.style.display === "none" || container.style.display === "") ? "flex" : "none";
+    }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 페이지가 로드되면 모든 민원 필터를 적용하여 초기화
+        filterComplaints('all');
+    });
+
+    function filterComplaints(type) {
+        const rows = document.querySelectorAll('#complaintTable tr');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const complaintType = row.querySelector('td:nth-child(4)')?.innerText.trim();
+            const isEmptyRow = row.id.startsWith('no');
+
+            // 빈 상태 메시지는 숨기지 않음
+            if (isEmptyRow) {
+                row.style.display = 'none';
+                return;
+            }
+
+            if (type === 'all' ||
+                (type === 'cancel' && complaintType === '취소') ||
+                (type === 'refund' && complaintType === '환불') ||
+                (type === 'exchange' && complaintType === '교환')) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // 빈 상태 메시지 표시 로직
+        if (type === 'cancel') {
+            document.getElementById('noCancel').style.display = (visibleCount === 0) ? '' : 'none';
+        } else {
+            document.getElementById('noCancel').style.display = 'none';
+        }
+
+        if (type === 'refund') {
+            document.getElementById('noRefund').style.display = (visibleCount === 0) ? '' : 'none';
+        } else {
+            document.getElementById('noRefund').style.display = 'none';
+        }
+
+        if (type === 'exchange') {
+            document.getElementById('noExchange').style.display = (visibleCount === 0) ? '' : 'none';
+        } else {
+            document.getElementById('noExchange').style.display = 'none';
+        }
+
+        // 전체 필터 시 빈 상태 메시지 처리
+        if (type === 'all') {
+            document.getElementById('noCancel').style.display = (visibleCount === 0) ? '' : 'none';
+            document.getElementById('noRefund').style.display = (visibleCount === 0) ? '' : 'none';
+            document.getElementById('noExchange').style.display = (visibleCount === 0) ? '' : 'none';
+        }
+    }
+
+
+
+</script>
+
+</body>
+
+<footer>
+    <div th:replace="Bars/footer :: #footer"></div>
+</footer>
+
+</html>

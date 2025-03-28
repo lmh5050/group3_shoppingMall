@@ -2,22 +2,16 @@ package org.example.shoppingmall.dto.order;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 @Data
 public class AddressDto {
-    private Integer addressId;
-    private String customerId;
-    private Integer code;
-    private String deliveryName;
+    private BigDecimal price;
     private String address;
     private String detailAddress;
     private String zipCode;
     private Integer status;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
-    private Byte islandOrMountain;
+    private String deliveryRequest;
     private String receivePeople;
     private String receivePhoneNumber;
-    private Byte activeFlag;
-    private Byte deleteFlag;
 }

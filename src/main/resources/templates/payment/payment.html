@@ -1,51 +1,167 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>결제 페이지 - 팝업 열기</title>
+    <title>결제하기</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
+            font-family: 'Noto Sans KR', sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
         }
-        .button {
-            cursor: pointer;
-            padding: 10px 15px;
-            background-color: #333;
-            color: #fff;
+
+        .payment-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-payment {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-payment:hover {
+            background-color: #45a049;
+        }
+
+        .btn-receipt {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .btn-receipt:hover {
+            background-color: #1976D2;
         }
     </style>
 </head>
+
 <body>
+    <div class="payment-container">
+        <h2>결제하기</h2>
+        <input type="hidden" name="orderId" th:value="${orderId}">
+        <input type="hidden" name="totalOrderAmount" th:value="${totalOrderAmount}">
 
-<h2>결제 페이지</h2>
-<p>주문 번호 : <span th:text="${order.orderId}">ORD001</span></p>
+        <!-- 결제 정보 표시 -->
+        <div>
+            <p>주문번호: <span th:text="${orderId}"></span></p>
+            <p>결제금액: <span th:text="${#numbers.formatInteger(totalOrderAmount, 0, 'COMMA')}"></span>원</p>
+        </div>
 
-<!-- 팝업 열기 버튼 -->
-<button onclick="openPaymentPopup()" class="button">결제창 열기</button>
+        <!-- 버튼 그룹 -->
+        <div class="button-group">
+            <button class="btn btn-payment" onclick="requestPay()">결제하기</button>
+            <button class="btn btn-receipt" th:onclick="'openReceipt(' + ${orderId} + ')'">거래명세서</button>
+        </div>
+    </div>
 
-<!-- Thymeleaf로 서버에서 전달받은 orderId를 JS 변수에 할당 -->
-<script th:inline="javascript">
-    const orderId = [[${order.orderId}]];
-</script>
+    <!-- jQuery -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <!-- iamport.payment.js -->
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 
-<script>
-    function openPaymentPopup() {
-        // 팝업 크기
-        const width = 500, height = 700;
-        // 화면 중앙에 위치하도록 계산
-        const left = (window.screen.width - width) / 2;
-        const top = (window.screen.height - height) / 2;
+    <script>
+        function requestPay() {
+            // 팝업 크기
+            const width = 500, height = 700;
+            const left = (window.screen.width - width) / 2;
+            const top = (window.screen.height - height) / 2;
 
-        window.open(
-            '/payment/popup?orderId=' + orderId,
-            'paymentPopup',
-            `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`
-        );
-    }
-</script>
+            const orderData = {
+                orderId: 100079,
+                customerId: "user005",
+                orderStatus: "MA01006",
+                totalDiscountAmount: 0,
+                totalOrderAmount: 30000,
+                totalQuantity: 6,
+                orderDetailList: [
+                    {
+                        serialNumber: 1,
+                        productDetailId: "P1",
+                        productName: "테스트1",
+                        size: "M",
+                        color: "Red",
+                        quantity: 3,
+                        price: 5000,
+                        discountAmount: 0,
+                        productPrice: 5000,
+                        productTotalPrice: 15000
+                    },
+                    {
+                        serialNumber: 2,
+                        productDetailId: "P2",
+                        productName: "테스트2",
+                        size: "L",
+                        color: "Blue",
+                        quantity: 2,
+                        price: 6000,
+                        discountAmount: 0,
+                        productPrice: 6000,
+                        productTotalPrice: 12000
+                    },
+                    {
+                        serialNumber: 3,
+                        productDetailId: "P3",
+                        productName: "테스트3",
+                        size: "S",
+                        color: "Green",
+                        quantity: 1,
+                        price: 3000,
+                        discountAmount: 0,
+                        productPrice: 3000,
+                        productTotalPrice: 3000
+                    }
+                ],
+                basicAddress: "기본 주소",
+                detailAddress: "상세 주소",
+                receivePeople: "김우주",
+                receivePhoneNumber: "010-1111-2222",
+                shippingPrice: 3000,
+                deliveryRequest: "배송 전 전화 주세요. 테스트지요",
+                zipCode: 12345
+            };
+            
+            const popup = window.open(
+                '/payment',
+                'paymentPopup',
+                `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`
+            );
 
+            // 팝업이 로드될 때 데이터를 보냄
+            setTimeout(() => {
+                popup.postMessage(orderData, "*");
+            }, 300);
+        }
+
+        function openReceipt(orderId) {
+            // 영수증 팝업 창 열기
+            const width = 500, height = 800;
+            const left = (window.screen.width - width) / 2;
+            const top = (window.screen.height - height) / 2;
+
+            window.open('/payment/receipt/' + orderId, 'receipt', `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`);
+        }
+    </script>
 </body>
+
 </html>

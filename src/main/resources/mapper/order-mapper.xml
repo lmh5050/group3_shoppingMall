@@ -2,74 +2,48 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.example.shoppingmall.repository.order.OrderRepository">
+    <!-- 주문번호 매기기 -->
+    <select id="generateOrderId" resultType="Long">
+        SELECT COALESCE(MAX(order_id), 1000) + 1
+        FROM orders;
+    </select>
 
 
     <!-- 고객id로 기본배송지 가져오기 -->
     <select id="findDefaultAddressByCustomerId" parameterType="String" resultType="AddressDto">
-        SELECT *
-        FROM address
+        SELECT
+            sp.price,
+            a.address,
+            a.detail_address,
+            a.zip_code,
+            a.status,
+            a.delivery_request,
+            a.receive_people,
+            a.receive_phone_number
+        FROM shipping_price sp
+            LEFT JOIN address a
+                ON sp.shipping_price_id = a.island_or_mountain
         WHERE customer_id = #{customer_id}
-          AND status = 1
+          AND a.status = 1
+          AND a.active_flag = 1;
     </select>
-
 
     <!-- 상품상세id로 상품정보 가져오기 -->
-    <select id="findProductInfoByProductDetailId" parameterType="String" resultType="ProductInfoDto">
+    <select id="findProductInfoByProductDetailId" parameterType="Map" resultType="ProductInfoDto">
         SELECT
-            pd.color AS color,
-            pd.size AS size,
-            p.name AS name,
-            p.price AS price
+            pd.product_id,
+            pd.product_detail_id,
+            pd.color,
+            pd.size,
+            p.name,
+            p.price
         FROM product_detail AS pd
-                 INNER JOIN product AS p
-                            ON pd.product_id = p.product_id
-        WHERE pd.product_detail_id = #{produtct_detail_id}
+            INNER JOIN product AS p
+                ON pd.product_id = p.product_id
+        WHERE pd.product_detail_id IN
+        <foreach item="id" collection="productDetailId" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
     </select>
-
-    <!-- 주문번호 매기기 -->
-    <select id=""></select>
-
-
-
-
-    <!-- 주문 저장 쿼리
-    <insert id="saveOrder" parameterType="OrderDto">
-        INSERT INTO orders (order_id, customer_id, order_status, payment_status, total_order_amount,
-                            total_discount_amount, shipping_fee, total_quantity, final_payment_amount,
-                            payment_transaction_id, recipient, postal_code, shipping_address_basic, shipping_address_detail,
-                            recipient_contact, shipping_request, order_datetime, payment_completion_datetime,
-                            shipping_start_datetime, shipping_completion_datetime, order_cancellation_datetime,
-                            refund_completion_datetime, admin_note, created_at, updated_at, delete_flag)
-        VALUES (#{orderId}, #{customerId}, #{orderStatus}, #{paymentStatus}, #{totalOrderAmount},
-                #{totalDiscountAmount}, #{shippingFee}, #{totalQuantity}, #{finalPaymentAmount},
-                #{paymentTransactionId}, #{recipient}, #{postalCode}, #{shippingAddressBasic},
-                #{shippingAddressDetail}, #{recipientContact}, #{shippingRequest}, #{orderDatetime},
-                #{paymentCompletionDatetime}, #{shippingStartDatetime}, #{shippingCompletionDatetime},
-                #{orderCancellationDatetime}, #{refundCompletionDatetime}, #{adminNote},
-                #{createdAt}, #{updatedAt}, #{deleteFlag})
-    </insert>
-
-    <update id="insertOrderDetail" parameterType="OrderDetailDto">
-        INSERT INTO order_detail (order_detail_id, order_id, product_detail_id, seller_id,
-                                    product_name, size, color, quantity, price, vat,
-                                    discount_amount, total_order_amount, total_product_amount,
-                                    status, created_at, updated_at)
-        VALUES (#{orderDetailId}, #{orderId}, #{productDetailId}, #{sellerId}, #{productName},
-                #{size}, #{color}, #{quantity}, #{price}, #{price} * 0.1,  //VAT은 price의 10%로 계산
-                #{discountAmount}, #{totalOrderAmount},
-                (#{price} + #{price} * 0.1 - #{discountAmount}) * #{quantity}, //Total Product Amount 계산
-                #{status}, NOW(), NOW())
-    </update>
-
-
-       전체 주문 목록 조회 쿼리
-       <select id="findAllOrders" resultType="OrderDto">
-           SELECT * FROM orders WHERE customer_id = #{customerId} AND delete_flag = 0
-       </select>
-
-       주문 ID로 주문 상세 조회 쿼리
-       <select id="findOrderById" resultType="OrderDto">
-           SELECT * FROM orders WHERE order_id = #{orderId} AND delete_flag = 0
-       </select> -->
 
 </mapper>

@@ -42,3 +42,9 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+// build.gradle
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+

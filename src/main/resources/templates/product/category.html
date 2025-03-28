@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/Bars.css}">
+<link rel="stylesheet" th:href="@{/css/product-list.css}">
+<link rel="stylesheet" th:href="@{/css/category.css}">
+<link rel="stylesheet" th:href="@{/css/footer.css}">
+<head>
+    <meta charset="UTF-8">
+    <title>신사 숙녀 category</title>
+</head>
+
+
+<body>
+<!-- 네비게이션 바 포함 -->
+<div th:replace="Bars/nav_bar :: nav"></div>
+<script>
+    // 중분류 선택하면 소분류가 화면에 띄워짐
+    function getSubCategory(midCId) {
+        let url = new URL(window.location.href);
+
+        if (url.searchParams.has('midCID')) {
+            // 기존 midCId 쿼리 값을 덮어씀
+            url.searchParams.set('midCID', midCId);
+        } else {
+            // 없으면 새로 추가
+            url.searchParams.append('midCID', midCId);
+        }
+
+        if (url.searchParams.has('subCID')){
+            url = url.toString().substring(0, url.toString().indexOf('subCID')-1);
+        }
+
+        // 페이지 이동
+        window.location.href = url.toString();
+    }
+
+    // 카테고리 세부목록과 관련된 목록을 보여줌
+    function getProductList(subCID){
+        let url = new URL(window.location.href);
+
+        if (url.searchParams.has('subCID')) {
+            // 기존 midCId 쿼리 값을 덮어씀
+            url.searchParams.set('subCID', subCID);
+        } else {
+            // 없으면 새로 추가
+            url.searchParams.append('subCID', subCID);
+        }
+
+        // 페이지 이동
+        window.location.href = url.toString();
+    }
+</script>
+
+<section class="category-product-section">
+    <!-- 왼쪽: 카테고리 -->
+    <div class="category-section">
+        <h1 th:text="${param.majorCID}"></h1>
+        <ul th:each="ctg : ${midCategoryList}">
+            <li>
+                <button type="button" th:value="${ctg.getCategoryId()}" th:name="${ctg.getCategoryId()}"
+                        th:text="${ctg.getName()}" onclick="return getSubCategory(this.value)"></button>
+            </li>
+        </ul>
+
+        <h1 th:text="${param.midCID}"></h1>
+        <ul th:each="mtg : ${subCategoryList}">
+            <li>
+                <button type="button" th:value="${mtg.getCategoryId()}" th:name="${mtg.getCategoryId()}"
+                        th:text="${mtg.getName()}" onclick="return getProductList(this.value)"></button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 구분선 -->
+    <div class="vertical-line"></div>
+
+    <!--th:if="${}"  카테고리에 맞는 조건들을 보여줄 곳  -->
+
+    <!-- 오른쪽: 상품 리스트 -->
+    <div class="product-section">
+        <!-- 검색 및 정렬 -->
+        <div class="search-sort-container">
+            <input type="search" placeholder="Search Product Name" id="productName">
+            <button type="button" onclick="searchProductFunction()" class="btn-search-order">Search</button>
+
+
+            <select id="sortOptions">
+                <option th:each="option : ${sortList}" th:value="${option.getProductSortId}"
+                        th:text="${option.getExplanation}">정렬 기준</option>
+            </select>
+            <button type="button" onclick="orderProductFunction()" class="btn-search-order">Check</button>
+        </div>
+
+        <!-- 상품 리스트 -->
+        <div class="product-grid">
+            <!-- 검색 결과 있을 때 -->
+            <th:block th:if="${param.searchProduct != null}">
+                <div class="product-card"
+                     th:each="product : ${products}"
+                     th:if="${product.getName().contains(param.searchProduct)
+                 && !product.getStatus().equals('stop-display')}">
+                    <div class="product-img">
+                        <img th:src="@{'/images/product/' + ${product.getProductId()} + '.png'}"
+                             alt="Product Image"
+                             th:classappend="${product.status == 'sold-out' ? 'grayscale' : ''}" />
+                        <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
+                        <!-- 좋아요 수, 후기 수 -->
+                        <div class="product-stats">
+                            <span class="like-count"  th:text="|❤ ${product.getLikeCount()}|"></span>
+                            <span class="review-count" th:text="|💭 ${product.getReviewCount()}|"></span>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 th:text="${product.getName()}">Fancy Product</h3>
+                        <span class="price" th:text="|${product.price} 원|">₩40,000</span>
+                        <a class="detail-btn" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
+                    </div>
+                </div>
+            </th:block>
+
+            <!-- 모든 상품 표시 -->
+            <th:block th:if="${param.searchProduct == null}">
+                <div class="product-card"
+                     th:each="product : ${products}"
+                     th:if="${!product.getStatus().equals('stop-display')}">
+                    <div class="product-img">
+                        <img th:src="@{'/images/product/' + ${product.getProductId()} + '.png'}"
+                             alt="Product Image"
+                             th:classappend="${product.status == 'sold-out' ? 'grayscale' : ''}" />
+                        <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
+                        <!-- 좋아요 수, 후기 수 -->
+                        <div class="product-stats">
+                            <span class="like-count" th:text="|❤ ${product.getLikeCount()}|"></span>
+                            <span class="review-count" th:text="|💭 ${product.getReviewCount()}|"></span>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 th:text="${product.getName()}">Fancy Product</h3>
+                        <span class="price" th:text="|${product.price} 원|">₩40,000</span>
+                        <a class="detail-btn" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </div>
+
+    <!-- 상품 반복문 끝 -->
+</section>
+
+<!-- 푸터 -->
+<footer>
+    <div th:replace="Bars/footer :: #footer"></div>
+</footer>
+<script defer>
+    <!--  상품 입력 받아서 쿼리 스트링으로 검색함  -->
+    function searchProductFunction() {
+        let pdName = document.getElementById('productName').value;
+
+        if (!pdName) {
+            alert("검색어를 입력하세요.");
+            return false;
+        }
+
+        let url = new URL(window.location.href);
+        if (url.toString().includes('searchProduct')){
+            url.searchParams.set('searchProduct', pdName);
+        } else {
+            url.searchParams.append('searchProduct', pdName);
+        }
+
+        window.location.href = url.toString();
+    }
+
+    //     정렬 하는 기능
+    function orderProductFunction(){
+        const sortSelect = document.getElementById("sortOptions");
+
+        // 선택된 value (예: "like_count")
+        const selectedValue = sortSelect.value;
+
+        let url = new URL(window.location.href);
+        if (!selectedValue) {
+            if (url.toString().includes('orderOption'))
+                url.searchParams.delete('orderOption');
+            window.location.href = url.toString();
+            return;
+        }
+
+        if (url.toString().includes('orderOption')){
+            url.searchParams.set('orderOption', selectedValue);
+        } else {
+            url.searchParams.append('orderOption', selectedValue);
+        }
+
+        window.location.href = url.toString();
+    }
+</script>
+</body>
+</html>

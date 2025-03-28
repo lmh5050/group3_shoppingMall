@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 고객 민원 조회 -->
+<mapper namespace="org.example.shoppingmall.repository.complaint.AdminComplaintRepository">
+
+    <!-- 모든 민원 찾기 -->
+    <select id="findCustomerComplaints" resultType="org.example.shoppingmall.dto.complaint.ComplaintDto">
+        SELECT
+            *
+        FROM  complaint
+        ORDER BY request_datetime ASC
+    </select>
+
+    <!-- 특정 민원 찾기 -->
+    <select id="findCustomerComplaintById" resultType="org.example.shoppingmall.dto.complaint.ComplaintDto">
+        SELECT
+            *
+        FROM complaint
+        WHERE complaint_id = #{complaintId}
+    </select>
+
+    <!-- 민원 접수 시 데이터 수정 -->
+    <update id="receivedCustomerComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
+        UPDATE complaint
+        SET
+            status = #{status},
+            received_datetime = #{receivedDatetime}
+        WHERE complaint_id = #{complaintId}
+    </update>
+
+    <!-- 민원 답변 시 데이터 수정 -->
+    <update id="responseCustomerComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
+        UPDATE complaint
+        SET
+        status = #{status},
+        end_datetime = #{endDatetime},
+        comment = #{comment},
+        refund_amount = #{refundAmount}
+        WHERE complaint_id = #{complaintId}
+    </update>
+
+    <!-- 민원 삭제 시 데이터 수정 -->
+    <update id="deleteCustomerComplaint" parameterType="org.example.shoppingmall.dto.complaint.ComplaintDto">
+        UPDATE complaint
+        SET
+            delete_flag = #{deleteFlag}
+        WHERE complaint_id = #{complaintId}
+    </update>
+
+    <!-- order_id에 해당하는 상품 가격 조회 -->
+    <select id="findProductTotalPriceByOrderIdForAdmin">
+        SELECT
+            product_total_price
+        FROM order_detail
+        WHERE order_id = #{orderId}
+        AND product_name = #{productName}
+    </select>
+
+</mapper>

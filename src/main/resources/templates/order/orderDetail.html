@@ -1,95 +1,258 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang=en xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Order Detail</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주문 상세 정보</title>
+    <link rel="stylesheet" th:href="@{/css/Bars.css}">
+    <link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .order-item {
+            display: flex;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .order-item img {
+            width: 100px;
+            height: 100px;
+            margin-right: 15px;
+        }
+
+        .order-item div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .order-item p {
+            margin: 5px 0;
+        }
+
+        .btn {
+            background-color: #333333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #4e4e4e;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            text-align: center;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        .order-summary {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+
+        .order-summary p {
+            margin: 0;
+        }
+
+        .gray-button {
+            background-color: #d3d3d3;
+            color: #333;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+            border: none;
+        }
+
+        .gray-button:hover {
+            background-color: #a9a9a9;
+        }
+
+        h2 {
+            font-family: Arial, sans-serif;
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
+<!-- 네비게이션 바 포함 -->
+<div th:replace="Bars/nav_bar :: nav"></div>
 <body>
-<h1>Order Detail</h1>
-<h3>주문 정보</h3>
-<table>
-    <tr>
-        <td>주문 ID:</td>
-        <td th:text="${order.orderId}"></td>
-    </tr>
-    <tr>
-        <td>고객 ID:</td>
-        <td th:text="${order.customerId}"></td>
-    </tr>
-    <tr>
-        <td>주문 상태:</td>
-        <td th:text="${order.orderStatus}"></td>
-    </tr>
-    <tr>
-        <td>결제 상태:</td>
-        <td th:text="${order.paymentStatus}"></td>
-    </tr>
-    <tr>
-        <td>총 주문 금액:</td>
-        <td th:text="${order.totalOrderAmount}"></td>
-    </tr>
-    <tr>
-        <td>할인 금액:</td>
-        <td th:text="${order.totalDiscountAmount}"></td>
-    </tr>
-    <tr>
-        <td>배송비:</td>
-        <td th:text="${order.shippingFee}"></td>
-    </tr>
-    <tr>
-        <td>최종 결제 금액:</td>
-        <td th:text="${order.finalPaymentAmount}"></td>
-    </tr>
-    <tr>
-        <td>수취인:</td>
-        <td th:text="${order.recipient}"></td>
-    </tr>
-    <tr>
-        <td>배송지:</td>
-        <td th:text="${order.shippingAddressBasic} + ' ' + ${order.shippingAddressDetail}"></td>
-    </tr>
-    <tr>
-        <td>연락처:</td>
-        <td th:text="${order.recipientContact}"></td>
-    </tr>
-    <tr>
-        <td>주문 날짜:</td>
-        <td th:text="${order.orderDatetime}"></td>
-    </tr>
-    <tr>
-        <td>결제 완료 날짜:</td>
-        <td th:text="${order.paymentCompletionDatetime}"></td>
-    </tr>
-</table>
+<div class="container">
+    <h2>주문 상세 정보</h2>
+    <th:block th:each="entry : ${groupedOrderDetails}">
 
-<h3>주문 상품 정보</h3>
-<table>
-    <tr>
-        <th>상품명</th>
-        <th>수량</th>
-        <th>가격</th>
-        <th>사이즈</th>
-        <th>색상</th>
-    </tr>
-    <tr th:each="orderDetail : ${order.orderDetails}">
-        <td th:text="${orderDetail.productName}"></td>
-        <td th:text="${orderDetail.quantity}"></td>
-        <td th:text="${orderDetail.price}"></td>
-        <td th:text="${orderDetail.size}"></td>
-        <td th:text="${orderDetail.color}"></td>
-    </tr>
-</table>
+        <!-- 주문 기본 정보 -->
+        <div class="section">
+            <div class="section-title">주문 정보</div>
+            <p>주문일자: <span th:text="${#dates.format(entry.value[0].createdAt, 'yyyy. MM. dd')}">2025. 3. 11</span></p>
+            <p>주문번호: <span th:text="${entry.value[0].orderId}">123456</span></p>
+            <p>주문 상태: <span th:text="${entry.value[0].codeName}">배송 중</span></p>
+        </div>
 
-<h3>결제 정보</h3>
-<table>
-    <tr>
-        <td>결제 트랜잭션 ID:</td>
-        <td th:text="${order.paymentTransactionId}"></td>
-    </tr>
-</table>
+        <!-- 배송 정보 -->
+        <div class="section">
+            <div class="section-title">배송 정보</div>
+            <p>수령인: <span th:text="${entry.value[0].receivePeople}">홍길동</span></p>
+            <p>연락처: <span th:text="${entry.value[0].receivePhoneNumber}">010-1234-5678</span></p>
+            <p>배송 주소:
+                (<span th:text="${entry.value[0].zipCode}"></span>)
+                <span th:text="${entry.value[0].basicAddress}">서울특별시 강남구 테헤란로</span>
+                <span th:text="${entry.value[0].detailAddress}">123번지</span></p>
+            <p>배송 요청사항: <span th:text="${entry.value[0].deliveryRequest}">010-1234-5678</span></p>
+        </div>
 
-</body>
-</html>
+        <!-- 주문 상세 항목들 -->
+        <div class="section">
+            <div class="section-title">주문 상품</div>
+            <th:block th:each="orderDetail : ${entry.value}">
+                <div class="order-item">
+                    <img th:src="@{${orderDetail.imageUrl}}" alt="상품 이미지">
+                    <div>
+                        <p>상품명: <span th:text="${orderDetail.productName}">티셔츠</span></p>
+                        <p>색상: <span th:text="${orderDetail.color}">블랙</span></p>
+                        <p>사이즈: <span th:text="${orderDetail.size}">M</span></p>
+                        <p>수량: <span th:text="${orderDetail.quantity}">1</span></p>
+                        <p>총 가격: ₩ <span th:text="${#numbers.formatInteger(orderDetail.productTotalPrice, 0, 'COMMA')}">25,000</span>
+                        </p>
+                    </div>
+                </div>
+            </th:block>
+        </div>
 
+        <!-- 결제 정보 -->
+        <div class="section">
+            <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                결제 정보
+                <button class="gray-button" th:onclick="'openReceiptPopup(' + ${entry.value[0].orderId} + ')'">거래명세서
+                </button>
+            </div>
+
+            <div class="order-summary">
+                <p></p>
+            </div>
+
+            <div class="order-summary">
+                <p>상품 금액:</p>
+                <span th:text="${#numbers.formatInteger(entry.value[0].totalDiscountAmount.add(entry.value[0].totalAmount), 0, 'COMMA')} +'원'">0</span>
+            </div>
+            <div class="order-summary">
+                <p>할인 금액:</p>
+                <span th:text="${#numbers.formatInteger(entry.value[0].totalDiscountAmount.add(entry.value[0].discountAmount), 0, 'COMMA')} +'원' ">0</span>
+            </div>
+            <div class="order-summary">
+                <p>배송비:</p>
+                <span th:text="${entry.value[0].shippingPrice == 0 ? '무료배송' : #numbers.formatInteger(entry.value[0].shippingPrice, 0, 'COMMA')+'원'}">무료배송</span>
+            </div>
+            <div class="order-summary">
+                <p>결제 금액:</p>
+                <span th:text="${#numbers.formatInteger(entry.value[0].finalAmount, 0, 'COMMA')} +'원'"></span>
+            </div>
+            <div class="order-summary">
+                <p>결제 방법:</p>
+                <span th:text="${entry.value[0].name}"></span>
+            </div>
+            <div class="order-summary">
+                <p></p>
+                <span th:text="${entry.value[0].bankDeposit}"></span>
+            </div>
+            <div class="order-summary">
+                <p></p>
+                <span th:text="${entry.value[0].accountDeposit}"></span>
+            </div>
+        </div>
+
+        <!-- 주문 관리 버튼 -->
+        <div class="section">
+            <button class="btn" th:onclick="|location.href='/shipping/track?orderId=' + ${entry.value[0].orderId}|">배송조회</button>
+            <button class="btn" th:onclick="|location.href='/complaint/' + ${entry.value[0].orderId}|">교환/반품 신청</button>
+            <!--<button class="btn">리뷰 작성하기</button>-->
+            <button class="btn" th:onclick="|location.href='/order/list'|">목록으로</button>
+            <button class="delete-btn"
+                    th:data-order-id="${entry.value[0].orderId}"
+                    onclick="confirmDelete(this.getAttribute('data-order-id'))">
+                주문 내역 삭제
+            </button>
+        </div>
+    </th:block>
+</div>
+
+<script>
+    // 거래명세서 팝업 창 열기
+    function openReceiptPopup(orderId) {
+        const width = 500, height = 800;
+        const left = (window.screen.width - width) / 2;
+        const top = (window.screen.height - height) / 2;
+
+        // 팝업 창 열기
+        const popup = window.open(
+            '/payment/receipt/' + orderId,
+            'receiptPopup',
+            `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`
+        );
+
+        // 팝업이 정상적으로 열렸는지 확인
+        if (!popup) {
+            alert('팝업을 열 수 없습니다. 팝업 차단을 해제해 주세요.');
+        }
+    }
+
+    function confirmDelete(orderId) {
+        if (confirm("정말 삭제하시겠습니까?")) {
+            location.href = "/order/delete/" + orderId;
+        }
+    }
+
+</script>
 </body>
 </html>

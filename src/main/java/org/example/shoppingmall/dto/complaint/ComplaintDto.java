@@ -16,7 +16,7 @@ public class ComplaintDto {
     private String reason;                 // reason
     private String pickupAddress;          // pickup_address
     private String returnAddress;          // return_address
-    private int status;                    // status
+    private String status;                    // status
     private String description;            // description
     private Timestamp requestDatetime;     // request_datetime
     private Timestamp receivedDatetime;    // received_datetime
@@ -28,4 +28,6 @@ public class ComplaintDto {
     private Double shippingPrice;          // shipping_price
     private Byte deleteFlag;               // delete_flag
     private String exchangeProductId;      // exchange_product_id
+    private Long orderId;                 //order_id
+    private String productName;          //product_name
 }

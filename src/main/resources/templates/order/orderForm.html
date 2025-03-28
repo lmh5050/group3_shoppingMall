@@ -2,66 +2,317 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>orderForm</title>
+    <title th:text="${pageTitle}">Shop Homepage - Start Bootstrap Template</title>
+    <link rel="stylesheet" th:href="@{/css/Bars.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            line-height: 2;
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        h1, h2, h3 {
+            color: #333;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #6c757d;
+        }
+
+        .product-info {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            line-height: 2;
+        }
+
+        .payment-info {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            line-height: 2;
+            font-weight: bold;
+        }
+
+        .shipping-info span, .product-info span {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        button {
+            background-color: #333333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #333333;
+        }
+
+        #deliveryRequest {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        #customRequest {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            display: none;
+        }
+
+        #product-info img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
+<!-- 네비게이션 바 포함 -->
+<div th:replace="Bars/nav_bar :: nav"></div>
+
 <body>
 <form action="/order/order" method="post">
-    <h1>주문서</h1>
-    <!-- 배송지 설정 -->
-    <div id="shipping">
-        <h2>배송지</h2>
-        <p><span th:text="${address.receivePeople}" name="recipient" required></span>
-            <span th:if="${address.status == 1}" style="background-color: lightgray; color: black; font-size: 12px; padding: 3px 6px; border-radius: 5px;">기본배송지</span>
-            <button onclick="location.href='/order/changeAddress'">배송지 변경</button>
-        </p>
-        <p><span th:text="${address.address}" name="shipping_address_basic" required></span>
-        <span th:text="${address.detailAddress}" name="shipping_address_detail" required></span></p>
-        <p><span th:text="${address.receivePhoneNumber}" name="recipient_contact" required></span></p>
+    <div class="container">
+        <input type="hidden" id="customerIdInput" th:value="${customerId}">
+        <h1>주문서</h1>
+        <h3><input type="hidden" id="showOrderId" th:value="${showOrderId}" readonly></h3>
+        <div class="section">
+            <div class="section-title">배송 정보</div>
+            <div><span id="receivePeople" name="receive_people" th:text="${address.receivePeople}"></span>
+                <span th:text="${address.status == 1} ? '기본배송지' : '추가배송지'" style="background-color: lightgray; color: black; font-size: 12px; padding: 3px 6px; border-radius: 5px;"></span><br>
+                <!--
+                <button onclick="location.href='/order/changeAddress'">배송지 변경</button><br>
+                -->
+                (<span id="zipCode" th:text="${address.zipCode}"></span>)
+                <span id="addressBasic" name="shipping_address_basic" th:text="${address.address}"></span>
+                <span id="addressDetail" name="receive_people" th:text="${address.detailAddress}"></span><br>
+                <span id="receivePhoneNumber" name="recipient_contact" th:text="${address.receivePhoneNumber}"
+                      type="tel"></span>
+            </div>
 
-        <label for="deliveryRequest"></label>
-        <select id="deliveryRequest" name="deliveryRequest" onchange="checkCustomOption()">
-            <option value="">배송요청사항(선택)</option>
-            <option value="door">문 앞에 놓아주세요</option>
-            <option value="security">경비실에 맡겨주세요</option>
-            <option value="contact">배송 전 연락 주세요</option>
-            <option value="other">직접 입력</option>
-        </select>
-        <input type="text" id="customRequest" name="customRequest" placeholder="요청 사항(50자 이내)" style="display: none;">
-        <script>
-            function checkCustomOption() {
-                let selectBox = document.getElementById("deliveryRequest");
-                let customInput = document.getElementById("customRequest");
+            <label for="deliveryRequest"></label>
+            <select id="deliveryRequest" name="deliveryRequest" onchange="checkCustomOption()">
+                <option value="">배송요청사항(선택)</option>
+                <option value="문 앞에 놓아주세요">문 앞에 놓아주세요</option>
+                <option value="경비실에 맡겨주세요">경비실에 맡겨주세요</option>
+                <option value="배송 전 연락 주세요">배송 전 연락 주세요</option>
+                <option value="other">직접 입력</option>
+            </select>
+            <input type="text" id="customRequest" name="customRequest" placeholder="요청 사항(50자 이내)">
+            <script>
+                function checkCustomOption() {
+                    let selectBox = document.getElementById("deliveryRequest");
+                    let customInput = document.getElementById("customRequest");
 
-                if (selectBox.value === "other") {
-                    customInput.style.display = "inline-block";
-                } else {
-                    customInput.style.display = "none";
+                    if (selectBox.value === "other") {
+                        customInput.style.display = "inline-block";
+                    } else {
+                        customInput.style.display = "none";
+                    }
                 }
+            </script>
+        </div>
+
+        <div class="product-info">
+            <div class="section-title">상품 정보</div>
+            <div th:each="product : ${productInfo}">
+                <div style="display: none;">주문일련번호: <span th:text="${product.productDetailId}"></span></div>
+                <div><img th:src="@{${product.imageUrl}}" alt="상품 이미지"></div>
+                <div><span th:text="${product.name}"></span></div>
+                <div><span th:text="${product.color}"></span></div>
+                <div><span th:text="${product.size}"></span></div>
+                <div><span th:text="${product.quantity}+'개'" min="1"></span></div>
+                <div style="display: none;"><span th:text="${product.price}"></span></div>
+                <div><span th:text="${product.getTotalPrice}+'원'"></span></div>
+            </div>
+        </div>
+
+        <div class="payment-info">
+            <div class="section-title">결제 금액</div>
+            <div th:with="finalAmount=${totalAmount + address.price}">
+                <div>총 주문 금액: <span th:text="${totalAmount} + '원'">0원</span></div>
+                <div>총 할인 금액: 0원</div>
+                <div>배송비: <span id="shippingPrice"
+                                th:text="${#numbers.formatInteger(address.price, 0, 'COMMA')} + '원'"></span></div>
+                <div>최종 결제 금액: <span th:text="${#numbers.formatInteger(finalAmount, 0, 'COMMA')} + '원'"></span></div>
+            </div>
+        </div>
+
+        <div id="paymentMethod">
+            <button type="button" onclick="requestPay()">결제하기</button>
+        </div>
+    </div>
+
+    <script>
+        function requestPay() {
+            const width = 500, height = 700;
+            const left = (window.screen.width - width) / 2;
+            const top = (window.screen.height - height) / 2;
+            const orderId = document.getElementById('showOrderId').value;
+            const customerId = document.getElementById('customerIdInput').value;
+            const orderStatus = "MA01006";
+            const totalDiscountAmount = 0;
+            const productBlocks = document.querySelectorAll('.product-info > div');
+            const zipCode = document.getElementById('zipCode').textContent.trim();
+            const basicAddress = document.getElementById('addressBasic').textContent.trim();
+            const detailAddress = document.getElementById('addressDetail').textContent.trim();
+            const receivePeople = document.getElementById('receivePeople').textContent.trim();
+            const receivePhoneNumber = document.getElementById('receivePhoneNumber').textContent.trim();
+            const shippingPriceText = document.getElementById('shippingPrice').textContent.trim();
+            const shippingPrice = parseFloat(shippingPriceText.replace(/[^0-9.]/g, ''));
+
+            // 배송 요청 사항 선택값 가져오기
+            const deliveryRequestSelect = document.getElementById('deliveryRequest');
+            const selectedDeliveryRequest = deliveryRequestSelect.value; // 선택된 값만 가져옵니다.
+
+            // "other" 옵션을 선택한 경우 사용자 입력값 가져오기
+            let deliveryRequest = selectedDeliveryRequest;
+            if (selectedDeliveryRequest === "other") {
+                const customRequestInput = document.getElementById('customRequest');
+                deliveryRequest = customRequestInput.value.trim();  // 사용자 입력값 가져오기
             }
-        </script>
-    </div>
 
-    <div id="productInfo">
-        <h2>상품정보</h2>
-        <div>상품명 <span th:text="${productInfo.name}"></span></div>
-        <div>색상: <span th:text="${productInfo.color}">0원</span></div>
-        <div>사이즈: <span th:text="${productInfo.size}">0원</span></div>
-        <div>상품 금액: <span th:text="${productInfo.price}">0원</span></div>
-    </div>
+            let orderDetailList = [];
+            let totalOrderAmount = 0;
+            let totalQuantity = 0;
 
-    <!-- 결제 금액 -->
-    <div id="paymentInfo">
-        <h4>결제 금액</h4>
-        <div>총 상품 금액: <span th:text="${totalAmount}">0원</span></div>
-        <div>할인 금액: <span th:text="${discountAmount}">0원</span></div>
-        <div>배송비: <span th:text="${shippingFee}">0원</span></div>
-        <div>최종 결제 금액: <span th:text="${finalAmount}">0원</span></div>
-    </div>
+            productBlocks.forEach((productBlock, index) => {
+                const children = productBlock.children;
+                let productDetailId = "", productName = "", size = "", color = "";
+                let quantity = 0, price = 0, productTotalPrice = 0;
 
-    <!-- 결제 방법 선택 -->
-    <div id="paymentMethod">
-        <button type="submit">결제방법 선택하기</button>
-    </div>
+                if (children.length >= 1) {
+                    productDetailId = children[0].querySelector('span').textContent.trim();
+                }
+                if (children.length >= 3) {
+                    productName = children[2].querySelector('span').textContent.trim();
+                }
+                if (children.length >= 4) {
+                    color = children[3].querySelector('span').textContent.trim();
+                }
+                if (children.length >= 5) {
+                    size = children[4].querySelector('span').textContent.trim();
+                }
+                if (children.length >= 6) {
+                    quantity = parseInt(children[5].querySelector('span').textContent) || 0;
+                }
+                if (children.length >= 7) {
+                    price = parseFloat(children[6].querySelector('span').textContent.replace(/[^0-9.-]+/g, "")) || 0;
+                }
+                if (children.length >= 8) {
+                    productTotalPrice = parseFloat(price * quantity) || 0;
+                }
+
+                totalOrderAmount += productTotalPrice;
+                totalQuantity += quantity;
+                orderDetailList.push({
+                    serialNumber: index + 1,
+                    productDetailId: productDetailId,
+                    productName: productName,
+                    size: size,
+                    color: color,
+                    quantity: quantity,
+                    price: price,
+                    discountAmount: 0,
+                    productPrice: price,
+                    productTotalPrice: productTotalPrice
+                });
+            });
+
+            const orderData = {
+                orderId: parseInt(orderId),
+                customerId: customerId,
+                orderStatus: orderStatus,
+                totalDiscountAmount: totalDiscountAmount,
+                totalOrderAmount: totalOrderAmount,
+                totalQuantity: totalQuantity,
+                orderDetailList: orderDetailList,
+                zipCode: zipCode,
+                basicAddress: basicAddress,
+                detailAddress: detailAddress,
+                receivePeople: receivePeople,
+                receivePhoneNumber: receivePhoneNumber,
+                deliveryRequest: deliveryRequest,
+                shippingPrice: shippingPrice
+            };
+
+            console.log(orderData);
+            const popup = window.open(
+                '/payment',
+                'paymentPopup',
+                `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`
+            );
+
+            setTimeout(() => {
+                popup.postMessage(orderData, "*");
+            }, 300);
+        }
+    </script>
 </form>
 </body>
 </html>
