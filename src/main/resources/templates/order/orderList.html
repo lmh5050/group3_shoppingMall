@@ -113,7 +113,7 @@
     <div class="order-group">
       <div class="order-header">
         <span th:text="${entry.value[0].codeName}"></span>
-        <span th:text="${#dates.format(entry.value[0].createdAt, 'yyyyMMdd')}"></span>
+        <span th:text="${#dates.format(entry.value[0].createdAt, 'yyyy.MM.dd')}"></span>
         <a th:href="@{/order/detail(orderId=${entry.value[0].orderId})}" class="order-detail-link">상세보기</a>
       </div>
 
@@ -133,9 +133,9 @@
       </div>
 
       <div class="order-actions">
-        <button class="btn">배송조회</button>
+        <button class="btn" th:onclick="|location.href='/shipping/track?orderId=' + ${entry.value[0].orderId}|">배송조회</button>
         <button class="btn" th:onclick="|location.href='/complaint/' + ${entry.value[0].orderId}|">교환/반품 신청</button>
-        <button class="btn">리뷰 작성하기</button>
+        <!--<button class="btn">리뷰 작성하기</button>-->
 
       </div>
     </div>

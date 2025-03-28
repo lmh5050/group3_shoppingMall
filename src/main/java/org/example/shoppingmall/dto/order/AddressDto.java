@@ -11,7 +11,7 @@ public class AddressDto {
     private String detailAddress;
     private String zipCode;
     private Integer status;
-    private String delivery_request;
+    private String deliveryRequest;
     private String receivePeople;
     private String receivePhoneNumber;
 }

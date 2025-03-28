@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ProductSeasonDTO {
-    private Long productId;        // 상품 ID
     private Long seasonId;         // 시즌 ID
     private String name;           // 시즌 이름
     private Integer periodMonth;   // 시작 월

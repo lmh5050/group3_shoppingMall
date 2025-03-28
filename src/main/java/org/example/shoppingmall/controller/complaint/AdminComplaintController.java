@@ -35,6 +35,18 @@ public class AdminComplaintController {
         return "complaint/adminComplaintForm";
     }
 
+    // 민원 상세 페이지
+    @GetMapping("/admin/complaint/detail/{complaintId}")
+    public String viewComplaintDetail(@PathVariable("complaintId") String complaintId, Model model) {
+        // complaintId로 해당 민원 조회
+        ComplaintDto complaint = adminComplaintService.getCustomerComplaintById(complaintId);
+
+        // 조회한 민원 데이터를 모델에 추가
+        model.addAttribute("complaint", complaint);
+
+        return "complaint/adminComplaintDetail"; // 상세 페이지로 이동
+    }
+
     //고객 민원 접수
     @PostMapping("/admin/complaint/receive/{complaintId}")
     public String receivedCustomerComplaint(@PathVariable("complaintId") String complaintId,
@@ -51,10 +63,11 @@ public class AdminComplaintController {
                                             @RequestParam("comment") String comment,
                                             @RequestParam("complaintResponseType") String complaintResponseType,
                                             @RequestParam("complaintType") String complaintType,
-                                            @RequestParam("orderId") Long orderId) {
+                                            @RequestParam("orderId") Long orderId,
+                                            @RequestParam("productName") String productName) {
 
-        adminComplaintService.responseCustomerComplaint(complaintId, comment, complaintResponseType, complaintType, orderId);
-
+        System.out.println(productName);
+        adminComplaintService.responseCustomerComplaint(complaintId, comment, complaintResponseType, complaintType, orderId, productName);
         return "redirect:/admin/complaint/list";
     }
     //고객 민원 답변 수정 시 원래 내용 출력

@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 @Data
 public class OrderListDto {
     private Timestamp createdAt;
-    private Integer orderId;
+    private Long orderId;
     private String orderStatus;
     private String productName;
     private String size;

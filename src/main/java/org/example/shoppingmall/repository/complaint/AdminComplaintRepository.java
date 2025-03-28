@@ -23,5 +23,5 @@ public interface AdminComplaintRepository {
     void deleteCustomerComplaint(ComplaintDto complaintDto);
 
     //상품 가격 조회
-    String findProductTotalPriceByOrderId(Long orderId);
+    String findProductTotalPriceByOrderIdForAdmin(Long orderId, String productName);
 }

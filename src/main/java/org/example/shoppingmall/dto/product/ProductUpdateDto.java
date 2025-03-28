@@ -17,7 +17,7 @@ public class ProductUpdateDto {
     private Double productPrice;             // 상품 가격
     private String productDescription;       // 상품 설명
     private String productCategoryId;        // 카테고리 ID
-    private String productSessionId;         // 시즌 ID
+    private String productSeasonId;         // 시즌 ID
     private String productNotes;             // 비고
     private String productGender;            // 성별
     private String productFit;               // 핏

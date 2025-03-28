@@ -17,10 +17,12 @@ public class OrderDetailDto {
     private String bankDeposit;
     private String accountDeposit;
     private String name; //결제수단명
+    private String zipCode;
     private String basicAddress;
     private String detailAddress;
     private String receivePeople;
     private String receivePhoneNumber;
+    private String deliveryRequest;
     private BigDecimal shippingPrice; //배송비
     private Long serialNumber;
     private String productName;

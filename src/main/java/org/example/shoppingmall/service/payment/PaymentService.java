@@ -162,7 +162,7 @@ public class PaymentService {
             int lastNumber = Integer.parseInt(lastShippingId.substring(3));
             newShippingId = String.format("SHP%03d", lastNumber + 1);
         }
-        System.out.println("paymentInfoDto = " + paymentInfoDto.getDeliveryRequest());
+        
         PaymentShippingDto shippingDto = PaymentShippingDto.builder()
                 .shippingId(newShippingId)
                 .orderId(paymentInfoDto.getOrderId())
@@ -172,8 +172,9 @@ public class PaymentService {
                 .receivePhoneNumber(paymentInfoDto.getReceivePhoneNumber())
                 .shippingPrice(paymentInfoDto.getShippingPrice())
                 .deliveryRequest(paymentInfoDto.getDeliveryRequest())
+                .zipCode(paymentInfoDto.getZipCode())
                 .build();
-        System.out.println("shippingDto = " + shippingDto.getDeliveryRequest());
+        
         // 배송 정보 저장
         paymentRepository.insertShipping(shippingDto);
         // 배송 이력 저장

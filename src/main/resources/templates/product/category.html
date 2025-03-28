@@ -97,18 +97,22 @@
             <th:block th:if="${param.searchProduct != null}">
                 <div class="product-card"
                      th:each="product : ${products}"
-                     th:if="${product.getName().contains(param.searchProduct) && !product.getStatus().equals('stop-display')}">
+                     th:if="${product.getName().contains(param.searchProduct)
+                 && !product.getStatus().equals('stop-display')}">
                     <div class="product-img">
                         <img th:src="@{'/images/product/' + ${product.getProductId()} + '.png'}"
                              alt="Product Image"
                              th:classappend="${product.status == 'sold-out' ? 'grayscale' : ''}" />
                         <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
+                        <!-- 좋아요 수, 후기 수 -->
+                        <div class="product-stats">
+                            <span class="like-count"  th:text="|❤ ${product.getLikeCount()}|"></span>
+                            <span class="review-count" th:text="|💭 ${product.getReviewCount()}|"></span>
+                        </div>
                     </div>
                     <div class="product-info">
-                        <h4 th:text="|❤ ${product.getLikeCount()}|"></h4>
-                        <h4 th:text="|💭 ${product.getReviewCount()}|"></h4>
                         <h3 th:text="${product.getName()}">Fancy Product</h3>
-                        <span class="price" th:text="'₩ ' + ${product.price}">₩40,000</span>
+                        <span class="price" th:text="|${product.price} 원|">₩40,000</span>
                         <a class="detail-btn" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
                     </div>
                 </div>
@@ -124,12 +128,15 @@
                              alt="Product Image"
                              th:classappend="${product.status == 'sold-out' ? 'grayscale' : ''}" />
                         <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
+                        <!-- 좋아요 수, 후기 수 -->
+                        <div class="product-stats">
+                            <span class="like-count" th:text="|❤ ${product.getLikeCount()}|"></span>
+                            <span class="review-count" th:text="|💭 ${product.getReviewCount()}|"></span>
+                        </div>
                     </div>
                     <div class="product-info">
-                        <h4 th:text="|❤ ${product.getLikeCount()}|"></h4>
-                        <h4 th:text="|💭 ${product.getReviewCount()}|"></h4>
                         <h3 th:text="${product.getName()}">Fancy Product</h3>
-                        <span class="price" th:text="'₩ ' + ${product.price}">₩40,000</span>
+                        <span class="price" th:text="|${product.price} 원|">₩40,000</span>
                         <a class="detail-btn" th:href="@{'/productDetail?prdId=' + ${product.getProductId()}}">Show Detail</a>
                     </div>
                 </div>
