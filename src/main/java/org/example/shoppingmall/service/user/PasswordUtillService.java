@@ -1,4 +1,4 @@
-package org.example.shoppingmall.service.login;
+package org.example.shoppingmall.service.user;
 
 import org.springframework.stereotype.Service;
 

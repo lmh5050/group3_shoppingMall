@@ -1,10 +1,10 @@
 package org.example.shoppingmall.repository.User;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.example.shoppingmall.dto.User.InsertUserInfoDto;
-import org.example.shoppingmall.dto.User.UserAddressDto;
-import org.example.shoppingmall.dto.User.UserInfoDto;
-import org.example.shoppingmall.dto.User.UserLoginInfoDto;
+import org.example.shoppingmall.dto.user.InsertUserInfoDto;
+import org.example.shoppingmall.dto.user.UserAddressDto;
+import org.example.shoppingmall.dto.user.UserInfoDto;
+import org.example.shoppingmall.dto.user.UserLoginInfoDto;
 
 import java.util.List;
 
@@ -25,6 +25,7 @@ public interface UserRepository {
     void insertUserAddressInfo (UserAddressDto userAddress);
     void updateDefaultDelivery (UserAddressDto userAddress);
     void updateDefaultDeliveryZero (UserAddressDto userAddress);
+    void createDefaultDelivery (UserAddressDto userAddress);
     void updateAddressManage (UserAddressDto userAddress);
     void deleteAddress (UserAddressDto userAddress);
 }

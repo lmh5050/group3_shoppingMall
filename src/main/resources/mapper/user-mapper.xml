@@ -248,6 +248,27 @@
             address_id = #{addressId}
     </update>
 
+    <insert id="createDefaultDelivery" parameterType="UserAddressDto">
+        INSERT INTO address (
+            address_id,
+            delivery_name,
+            zip_code,
+            address,
+            detail_address,
+            receive_people,
+            receive_phone_number
+        )
+        VALUES (
+                   #{addressId},
+                   #{deliveryName},
+                   #{zipCode},
+                   #{address},
+                   #{detailAddress},
+                   #{receivePeople},
+                   #{receivePhoneNumber}
+               )
+    </insert>
+
     <update id="updateAddressManage" parameterType="UserAddressDto">
         UPDATE address
         SET

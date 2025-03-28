@@ -39,7 +39,6 @@
             <li th:if="${session.customerId != null}">
                 <a class="kaqg_main-menu" th:href="@{/order/cart/{customerId}(customerId=${session.customerId})}">장바구니</a>
             </li>
-
             <!-- 회원 로그인 여부로 구성 -->
             <li th:if="${session.customerId != null}">
                 <a class="kaqg_main-menu" href="#">마이페이지</a>
@@ -51,7 +50,7 @@
                 </div>
             </li>
             <li th:if="${session.customerId == 'admin'}">
-                <a href="/admin/productInventoryMgmt">
+                <a href="/admin/product">
                     <button type="button">관리자 페이지</button>
                 </a>
             </li>
