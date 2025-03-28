@@ -384,7 +384,7 @@
                 if (!cashReceiptNumber) {
                     alert('현금영수증 발행용 번호를 입력해주세요.');
                     return;
-                } else if (isNaN(cashReceiptNumber)) {
+                } else if (isNaN(cashReceiptNumber) || cashReceiptNumber.toString().length > 10) {
                     alert('현금영수증 발행용 번호를 맞는 형식으로 입력해주세요.');
                     return;
                 }
