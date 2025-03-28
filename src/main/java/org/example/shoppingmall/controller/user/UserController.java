@@ -1,10 +1,8 @@
-package org.example.shoppingmall.controller.User;
+package org.example.shoppingmall.controller.user;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.apache.catalina.User;
-import org.example.shoppingmall.dto.User.*;
-import org.example.shoppingmall.dto.order.AddressDto;
+import org.example.shoppingmall.dto.user.*;
 import org.example.shoppingmall.service.login.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,9 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Controller
@@ -217,7 +213,7 @@ public class UserController {
         return userinfo;
     }
 
-    @PostMapping("/user/addressmanage") //주소 정보 수정 완료 눌릴때 쓰는 api
+    @PostMapping("/user/addressmanage") //주소 정보 등록 완료 눌릴때 쓰는 api
     @ResponseBody
     public String insertUserAddressInfo(@RequestBody UserAddressDto UserAddress ,
                                                 HttpSession session) {

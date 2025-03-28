@@ -362,11 +362,14 @@
                 if (!cardNumber) {
                     alert('카드 번호를 입력해주세요.');
                     return;
+                } else if (isNaN(cardNumber)) {
+                    alert('카드번호를 맞는 형식으로 입력해주세요.');
+                    return;
                 }
 
                 paymentData.cardType = parseInt(cardType);
                 paymentData.cardInstallment = parseInt(cardInstallment);
-                paymentData.cardNumber = parseInt(cardNumber);
+                paymentData.cardNumber = cardNumber;
             }
             // 가상계좌 결제 시 유효성 검사
             else {
@@ -380,6 +383,9 @@
                 }
                 if (!cashReceiptNumber) {
                     alert('현금영수증 발행용 번호를 입력해주세요.');
+                    return;
+                } else if (isNaN(cashReceiptNumber)) {
+                    alert('현금영수증 발행용 번호를 맞는 형식으로 입력해주세요.');
                     return;
                 }
 
@@ -397,14 +403,14 @@
                         window.close();
                         // 부모 창에 리디렉션 요청
                         if (window.opener) {
-                            window.opener.location.href = `/order/detail?orderId=${orderData.orderId}`;
+                            window.opener.location.href = `/order/detail/${orderData.orderId}`;
                         }
-                    } else if (paymentData.cardNumber == 1234) {
+                    } else if (paymentData.cardNumber.toString().length == 16) {
                         alert('결제가 완료되었습니다.');
                         window.close();
                         // 부모 창에 리디렉션 요청
                         if (window.opener) {
-                            window.opener.location.href = `/order/detail?orderId=${orderData.orderId}`;
+                            window.opener.location.href = `/order/detail/${orderData.orderId}`;
                         }
                     } else {
                         alert('결제 실패입니다. 다시 시도해주세요.');

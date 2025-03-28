@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>주문 상세 정보</title>
+    <title>주문 상세</title>
     <link rel="stylesheet" th:href="@{/css/Bars.css}">
     <link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">
     <style>
@@ -130,26 +130,26 @@
 <body>
 <div class="container">
     <h2>주문 상세 정보</h2>
-    <th:block th:each="entry : ${groupedOrderDetails}">
 
+    <th:block th:each="entry : ${groupedOrderDetails}">
         <!-- 주문 기본 정보 -->
         <div class="section">
             <div class="section-title">주문 정보</div>
-            <p>주문일자: <span th:text="${#dates.format(entry.value[0].createdAt, 'yyyy. MM. dd')}">2025. 3. 11</span></p>
-            <p>주문번호: <span th:text="${entry.value[0].orderId}">123456</span></p>
-            <p>주문 상태: <span th:text="${entry.value[0].codeName}">배송 중</span></p>
+            <p>주문일자: <span th:text="${#dates.format(entry.value[0].createdAt, 'yyyy. MM. dd HH:mm:ss')}"></span></p>
+            <p>주문번호: <span th:text="${entry.value[0].orderId}">6</span></p>
+            <p>주문 상태: <span th:text="${entry.value[0].codeName}"></span></p>
         </div>
 
         <!-- 배송 정보 -->
         <div class="section">
             <div class="section-title">배송 정보</div>
-            <p>수령인: <span th:text="${entry.value[0].receivePeople}">홍길동</span></p>
-            <p>연락처: <span th:text="${entry.value[0].receivePhoneNumber}">010-1234-5678</span></p>
+            <p>수령인: <span th:text="${entry.value[0].receivePeople}"></span></p>
+            <p>연락처: <span th:text="${entry.value[0].receivePhoneNumber}"></span></p>
             <p>배송 주소:
                 (<span th:text="${entry.value[0].zipCode}"></span>)
-                <span th:text="${entry.value[0].basicAddress}">서울특별시 강남구 테헤란로</span>
-                <span th:text="${entry.value[0].detailAddress}">123번지</span></p>
-            <p>배송 요청사항: <span th:text="${entry.value[0].deliveryRequest}">010-1234-5678</span></p>
+                <span th:text="${entry.value[0].basicAddress}"></span>
+                <span th:text="${entry.value[0].detailAddress}"></span></p>
+            <p>배송 요청사항: <span th:text="${entry.value[0].deliveryRequest}"></span></p>
         </div>
 
         <!-- 주문 상세 항목들 -->
@@ -159,12 +159,11 @@
                 <div class="order-item">
                     <img th:src="@{${orderDetail.imageUrl}}" alt="상품 이미지">
                     <div>
-                        <p>상품명: <span th:text="${orderDetail.productName}">티셔츠</span></p>
-                        <p>색상: <span th:text="${orderDetail.color}">블랙</span></p>
-                        <p>사이즈: <span th:text="${orderDetail.size}">M</span></p>
-                        <p>수량: <span th:text="${orderDetail.quantity}">1</span></p>
-                        <p>총 가격: ₩ <span th:text="${#numbers.formatInteger(orderDetail.productTotalPrice, 0, 'COMMA')}">25,000</span>
-                        </p>
+                        <p>상품명: <span th:text="${orderDetail.productName}"></span></p>
+                        <p>색상: <span th:text="${orderDetail.color}"></span></p>
+                        <p>사이즈: <span th:text="${orderDetail.size}"></span></p>
+                        <p>수량: <span th:text="${orderDetail.quantity}"></span></p>
+                        <p>상품 금액: <span th:text="${#numbers.formatInteger(orderDetail.productTotalPrice, 0, 'COMMA')}"></span>원</p>
                     </div>
                 </div>
             </th:block>
@@ -249,9 +248,15 @@
 
     function confirmDelete(orderId) {
         if (confirm("정말 삭제하시겠습니까?")) {
+            // 확인을 눌렀을 때 삭제 처리
+            alert("삭제가 완료되었습니다.");
             location.href = "/order/delete/" + orderId;
+        } else {
+            alert("삭제가 취소되었습니다.");
         }
     }
+
+</script>
 
 </script>
 </body>

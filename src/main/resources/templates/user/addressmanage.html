@@ -20,6 +20,12 @@
 <div th:replace="Bars/nav_bar :: nav"></div>
 
 <section class="py-5">
+    <h3>배송지 관리</h3>
+    <h3>
+        <span style="float: right;">님</span>
+        <span id="modalCustomerId" th:text="${customerId}" style="float: right;"></span>
+
+    </h3>
     <div class="container">
         <div class="profile-section">
             <table class="table table-bordered" id="modalAddressTable"> <!-- 여기에 id 추가 -->
@@ -39,14 +45,14 @@
                 <tbody>
                 </tbody>
             </table>
-            <button id="modalOpenModalBtn" class="btn btn-primary">등록</button>
-            <h3>Customer ID: <span id="modalCustomerId" th:text="${customerId}"></span></h3>
-            <p>Address Information: <span id="modalUserAddressInfo"></span></p>
+            <button id="modalOpenModalBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddressModal">
+                등록
+            </button>
         </div>
     </div>
 </section>
 
-<!-- 모달 구조 -->
+<!-- 등록 모달 구조 -->
 <div class="modal fade" id="modalAddressModal" tabindex="-1" aria-labelledby="modalAddressModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -55,7 +61,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- 여기에 모달 내용 추가 (예시로 입력 필드 추가) -->
                 <form id="modalAddressForm">
                     <div class="mb-3">
                         <label for="modalDeliveryName" class="form-label">배송지 명</label>
@@ -94,6 +99,50 @@
     </div>
 </div>
 
+<!-- 수정 모달 구조 -->
+<div class="modal fade" id="modalEditAddressModal" tabindex="-1" aria-labelledby="modalEditAddressModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditAddressModalLabel">배송지 수정</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="modalEditAddressForm">
+                    <div class="mb-3">
+                        <label for="modalEditDeliveryName" class="form-label">배송지 명</label>
+                        <input type="text" class="form-control" id="modalEditDeliveryName" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="modalEditZipCode" class="form-label">우편 번호</label>
+                        <input type="text" class="form-control" id="modalEditZipCode" required disabled/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modalEditAddress" class="form-label">주소</label>
+                        <input type="text" class="form-control" id="modalEditAddress" required disabled/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modalEditDetailAddress" class="form-label">상세 주소</label>
+                        <input type="text" class="form-control" id="modalEditDetailAddress" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="modalEditReceivePeople" class="form-label">받는 사람</label>
+                        <input type="text" class="form-control" id="modalEditReceivePeople" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="modalEditReceivePhoneNumber" class="form-label">연락처</label>
+                        <input type="text" class="form-control" id="modalEditReceivePhoneNumber" required />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                <button type="button" class="btn btn-primary" id="modalEditSaveAddressBtn">저장</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <footer>
     <div th:replace="Bars/footer :: #footer"></div>
 </footer>
@@ -114,15 +163,12 @@
 
                 addressData.forEach(address => {
                     const newRow = document.createElement('tr');
-
-                    // 라디오 버튼 추가
                     const cell1 = document.createElement('td');
                     const radioBtn = document.createElement('input');
                     radioBtn.type = 'radio';
                     radioBtn.name = 'address';
                     radioBtn.value = address.addressId;
 
-                    // status 값이 1일 경우 라디오 버튼을 활성화 상태로 설정
                     if (parseInt(address.status) === 1) {
                         radioBtn.checked = true;
                     }
@@ -141,7 +187,6 @@
                     cell1.appendChild(radioBtn);
                     newRow.appendChild(cell1);
 
-                    // 나머지 셀 추가
                     const cell2 = document.createElement('td');
                     cell2.textContent = address.deliveryName;
                     newRow.appendChild(cell2);
@@ -166,18 +211,16 @@
                     cell8.textContent = address.receivePhoneNumber;
                     newRow.appendChild(cell8);
 
-                    // 수정 버튼 추가
                     const cell9 = document.createElement('td');
                     const editBtn = document.createElement('button');
                     editBtn.textContent = '수정';
                     editBtn.classList.add('btn', 'btn-warning');
                     editBtn.addEventListener('click', function () {
-                        openEditModal(address);  // 수정 모달 함수 호출
+                        openEditModal(address);
                     });
                     cell9.appendChild(editBtn);
                     newRow.appendChild(cell9);
 
-                    // 삭제 버튼 추가
                     const cell10 = document.createElement('td');
                     const deleteBtn = document.createElement('button');
                     deleteBtn.textContent = '삭제';
@@ -194,61 +237,96 @@
             .catch(function (error) {
                 console.error('Error fetching address info:', error);
             });
-    });
 
-    function openEditModal(address) {
-        document.getElementById('modalDeliveryName').value = address.deliveryName;
-        document.getElementById('modalZipCode').value = address.zipCode;
-        document.getElementById('modalAddress').value = address.address;
-        document.getElementById('modalDetailAddress').value = address.detailAddress;
-        document.getElementById('modalReceivePeople').value = address.receivePeople;
-        document.getElementById('modalReceivePhoneNumber').value = address.receivePhoneNumber;
+        // 등록 모달 저장 버튼 클릭 시
+        document.getElementById('modalSaveAddressBtn').addEventListener('click', function () {
+            const deliveryName = document.getElementById('modalDeliveryName').value;
+            const zipCode = document.getElementById('modalZipCode').value;
+            const address = document.getElementById('modalAddress').value;
+            const detailAddress = document.getElementById('modalDetailAddress').value;
+            const receivePeople = document.getElementById('modalReceivePeople').value;
+            const receivePhoneNumber = document.getElementById('modalReceivePhoneNumber').value;
 
-        const saveButton = document.getElementById('modalSaveAddressBtn');
-        saveButton.textContent = '수정 저장';
+            if (!deliveryName || !zipCode || !address || !detailAddress || !receivePeople || !receivePhoneNumber) {
+                alert('모든 필드를 채워주세요!');
+                return;
+            }
 
-        saveButton.onclick = function () {
-            const updatedAddress = {
-                addressId: address.addressId,
-                deliveryName: document.getElementById('modalDeliveryName').value,
-                zipCode: document.getElementById('modalZipCode').value,
-                address: document.getElementById('modalAddress').value,
-                detailAddress: document.getElementById('modalDetailAddress').value,
-                receivePeople: document.getElementById('modalReceivePeople').value,
-                receivePhoneNumber: document.getElementById('modalReceivePhoneNumber').value
+            const newAddress = {
+                customerId: customerId,
+                deliveryName: deliveryName,
+                zipCode: zipCode,
+                address: address,
+                detailAddress: detailAddress,
+                receivePeople: receivePeople,
+                receivePhoneNumber: receivePhoneNumber
             };
 
-            // POST 방식으로 수정된 내용 전송
-            axios.post('/user/addressmanage/update', updatedAddress)
+            axios.post('/user/addressmanage', newAddress)
                 .then(function (response) {
-                    console.log('Address updated:', response.data);
+                    console.log('Address added:', response.data);
                     const modal = document.getElementById('modalAddressModal');
                     const bootstrapModal = new bootstrap.Modal(modal);
                     bootstrapModal.hide();
-                    location.reload();
+                    location.reload(); // 주소가 추가되었으면 페이지를 새로 고침
                 })
                 .catch(function (error) {
-                    console.error('Error updating address:', error);
+                    console.error('Error adding address:', error);
                 });
-        };
+        });
 
-        const modal = document.getElementById('modalAddressModal');
-        const bootstrapModal = new bootstrap.Modal(modal);
-        bootstrapModal.show();
-    }
+        // 수정 모달 열기
+        function openEditModal(address) {
+            document.getElementById('modalEditDeliveryName').value = address.deliveryName;
+            document.getElementById('modalEditZipCode').value = address.zipCode;
+            document.getElementById('modalEditAddress').value = address.address;
+            document.getElementById('modalEditDetailAddress').value = address.detailAddress;
+            document.getElementById('modalEditReceivePeople').value = address.receivePeople;
+            document.getElementById('modalEditReceivePhoneNumber').value = address.receivePhoneNumber;
 
-    function deleteAddress(addressId) {
-        if (confirm('정말로 삭제하시겠습니까?')) {
-            axios.post('/user/addressmanage/delete', { addressId: addressId })
-                .then(function (response) {
-                    console.log('Address deleted:', response.data);
-                    location.reload();
-                })
-                .catch(function (error) {
-                    console.error('Error deleting address:', error);
-                });
+            const saveButton = document.getElementById('modalEditSaveAddressBtn');
+            saveButton.onclick = function () {
+                const updatedAddress = {
+                    addressId: address.addressId,
+                    deliveryName: document.getElementById('modalEditDeliveryName').value,
+                    zipCode: document.getElementById('modalEditZipCode').value,
+                    address: document.getElementById('modalEditAddress').value,
+                    detailAddress: document.getElementById('modalEditDetailAddress').value,
+                    receivePeople: document.getElementById('modalEditReceivePeople').value,
+                    receivePhoneNumber: document.getElementById('modalEditReceivePhoneNumber').value
+                };
+
+                axios.post('/user/addressmanage/update', updatedAddress)
+                    .then(function (response) {
+                        console.log('Address updated:', response.data);
+                        const modal = document.getElementById('modalEditAddressModal');
+                        const bootstrapModal = new bootstrap.Modal(modal);
+                        bootstrapModal.hide();
+                        location.reload();
+                    })
+                    .catch(function (error) {
+                        console.error('Error updating address:', error);
+                    });
+            };
+
+            const modal = document.getElementById('modalEditAddressModal');
+            const bootstrapModal = new bootstrap.Modal(modal);
+            bootstrapModal.show();
         }
-    }
+
+        function deleteAddress(addressId) {
+            if (confirm('정말로 삭제하시겠습니까?')) {
+                axios.post('/user/addressmanage/delete', { addressId: addressId })
+                    .then(function (response) {
+                        console.log('Address deleted:', response.data);
+                        location.reload();
+                    })
+                    .catch(function (error) {
+                        console.error('Error deleting address:', error);
+                    });
+            }
+        }
+    });
 
     function execDaumPostcode() {
         new daum.Postcode({

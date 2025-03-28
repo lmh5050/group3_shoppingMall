@@ -120,6 +120,13 @@
             <!-- 검색 필터 -->
             <div class="search-filter">
                 <div>
+                    <!-- 날짜 선택 -->
+                    <label for="start-date">조회 기간:</label>
+                    <input type="date" id="start-date">
+                    <span>~</span>
+                    <input type="date" id="end-date">
+
+                    <!-- 검색어 입력 -->
                     <label for="search-type">검색어:</label>
                     <select id="search-type">
                         <option value="order-number">주문번호</option>
@@ -128,7 +135,7 @@
 
                     <input type="text" id="search" class="search-box" placeholder="주문번호 또는 주문자">
                     <button class="search-button" onclick="searchOrders()">검색</button>
-                    </div>
+                </div>
                 <!-- 엑셀 다운로드 버튼 -->
                 <button class="download-button" onclick="downloadExcel()">엑셀 다운로드</button>
             </div>
@@ -193,19 +200,33 @@
 </script>
 <script>
     // 검색 함수 - 버튼 클릭 시 호출
+    // 검색 함수 - 버튼 클릭 시 호출
     function searchOrders() {
-        let input = document.getElementById("search").value.toLowerCase(); // 입력값 가져오기
+        let input = document.getElementById("search").value.toLowerCase(); // 검색어 입력값 가져오기
         let orderRows = document.querySelectorAll("tbody tr"); // 테이블의 모든 행 가져오기
+        let startDate = document.getElementById("start-date").value; // 시작 날짜
+        let endDate = document.getElementById("end-date").value; // 끝 날짜
 
         orderRows.forEach(row => {
             let orderId = row.querySelector("td:nth-child(3)").innerText.toLowerCase(); // 주문번호
             let customerId = row.querySelector("td:nth-child(5)").innerText.toLowerCase(); // 주문자
+            let orderDate = row.querySelector("td:nth-child(1)").innerText; // 주문일 (결제일)
 
-            // 검색어가 포함되어 있으면 표시, 없으면 숨김
-            if (orderId.includes(input) || customerId.includes(input)) {
-                row.style.display = "";
+            // 날짜 필터링 로직
+            let dateMatch = true;
+            if (startDate && endDate) {
+                // 날짜 문자열을 'yyyyMMdd' 형식으로 변환
+                orderDate = orderDate.replace(/[^0-9]/g, ""); // 날짜 형식에서 숫자만 추출
+                if (orderDate < startDate.replace(/-/g, "") || orderDate > endDate.replace(/-/g, "")) {
+                    dateMatch = false;
+                }
+            }
+
+            // 검색어와 날짜 조건을 동시에 만족하는지 체크
+            if ((orderId.includes(input) || customerId.includes(input)) && dateMatch) {
+                row.style.display = ""; // 조건에 맞으면 행 표시
             } else {
-                row.style.display = "none";
+                row.style.display = "none"; // 조건에 맞지 않으면 행 숨기기
             }
         });
     }
