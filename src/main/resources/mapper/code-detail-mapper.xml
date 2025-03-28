@@ -18,4 +18,18 @@
         FROM code_detail
         WHERE code_no = #{codeNo}
     </select>
+
+    <!-- status 값으로 code_name 조회(Shipping status)  -->
+    <select id="findCodeNameByStatus">
+        SELECT code_name
+        FROM code_detail
+        WHERE code_no = #{status}
+    </select>
+
+    <!-- delay_reason 값으로 code_name 조회(delay_reason)  -->
+    <select id="findCodeNameByDelayReason">
+        SELECT code_name
+        FROM code_detail
+        WHERE code_no = #{delayReason}
+    </select>
 </mapper>

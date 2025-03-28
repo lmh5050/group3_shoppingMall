@@ -4,7 +4,7 @@
 
     <!--배송리스트 전체 조회-->
     <select id="selectAllShipping" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
-        select * from shipping
+        select * from shipping order by order_id desc
     </select>
 
     <!--배송 상세 페이지-->
@@ -35,16 +35,19 @@
     <update id="updateShippingList" parameterType="org.example.shoppingmall.dto.shipping.ShippingDto">
         update shipping
         <set>
+
+            shipping_company_id = #{shippingCompanyId},
             <if test="trackingNumber != null">tracking_number = #{trackingNumber},</if>
-            <if test="shippingDatetime != null">shipping_datetime = #{shippingDatetime},</if>
-            <if test="expectedDatetime != null">expected_datetime = #{expectedDatetime},</if>
-            <if test="endDatetime != null">end_datetime = #{endDatetime},</if>
+            expected_datetime = #{expectedDatetime},
+            shipping_datetime = #{shippingDatetime},
+            end_datetime = #{endDatetime},
             <if test="note != null">note = #{note},</if>
             <if test="delayReason != null">delay_reason = #{delayReason},</if>
             <if test="description != null">description = #{description},</if>
             <if test="deliveryName != null">delivery_name = #{deliveryName},</if>
             <if test="deliveryNumber != null">delivery_number = #{deliveryNumber},</if>
-            <if test="deliveryDatetime != null">delivery_datetime = #{deliveryDatetime},</if>
+            delivery_datetime = #{deliveryDatetime},
+            <if test="status != null">status  = #{status},</if>
             updated_at = NOW()
         </set>
         where shipping_id = #{shippingId}
@@ -158,12 +161,14 @@
             shipping_datetime,
             expected_datetime,
             end_datetime
-        from shipping_history where order_id = #{orderId}
+        from shipping where order_id = #{orderId}
     </select>
 
 
+
+
     <!--    &lt;!&ndash; 최신 배송 정보 가져오기 &ndash;&gt;-->
-    <!--    <select id="getLatestShippingDetail" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">-->
+    <!--    <select id="getLatestShippingDetail" resultType="org.example.shoppingmall.dto.Shipping.ShippingDto">-->
     <!--        select * from shipping_history-->
     <!--        where order_id = #{orderId}-->
     <!--        order by shipping_datetime desc-->
