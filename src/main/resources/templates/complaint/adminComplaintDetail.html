@@ -76,6 +76,7 @@
 <section class="complaint-container">
     <h2 class="text-center mb-3">민원 상세 정보</h2>
 
+    <div class="mb-3"><strong>고객 ID:</strong> <span th:text="${complaint.customerId}"></span></div>
     <div class="mb-3"><strong>주문 번호:</strong> <span th:text="${complaint.orderId}"></span></div>
     <div class="mb-3"><strong>상품 이름:</strong> <span th:text="${complaint.productName}"></span></div>
     <div class="mb-3"><strong>민원 번호:</strong> <span th:text="${complaint.complaintId}"></span></div>

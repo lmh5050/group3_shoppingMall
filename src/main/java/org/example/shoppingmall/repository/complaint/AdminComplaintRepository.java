@@ -24,4 +24,5 @@ public interface AdminComplaintRepository {
 
     //상품 가격 조회
     String findProductTotalPriceByOrderIdForAdmin(Long orderId, String productName);
+
 }
