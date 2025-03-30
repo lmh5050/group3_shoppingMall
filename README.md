@@ -14,10 +14,8 @@
 
 ### 📖 프로젝트 개요 (Overview / Description)
 
-- **20, 30대를 위한 깔끔하고 트랜디**한 
-- 
-- UI/UX를 제공하는 **의류 쇼핑몰**
-- 벤치마킹 쇼핑몰: **무신사 스토어** (https://www.musinsa.com/main/musinsa/recommend)
+- 20, 30대를 위한 깔끔하고 트랜디한 UI/UX를 제공하는 의류 쇼핑몰
+- 벤치마킹 쇼핑몰: 무신사 스토어 (https://www.musinsa.com/main/musinsa/recommend)
 - 무신사처럼 **온라인 패션 스토어**이며, **자체 상표 브랜드**
 - **모던/베이식/캐주얼**한 의류 제품을 공장에서부터 **입고, 진열, 관리, 판매, 배송, 고객 관리** 등을 한 번에 관리할 수 있는 **자체 쇼핑몰**
 - **다양한 구매 방식**을 제공해 **사용자 만족도**를 높임
@@ -42,7 +40,7 @@
     - 각자 개발한 파트 유닛 테스트 진행
     - 원활한 사용자 UX를 위해 예외 처리
     - 전체적인 흐름에서 부터 세부적인 흐름으로 들어가면서 정의서와 맞게 구현되어 있는지 체크
-4. **발표 자료 정리 및 준비** - 2025.03.28 ~ 2025.03.30 
+4. **발표 자료 정리 및 준비** - 2025.03.28 ~ 2025.03.30 (완)
     - 각자 개발한 서비스 정리
     - 흐름도 정리
     - README.md 업데이트
@@ -66,10 +64,13 @@
     - /static : 정적 리소스 (CSS, JS, 이미지)
     - /templates : Thymeleaf 템플릿 (HTML 파일)
 - 각 폴더마다 자신이 맡은 파트(complaint, user, order, payment, product, shipping)로 나뉨
-
+- /project_info
+  - /screen_definition : 화면 정의서 사진 첨부
+  - /prj02_erd.png : ERD 사진 첨부
+  - /신사숙녀.mp4 : 시연 동영상 첨부
 ### 🚀 시작 방법 (Getting Started)
 1. Clone the repository
-2. git clone 
+2. git clone https://github.com/kimyelin0506/KDT_DBE3_Toy_Project2.git
 3. Setup DB and environment
 4. Run the application
 
@@ -132,6 +133,8 @@
       - 고객이 신청한 민원 정보 확인 기능
 
 ### 📌 ERD 설계 (ERD design)
+
+ERD 링크 : https://www.erdcloud.com/d/LB6hsEGRg8mpArYQy
 ![prj02_erd.png](project_info/prj02_erd.png)
 - 검은 색: 고객/장바구니
 - 노란 색: 상품
