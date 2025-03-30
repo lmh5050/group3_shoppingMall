@@ -82,13 +82,11 @@
         - 상품 정렬(내림차순/별점/후기개수/좋아요 수/누적판매량)
         - 상품 검색
         - 상품 카테고리
-        - 
-        - 상품의 상세 정보를 제공 받음
+        - 상품의 상세 정보 제공
+        - 상품의 수량, 등록된 옵션을 선택
     - **관리자**
-        - 상품 입출고, 각 상품마다의 상태(진열 여부) 변경 및 관리
-        - 상품의 상세 정보 수정
-        - 리퍼/교환/폐기 상태 관리 및 처리
-        - 시즌 및 할인 관리
+        - 상품의 진열 상태 수정(진열/판매 중지/품절)
+        - 새로운 상품 등록
 3. **주문**
     - **고객**
         - 상품 주문 기능
@@ -104,27 +102,126 @@
     - **관리자**
         - 가상계좌 결제 조회/수정 기능
 5. **배송**
-    - **고객**
-        - 배송 정보 확인 및 배송 현황 조회
-    - **판매자**
-        - 계약 업체 직원들 정보 관리
-        - 배송 건에 대한 수거 및 발송 관리
-        - 발송한 상품에 대한 상태 관리
-        - 교환&환불 건에 대한 상태 관리
+   - **구매자**
+      - 배송 현황 조회
+   - **판매자**
+      - 배송 건에 대한  발송 관리
+      - 발송한 상품에 대한 상태 관리
 6. **취소/환불/교환**
-    - **구매자**
-        - 취소,환불,교환 각각의 유형에 맞는 민원 신청 및 민원 정보 확인
-        - 현재 민원 처리 상태 확인 가능
-    - **관리자**
-        - 고객이 신청한 민원 유형에 따라 처리 및 관리
+   - **구매자**
+      - 취소,환불,교환 각각의 유형에 맞는 민원 신청 기능
+      - 신청한 민원 수정 및 정보 확인 기능
+      - 신청한 민원의 처리 상태 확인 기능
+   - **관리자**
+      - 고객이 신청한 민원 답변 기능
+      - 고객이 신청한 민원 정보 확인 기능
 
 ### 📌 ERD 설계 (ERD design)
+![prj02_erd.png](project_info/prj02_erd.png)
+- 검은 색: 고객/장바구니
+- 노란 색: 상품
+- 빨간 색: 주문
+- 파란 색: 결제
+- 하늘 색: 배송
+- 초록 색: 취소/환불/교환
+- 보라 색: 직원/관리자
 
 ### 📌 API 명세서 (API Specification)
+
+(1) 고객
+
+| 역할   | 설명            |method|URL|
+|------|---------------|-------|---|
+| [고객] | 로그인 페이지 불러오기  |	GET|	/user/login|
+| [고객] | 로그인 페이지 불러오기	 |GET|	/user/login|
+| [고객] | 유저 로그인        |	POST| /user/login|
+| [고객] | 유저 로그아웃	      | POST          |  /user/logout |
+| [고객] | 마이페이지 페이지	    | GET	          | /user/mypage  |
+|[고객] |마이페이지 데이터|	GET|	/user/mypage/data|
+|[고객] |회원가입 페이지|	GET|	/user/register|
+|[고객] |아이디 중복체크|	POST| /user/registerCheck|
+|[고객] |닉네임 중복 확인|	POST| /user/checkNickname|
+|[고객] |회원가입 버튼 api|	POST| /user/register|
+|[고객] |회원 정보 수정 api|	POST| /user/modify|
+|[고객] |이미지 업로드 api|	POST| /user/uploadProfileImage|
+|[고객] |배송지 관리 페이지 api|	GET|	/user/addressmanage|
+|[고객] |modal 띄울때 페이지 데이터 api|	GET|	/user/addressmanage/{customerId}|
+|[고객] |modal 주소 정보 등록 완료 눌릴때 api|	POST| /user/addressmanage|
+|[고객] |modal 주소 정보 수정 완료 눌릴때 api|	POST| /user/addressmanage/update|
+|[고객]| 주소 정보 삭제 할때 api|	POST| /user/addressmanage/delete|
+
+(2) 상품
+
+| 역할     | 설명                                         | METHOD | URL                                              |
+|----------|----------------------------------------------|--------|--------------------------------------------------|
+| [고객]   | 메인 페이지                                | GET    | /                                                |
+| [고객]   | 상품 상세 페이지                          | GET    | /productDetail/{prdId}                          |
+| [고객]   | 카테고리 페이지 (대분류)                  | GET    | /category/{majorCID}                            |
+| [고객]   | 카테고리 페이지 (중분류)                  | GET    | /category/{majorCID}/{midCID}                   |
+| [고객]   | 카테고리 페이지 (소분류)                  | GET    | /category/{majorCID}/{midCID}/{subCID}          |
+| [고객]   | 메인/카테고리 페이지 상품 정렬             | GET    | /**/{orderOption}                               |
+| [고객]   | 메인/카테고리 페이지 상품 검색             | GET    | /**/{searchProduct}                             |
+| [고객]   | 메인/카테고리 페이지 상품 정렬 + 검색      | GET    | /**/{searchProduct}&{orderOption}              |
+| [관리자] | 상품 관리 페이지                          | GET    | /admin/product                                  |
+| [관리자] | 상품 진열 상태 변경                        | POST   | /admin/product                                  |
+| [관리자] | 상품 정보 수정 페이지                     | GET    | /admin/product/updatePorductDetail             |
+| [관리자] | 상품 정보 수정                            | POST   | /admin/product/updatePorductDetail/{prdId}     |
+| [관리자] | 새로운 상품 등록 페이지                   | GET    | /admin/product/addNewProduct                   |
+| [관리자] | 새로운 상품 등록                          | POST   | /admin/product/addNewProduct                   |
+
+
+(3) 주문
+
+| 역할   | 설명                         | METHOD | URL |
+|--------|------------------------------|--------|----------------------------------|
+| [고객] | 주문서 (상품 페이지)         | GET    | /order/order                   |
+| [고객] | 주문 (장바구니)               | POST   | /order/order                   |
+| [고객] | 주문 목록                     | GET    | /order/list                    |
+| [고객] | 주문 상세                     | GET    | /order/detail/{orderId}        |
+| [고객] | 주문 내역 삭제                | GET    | /order/delete/{orderId}        |
+| [관리자] | 전체 주문 조회               | GET    | /admin/order                   |
+
+(4) 결제
+
+| 역할     | 설명                    | METHOD | URL                          |
+|----------|-------------------------|--------|------------------------------|
+| [고객]   | 결제하기                | POST   | /payment                     |
+| [고객]   | 거래명세서 조회          | GET    | /payment/receipt/{orderId}   |
+| [관리자] | 가상계좌 결제 조회       | GET    | /payment/admin               |
+| [관리자] | 가상계좌 결제 상태 변경  | PUT    | /payment/admin               |
+
+(5) 배송
+
+| 역할     | 설명                      | METHOD | URL                      |
+|----------|---------------------------|--------|--------------------------|
+| [관리자] | 배송 리스트 전체 조회      | GET    | /admin/shipping/list     |
+| [관리자] | 배송 조회 상세 페이지      | GET    | /detail/{id}             |
+| [관리자] | 배송 상세 수정 페이지      | GET    | /update/{id}             |
+| [관리자] | 배송 상세 수정 후 저장     | POST   | /update/{id}             |
+| [고객]   | 배송 조회 페이지          | GET    | /shipping/track          |
+
+(6) 취소/환불/교환
+
+| 역할     | 설명                | METHOD | URL                                  |
+|----------|---------------------|--------|--------------------------------------|
+| [고객]   | 민원 신청 페이지    | GET    | /complaint/{orderId}                |
+| [고객]   | 민원 신청           | POST   | /complaint/request                  |
+| [고객]   | 민원 리스트 페이지  | GET    | /complaint/list                     |
+| [고객]   | 민원 상세 페이지    | GET    | /complaint/detail/{complaintId}     |
+| [고객]   | 민원 수정 페이지    | GET    | /complaint/edit                     |
+| [고객]   | 민원 수정           | POST   | /complaint/update                   |
+| [고객]   | 민원 삭제           | POST   | /complaint/delete/{complaintId}     |
+| [관리자] | 민원 리스트 페이지  | GET    | /admin/complaint/list               |
+| [관리자] | 민원 상세 페이지    | GET    | /admin/complaint/detail/{complaintId} |
+| [관리자] | 민원 접수           | POST   | /admin/complaint/receive/{complaintId} |
+| [관리자] | 민원 답변 페이지    | GET    | /admin/complaint/{complaintId}      |
+| [관리자] | 민원 답변           | POST   | /admin/complaint/response/{complaintId} |
 
 ### 📌 흐름도 (Flowchart)
 
 ### 📌 화면 정의서 (Screen Definition)
+
+
 
 
 
