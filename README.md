@@ -10,6 +10,8 @@
 - [ERD 설계](#-erd-설계-erd-design)
 - [API 명세서](#-api-명세서-api-specification)
 - [화면정의서](#-화면-정의서-screen-definition)
+- [시연 영상](#-시연-영상-demonstration-video)
+
 ### 📖 프로젝트 개요 (Overview / Description)
 
 - **20, 30대를 위한 깔끔하고 트랜디**한 
@@ -394,3 +396,6 @@
 - 관리자 민원 목록 페이지에서 정보 확인버튼을 통해 이동되는 페이지입니다.
   고객 ID, 주문 번호 등 민원에 대한 정보들이 표시되어 있습니다.
 ![취소환불교환7.png](project_info/screen_definition/%EC%B7%A8%EC%86%8C_%EA%B5%90%ED%99%98_%ED%99%98%EB%B6%88/%EC%B7%A8%EC%86%8C%ED%99%98%EB%B6%88%EA%B5%90%ED%99%987.png)
+
+### 📌 시연 영상 (Demonstration Video)
+[신사숙녀.mp4](project_info/%EC%8B%A0%EC%82%AC%EC%88%99%EB%85%80.mp4)
