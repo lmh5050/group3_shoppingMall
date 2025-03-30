@@ -1,16 +1,15 @@
 # **신사 숙녀 쇼핑몰**
 ## 목차
-- [프로젝트 개요](#프로젝트-개요)
-- [기술 스택](#기술-스택)
-- [진행 상황](#진행-상황)
-- [폴더 구조](#폴더-구조)
-- [시작 방법](#시작-방법)
-- [팀원 소개](#팀원-소개)
-- [주요 기능](#주요-기능)
-- [ERD 설계](#erd-설계)
-- [API 명세서](#api-명세서)
-- [흐름도](#흐름도)
-- [화면정의서](#화면정의서)
+- [프로젝트 개요](#-프로젝트-개요-overview--description)
+- [기술 스택](#-기술-스택-tech-stack)
+- [진행 상황](#-진행-상황-progress)
+- [폴더 구조](#-폴더-구조-optional-but-helpful)
+- [시작 방법](#-시작-방법-getting-started)
+- [팀원 소개](#-팀원-소개-optional)
+- [주요 기능](#-주요-기능-features)
+- [ERD 설계](#-erd-설계-erd-design)
+- [API 명세서](#-api-명세서-api-specification)
+- [화면정의서](#-화면-정의서-screen-definition)
 ### 📖 프로젝트 개요 (Overview / Description)
 
 - **20, 30대를 위한 깔끔하고 트랜디**한 
@@ -230,8 +229,6 @@
 | [관리자] | 민원 접수           | POST   | /admin/complaint/receive/{complaintId} |
 | [관리자] | 민원 답변 페이지    | GET    | /admin/complaint/{complaintId}      |
 | [관리자] | 민원 답변           | POST   | /admin/complaint/response/{complaintId} |
-
-### 📌 흐름도 (Flowchart)
 
 ### 📌 화면 정의서 (Screen Definition)
 (1) 고객
