@@ -14,11 +14,12 @@
 
 ### 📖 프로젝트 개요 (Overview / Description)
 
-- 20, 30대를 위한 깔끔하고 트랜디한 UI/UX를 제공하는 의류 쇼핑몰
+- 20, 30대를 위한 깔끔하고 트렌디한 UI/UX를 제공하는 의류 쇼핑몰
 - 벤치마킹 쇼핑몰: 무신사 스토어 (https://www.musinsa.com/main/musinsa/recommend)
 - 무신사처럼 **온라인 패션 스토어**이며, **자체 상표 브랜드**
 - **모던/베이식/캐주얼**한 의류 제품을 공장에서부터 **입고, 진열, 관리, 판매, 배송, 고객 관리** 등을 한 번에 관리할 수 있는 **자체 쇼핑몰**
 - **다양한 구매 방식**을 제공해 **사용자 만족도**를 높임
+- 개발 Repository : https://github.com/lmh5050/group3_shoppingMall.git
 
 ### 🛠️ 기술 스택 (Tech Stack)
 
