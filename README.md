@@ -171,22 +171,22 @@ ERD 링크 : https://www.erdcloud.com/d/LB6hsEGRg8mpArYQy
 
 (2) 상품
 
-| 역할     | 설명                                         | METHOD | URL                                              |
-|----------|----------------------------------------------|--------|--------------------------------------------------|
-| [고객]   | 메인 페이지                                | GET    | /                                                |
-| [고객]   | 상품 상세 페이지                          | GET    | /productDetail/{prdId}                          |
-| [고객]   | 카테고리 페이지 (대분류)                  | GET    | /category/{majorCID}                            |
-| [고객]   | 카테고리 페이지 (중분류)                  | GET    | /category/{majorCID}/{midCID}                   |
-| [고객]   | 카테고리 페이지 (소분류)                  | GET    | /category/{majorCID}/{midCID}/{subCID}          |
-| [고객]   | 메인/카테고리 페이지 상품 정렬             | GET    | /**/{orderOption}                               |
-| [고객]   | 메인/카테고리 페이지 상품 검색             | GET    | /**/{searchProduct}                             |
-| [고객]   | 메인/카테고리 페이지 상품 정렬 + 검색      | GET    | /**/{searchProduct}&{orderOption}              |
-| [관리자] | 상품 관리 페이지                          | GET    | /admin/product                                  |
-| [관리자] | 상품 진열 상태 변경                        | POST   | /admin/product                                  |
-| [관리자] | 상품 정보 수정 페이지                     | GET    | /admin/product/updatePorductDetail             |
-| [관리자] | 상품 정보 수정                            | POST   | /admin/product/updatePorductDetail/{prdId}     |
-| [관리자] | 새로운 상품 등록 페이지                   | GET    | /admin/product/addNewProduct                   |
-| [관리자] | 새로운 상품 등록                          | POST   | /admin/product/addNewProduct                   |
+| 역할     | 설명                                         | METHOD | URL                                        |
+|----------|----------------------------------------------|--------|--------------------------------------------|
+| [고객]   | 메인 페이지                                | GET    | /                                          |
+| [고객]   | 상품 상세 페이지                          | GET    | /productDetail/{prdId}                     |
+| [고객]   | 카테고리 페이지 (대분류)                  | GET    | /category/{majorCID}                       |
+| [고객]   | 카테고리 페이지 (중분류)                  | GET    | /category/{majorCID}&{midCID}              |
+| [고객]   | 카테고리 페이지 (소분류)                  | GET    | /category/{majorCID}&{midCID}&{subCID}     |
+| [고객]   | 메인/카테고리 페이지 상품 정렬             | GET    | /**/{orderOption}                          |
+| [고객]   | 메인/카테고리 페이지 상품 검색             | GET    | /**/{searchProduct}                        |
+| [고객]   | 메인/카테고리 페이지 상품 정렬 + 검색      | GET    | /**/{searchProduct}&{orderOption}          |
+| [관리자] | 상품 관리 페이지                          | GET    | /admin/product                             |
+| [관리자] | 상품 진열 상태 변경                        | POST   | /admin/product                             |
+| [관리자] | 상품 정보 수정 페이지                     | GET    | /admin/product/updatePorductDetail         |
+| [관리자] | 상품 정보 수정                            | POST   | /admin/product/updatePorductDetail/{prdId} |
+| [관리자] | 새로운 상품 등록 페이지                   | GET    | /admin/product/addNewProduct               |
+| [관리자] | 새로운 상품 등록                          | POST   | /admin/product/addNewProduct               |
 
 
 (3) 주문
