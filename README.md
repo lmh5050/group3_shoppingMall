@@ -69,7 +69,7 @@
 
 ### 🚀 시작 방법 (Getting Started)
 1. Clone the repository
-2. git clone https://github.com/kimyelin0506/KDT_DBE3_Toy_Project1.git
+2. git clone 
 3. Setup DB and environment
 4. Run the application
 
