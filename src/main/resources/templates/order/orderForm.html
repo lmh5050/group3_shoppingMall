@@ -5,10 +5,15 @@
     <title>주문서</title>
     <link rel="stylesheet" th:href="@{/css/Bars.css}">
     <style>
-        body {
+        html, body {
             font-family: Arial, sans-serif;
-            margin: 40px;
-            background-color: #f4f4f4;
+            height: 100%; /* html과 body의 높이를 100%로 설정 */
+            margin: 0; /* 기본 margin 제거 */
+            padding: 0; /* 기본 padding 제거 */
+            display: flex; /* flexbox 사용 */
+            justify-content: center; /* 수평 중앙 정렬 */
+            align-items: center; /* 수직 중앙 정렬 */
+            background-color: #f8f8f8; /* 배경색 */
         }
 
         .container {
@@ -210,6 +215,10 @@
             <button type="button" onclick="requestPay()">결제하기</button>
         </div>
     </div>
+    <!-- ✅ 기존 푸터 유지 -->
+    <footer>
+        <div th:replace="Bars/footer :: #footer"></div>
+    </footer>
 
     <script>
         function requestPay() {

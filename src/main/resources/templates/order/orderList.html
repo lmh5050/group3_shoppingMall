@@ -7,15 +7,22 @@
   <link rel="stylesheet" th:href="@{/css/Bars.css}">
   <link rel="stylesheet" th:href="@{/css/homecss/homeStyles.css}">
   <style>
-    body {
+    html, body {
       font-family: Arial, sans-serif;
-      margin: 40px;
-      background-color: #f8f8f8;
+      height: 100%; /* html과 body의 높이를 100%로 설정 */
+      margin: 0; /* 기본 margin 제거 */
+      padding: 0; /* 기본 padding 제거 */
+      display: flex; /* flexbox 사용 */
+      justify-content: center; /* 수평 중앙 정렬 */
+      align-items: center; /* 수직 중앙 정렬 */
+      background-color: #f8f8f8; /* 배경색 */
     }
+
     .main-content {
       width: 700px;
       margin: auto;
     }
+
     .search-box {
       width: 100%;
       padding: 10px;
@@ -24,6 +31,7 @@
       border-radius: 5px;
       margin-bottom: 20px;
     }
+
     .order-group {
       background: #fff;
       border-radius: 10px;
@@ -31,6 +39,7 @@
       margin-bottom: 20px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
+
     .order-header {
       display: flex;
       justify-content: flex-start;
@@ -141,6 +150,12 @@
     </div>
   </th:block>
 </div>
+
+<!-- ✅ 기존 푸터 유지 -->
+<footer>
+  <div th:replace="Bars/footer :: #footer"></div>
+</footer>
+
 <script>
   function searchOrders() {
     let input = document.getElementById("search").value.toLowerCase();
