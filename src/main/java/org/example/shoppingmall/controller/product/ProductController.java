@@ -87,7 +87,12 @@ public class ProductController {
 
 //    상세 페이지 이동
     @GetMapping("/productDetail")
-    public String productDetail(String prdId, Model model) {
+    public String productDetail(
+            String prdId,
+            @RequestParam(required = false, name = "likeProduct") String likeProduct,
+            @RequestParam(required = false, name = "URL") String URL,
+            HttpSession session,
+            Model model) {
         model.addAttribute("prdId", prdId);
 
         // 서비스 측 구현할 것: 상품 ID를 통해 ProductDto 가져오기
@@ -101,6 +106,31 @@ public class ProductController {
         // 상품의 상세 옵션을 가져옴
         ArrayList<ProductDetailDto> productDetailOptions = productService.getProductDetailOptions(prdId);
         model.addAttribute("productDetailOptions", productDetailOptions);
+        String userId = Optional.ofNullable(session.getAttribute("customerId"))
+                .map(Object::toString)
+                .orElse(null);
+
+        // 로그인이 되어 있을 경우
+        if (userId != null) {
+            // 현재 로그인된 유저가 좋아요 한 상품 표시하기
+            ArrayList<String> likeInfo = productService.getLikeProductById(userId);
+
+            model.addAttribute("userLike", likeInfo);
+        }
+
+        // 좋아요를 누른 경우 -> js에서 이미 세션 체크를 거치므로 무조건 로그인이 되어있는 상태
+        if (likeProduct != null){
+            ProductLike productLike = new ProductLike();
+            // 유저 아이디 가져오기 & 넣기
+            productLike.setUserId(userId);
+            // 상품 아이디 정보 넣기
+            productLike.setProductId(likeProduct);
+
+            // 서비스에서 좋아요를 등록
+            productService.setLikeProductById(productLike);
+            System.out.println(URL.substring(0, URL.indexOf("likeProduct")));
+            return "redirect:/productDetail"+URL.substring(0, URL.indexOf("likeProduct"));
+        }
 
         return "product/indexDetail";
     }
