@@ -7,6 +7,11 @@
 <head>
     <meta charset="UTF-8">
     <title>신사 숙녀 category</title>
+    <style>
+        .product-card {
+            text-align: start;
+        }
+    </style>
 </head>
 
 
@@ -106,8 +111,17 @@
                         <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
                         <!-- 좋아요 수, 후기 수 -->
                         <div class="product-stats">
-                            <span class="like-count"  th:text="|❤ ${product.getLikeCount()}|"></span>
-                            <span class="review-count" th:text="|💭 ${product.getReviewCount()}|"></span>
+                            <span class="like-count">
+                                <button th:text="|❤ ${product.getLikeCount()}|" onclick="return likeProduct()"
+                                        style="border: 0;
+                                        background-color: transparent; color: white;"></button>
+                            </span>
+                            <span class="review-count">
+                                <button th:text="|💭 ${product.getReviewCount()}|" onclick="return getProductReviews()"
+                                        style="border: 0;
+                                        background-color: transparent; color: white;"></button>
+                            </span>
+<!--                            <span class="review-count" th:text="|💭 ${product.getReviewCount()}|"></span>-->
                         </div>
                     </div>
                     <div class="product-info">
@@ -130,8 +144,15 @@
                         <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
                         <!-- 좋아요 수, 후기 수 -->
                         <div class="product-stats">
-                            <span class="like-count" th:text="|❤ ${product.getLikeCount()}|"></span>
-                            <span class="review-count" th:text="|💭 ${product.getReviewCount()}|"></span>
+                            <span class="like-count">
+                                <button th:text="|❤ ${product.getLikeCount()}|" th:onclick="return likeProduct(${product.getProductId()})"></button>
+<!--                                        onclick="return likeProduct()"-->
+                            </span>
+                            <span class="review-count">
+                                <button th:text="|💭 ${product.getReviewCount()}|" onclick="return getProductReviews()"
+                                        style="border: 0;
+                                        background-color: transparent; color: white;"></button>
+                            </span>
                         </div>
                     </div>
                     <div class="product-info">
@@ -152,6 +173,17 @@
     <div th:replace="Bars/footer :: #footer"></div>
 </footer>
 <script defer>
+    // 좋아요 버튼
+    function likeProduct() {
+        alert("좋아요");
+    }
+
+    // 리뷰 보러 가기
+    function getProductReviews() {
+        alert("후기 보기");
+    }
+
+
     <!--  상품 입력 받아서 쿼리 스트링으로 검색함  -->
     function searchProductFunction() {
         let pdName = document.getElementById('productName').value;

@@ -2,6 +2,7 @@ package org.example.shoppingmall.service.product;
 
 import org.example.shoppingmall.dto.product.*;
 import org.example.shoppingmall.repository.product.ProductDetailRepository;
+import org.example.shoppingmall.repository.product.ProductLikeRepository;
 import org.example.shoppingmall.repository.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,15 @@ public class ProductService {
     private final ProductDetailRepository productDetailRepository;
 //    private static final String UPLOAD_DIR = "C:\\JAVA\\fast_campus_KDT\\projects\\prj_02\\group3_shoppingMall\\src\\main\\resources\\static\\images\\product\\";
     private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/src/main/resources/static/images/product/";
+    private final ProductLikeRepository productLikeRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository,  ProductDetailRepository productDetailRepository) {
+    public ProductService(ProductRepository productRepository,
+                          ProductDetailRepository productDetailRepository,
+                          ProductLikeRepository productLikeRepository) {
         this.productRepository = productRepository;
         this.productDetailRepository = productDetailRepository;
+        this.productLikeRepository = productLikeRepository;
     }
 
     // 모든 상품 리스트를 가져옴
@@ -362,5 +367,26 @@ public class ProductService {
     // 시즌 리스트 가져오기
     public ArrayList<ProductSeasonDTO> getAllSeasonList(){
         return productRepository.getAllSeasonList();
+    }
+
+    // 로그인된 유저가 상품 좋아요 리스트에 추가하기
+    public void setLikeProductById(ProductLike productLike) {
+        // 상품에 좋아요를 하지 않은 경우
+        System.out.println("productLike = " + productLike);
+        if(this.checkLikeExists(productLike.getProductId(), productLike.getUserId()) == null){
+            productLikeRepository.setLikeProductById(productLike);
+        } else {
+            System.out.println("좋아요를 이미 눌러놓음");
+        }
+    }
+
+    // 로그인된 유저가 어떤 상품을 좋아요 눌렀는지 확인하기
+    public ArrayList<String> getLikeProductById(String productId) {
+        return productLikeRepository.getLikeProductById(productId);
+    }
+
+    // 상품을 좋아요 눌렀는지 확인하기(중복 확인을 위해)
+    private ProductLike checkLikeExists(String productId, String userId) {
+        return productLikeRepository.checkLikeExists(productId, userId);
     }
 }
