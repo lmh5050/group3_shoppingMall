@@ -370,13 +370,17 @@ public class ProductService {
     }
 
     // 로그인된 유저가 상품 좋아요 리스트에 추가하기
+    @Transactional
     public void setLikeProductById(ProductLike productLike) {
-        // 상품에 좋아요를 하지 않은 경우
-        System.out.println("productLike = " + productLike);
-        if(this.checkLikeExists(productLike.getProductId(), productLike.getUserId()) == null){
-            productLikeRepository.setLikeProductById(productLike);
-        } else {
-            System.out.println("좋아요를 이미 눌러놓음");
+        // 기존에 좋아요 테이블에 존재하는지 확인
+        ProductLike checkProductLike = this.checkLikeExists(productLike.getProductId(), productLike.getUserId());
+
+        if (checkProductLike == null){ // 기존에 존재하지 않는 경우
+            productLikeRepository.setLikeProductById(productLike);  //새로 등록
+            productLikeRepository.setProductLikeCountPlus(productLike.getProductId());  //상품 좋아요 수 ++
+        } else { // 좋아요 취소
+            productLikeRepository.deleteProductLike(productLike.getProductId());  //delete flag = 1오 만듬
+            productLikeRepository.setProductLikeCountMinus(productLike.getProductId());  //상품 좋아요 수 --
         }
     }
 

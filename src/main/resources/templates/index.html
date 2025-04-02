@@ -54,11 +54,16 @@
                     <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
                     <!-- 좋아요 수, 후기 수 -->
                     <div class="product-stats">
-                        <span class="like-count">
-                            <button th:text="|❤ ${product.getLikeCount()}|" onclick="return likeProduct()"
-                                    style="border: 0;
-                                    background-color: transparent; color: white;"></button>
-                        </span>
+                        <th:block th:if="${session.get('customerId') != null}">
+                            <span class="like-count">
+                                <button th:text="|❤ ${product.getLikeCount()}|"
+                                        th:class="${userLike.contains(product.productId)
+                                         }? 'like-product' : 'not-like-product'"
+                                        th:attr="data-product-id=${product.getProductId()}"
+                                        onclick="return likeProduct(this.getAttribute('data-product-id'))"
+                                ></button>
+                            </span>
+                        </th:block>
                         <span class="review-count">
                             <button th:text="|💭 ${product.getReviewCount()}|" onclick="return getProductReviews()"
                                     style="border: 0;
@@ -90,7 +95,8 @@
                         <th:block th:if="${session.get('customerId') != null}">
                             <span class="like-count">
                                 <button th:text="|❤ ${product.getLikeCount()}|"
-                                        th:class="${userLike.contains(product.productId)} ? 'like-product' : 'not-like-product'"
+                                        th:class="${userLike.contains(product.productId)
+                                         }? 'like-product' : 'not-like-product'"
                                         th:attr="data-product-id=${product.getProductId()}"
                                         onclick="return likeProduct(this.getAttribute('data-product-id'))"
                                 ></button>
@@ -131,11 +137,20 @@
         }
 
         // 로그인이 되어있을 경우 - 좋아요
-        alert('상품을 좋아요 리스트에 담았습니다.');
-        // let productId = document.querySelector('#product-id').value;
+        let button = document.querySelector(`[data-product-id='${productId}']`);
+        let likeStatus = button.className;
+
+        // 이미 좋아요를 누른 경우 -> 취소
+        if (likeStatus === 'like-product'){
+            alert('상품 좋아요를 취소합니다.');
+        } else {
+            alert('상품을 좋아요 리스트에 담았습니다.');
+        }
+
         console.log(productId);
         let url = new URL(window.location.href);
         url.searchParams.set("likeProduct", productId);
+        url.searchParams.set("URL", url.search);
         window.location.href = url.toString();
     }
 

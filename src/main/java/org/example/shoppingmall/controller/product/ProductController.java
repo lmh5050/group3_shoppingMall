@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -32,6 +34,7 @@ public class ProductController {
     public String home(
             @RequestParam(required = false, name = "orderOption") String orderOption,
             @RequestParam(required = false, name = "likeProduct") String likeProduct,
+            @RequestParam(required = false, name = "URL") String URL,
             HttpSession session,
             Model model) {
 
@@ -60,12 +63,13 @@ public class ProductController {
         // 로그인이 되어 있을 경우
         if (userId != null) {
             // 현재 로그인된 유저가 좋아요 한 상품 표시하기
-            model.addAttribute("userLike", productService.getLikeProductById(userId));
+            ArrayList<String> likeInfo = productService.getLikeProductById(userId);
+
+            model.addAttribute("userLike", likeInfo);
         }
 
         // 좋아요를 누른 경우 -> js에서 이미 세션 체크를 거치므로 무조건 로그인이 되어있는 상태
-        if (likeProduct!=null){
-            System.out.println("likeProduct = " + likeProduct);
+        if (likeProduct != null){
             ProductLike productLike = new ProductLike();
             // 유저 아이디 가져오기 & 넣기
             productLike.setUserId(userId);
@@ -74,8 +78,9 @@ public class ProductController {
 
             // 서비스에서 좋아요를 등록
             productService.setLikeProductById(productLike);
+            System.out.println(URL.substring(0, URL.indexOf("likeProduct")));
+            return "redirect:/"+URL.substring(0, URL.indexOf("likeProduct"));
         }
-        System.out.println("productService.getLikeProductById(userId) = " + productService.getLikeProductById(userId));
         return "index";
     }
 
@@ -108,6 +113,9 @@ public class ProductController {
             @RequestParam(required = false, name = "subCID") String subCID,
             @RequestParam(required = false, name = "searchProduct") String searchProduct,
             @RequestParam(required = false, name = "orderOption") String orderOption,
+            @RequestParam(required = false, name = "likeProduct") String likeProduct,
+            @RequestParam(required = false, name = "URL") String URL,
+            HttpSession session,
             Model model) {
 
 //        정렬 방법 리스트 가져오기
@@ -150,6 +158,31 @@ public class ProductController {
 //        카테고리 화면에서 정렬하는 경우
         if(orderOption != null && !products.isEmpty()) {
             products = productService.getCategoryProductWithOrderOption(products, orderOption);
+        }
+
+        String userId = Optional.ofNullable(session.getAttribute("customerId"))
+                .map(Object::toString)
+                .orElse(null);
+
+        // 로그인이 되어 있을 경우
+        if (userId != null) {
+            // 현재 로그인된 유저가 좋아요 한 상품 표시하기
+            ArrayList<String> likeInfo = productService.getLikeProductById(userId);
+
+            model.addAttribute("userLike", likeInfo);
+        }
+
+        // 좋아요를 누른 경우 -> js에서 이미 세션 체크를 거치므로 무조건 로그인이 되어있는 상태
+        if (likeProduct != null){
+            ProductLike productLike = new ProductLike();
+            // 유저 아이디 가져오기 & 넣기
+            productLike.setUserId(userId);
+            // 상품 아이디 정보 넣기
+            productLike.setProductId(likeProduct);
+
+            // 서비스에서 좋아요를 등록
+            productService.setLikeProductById(productLike);
+            return "redirect:/category"+URL.substring(0, URL.indexOf("&likeProduct"));
         }
 
         model.addAttribute("products", products);

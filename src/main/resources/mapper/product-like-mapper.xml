@@ -3,10 +3,10 @@
 <!--  로그인된 사용자가 좋아요를 눌렀을 경우  -->
     <insert id="setLikeProductById">
         INSERT INTO product_like (
-             product_id, user_id, like_at, delete_flag
+             product_id, user_id, like_at
         )
         VALUES (
-             #{productId}, #{userId}, now(), 0
+             #{productId}, #{userId}, now()
         )
     </insert>
 
@@ -23,4 +23,24 @@
         FROM product_like
         WHERE product_id = #{productId} AND user_id = #{userId}
     </select>
+
+<!--  상품 테이블에 좋아요 수 올리기  -->
+    <update id="setProductLikeCountPlus">
+        UPDATE product
+        SET like_count = like_count+1
+        WHERE product_id = #{productId}
+    </update>
+    
+<!--  상품 테이블에 좋아요 취소  -->
+    <update id="setProductLikeCountMinus">
+        UPDATE product
+        SET like_count = like_count-1
+        WHERE product_id = #{productId}
+    </update>
+
+<!--  delete flag - 좋아요 취소  -->
+    <delete id="deleteProductLike">
+        DELETE FROM product_like
+        WHERE product_id = #{productId}
+    </delete>
 </mapper>
