@@ -133,6 +133,15 @@
                                 ></button>
                             </span>
                             </th:block>
+                            <th:block th:if="${session.get('customerId') == null}">
+                            <span class="like-count">
+                                <button th:text="|❤ ${product.getLikeCount()}|"
+                                        class="not-like-product"
+                                        th:attr="data-product-id=${product.getProductId()}"
+                                        onclick="return likeProduct(this.getAttribute('data-product-id'))"
+                                ></button>
+                            </span>
+                            </th:block>
                             <span class="review-count">
                                 <button th:text="|💭 ${product.getReviewCount()}|" onclick="return getProductReviews()"
                                         style="border: 0;
@@ -166,6 +175,15 @@
                                 <button th:text="|❤ ${product.getLikeCount()}|"
                                         th:class="${userLike.contains(product.productId)
                                          }? 'like-product' : 'not-like-product'"
+                                        th:attr="data-product-id=${product.getProductId()}"
+                                        onclick="return likeProduct(this.getAttribute('data-product-id'))"
+                                ></button>
+                            </span>
+                            </th:block>
+                            <th:block th:if="${session.get('customerId') == null}">
+                            <span class="like-count">
+                                <button th:text="|❤ ${product.getLikeCount()}|"
+                                        class="not-like-product"
                                         th:attr="data-product-id=${product.getProductId()}"
                                         onclick="return likeProduct(this.getAttribute('data-product-id'))"
                                 ></button>

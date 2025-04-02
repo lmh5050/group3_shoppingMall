@@ -2,8 +2,11 @@ package org.example.shoppingmall.controller.user;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.example.shoppingmall.dto.product.ProductCategoryDto;
 import org.example.shoppingmall.dto.user.*;
 import org.example.shoppingmall.service.login.LoginService;
+import org.example.shoppingmall.service.product.ProductCategoryService;
+import org.example.shoppingmall.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,13 +24,14 @@ import java.util.UUID;
 public class UserController {
 
     private final LoginService loginService;
-
+    private final ProductCategoryService productCategoryService;
     private final EmailService emailService;
     @Autowired
-    public UserController(LoginService loginService, EmailService emailService)
+    public UserController(LoginService loginService, EmailService emailService,  ProductCategoryService productCategoryService)
     {
         this.loginService = loginService;
         this.emailService = emailService;
+        this.productCategoryService = productCategoryService;
     }
 
     @GetMapping("/user/login") // 로그인 페이지 불러오는 api
@@ -68,7 +73,11 @@ public class UserController {
     }
 
     @GetMapping("/user/mypage")
-    public String getMypage(HttpSession session) {
+    public String getMypage(HttpSession session, Model model) {
+        // 대분류 카테고리 가져오기
+        ArrayList<ProductCategoryDto> list = productCategoryService.getMajorCategoryByPId();
+        model.addAttribute("categoryList", list);
+
         // 세션에서 customerId 값을 가져옴
         String customerId = (String) session.getAttribute("customerId");
         System.out.println(customerId  + "세션값 가져왔음미다");
