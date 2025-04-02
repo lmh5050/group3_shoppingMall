@@ -47,7 +47,8 @@
                     <a th:href="@{/order/list}">주문 조회</a>
                     <a th:href="@{/user/mypage}">회원 정보 수정</a>
                     <a th:href="@{/complaint/list}">취소/환불/교환</a>
-                    <a th:href="@{/contact}">1;1 문의 내역</a>
+                    <a th:href="@{/contact}">1:1 문의 내역</a>
+                    <a th:href="@{/likeList}">좋아요 상품 리스트</a>
                 </div>
             </li>
             <li th:if="${session.customerId == 'admin'}">

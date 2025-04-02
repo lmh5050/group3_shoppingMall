@@ -218,4 +218,42 @@ public class ProductController {
         model.addAttribute("products", products);
         return "/product/category";
     }
+
+    // 좋아요한 상품만 볼 수 있는 화면
+    @GetMapping("/likeList")
+    public String likeList(
+            @RequestParam(required = false, name = "likeProduct") String likeProduct,
+            @RequestParam(required = false, name = "URL") String URL,
+            HttpSession session,
+            Model model) {
+        // 유저 아이디 얻어옴
+        String userId = Optional.ofNullable(session.getAttribute("customerId"))
+                .map(Object::toString)
+                .orElse(null);
+
+        ArrayList<ProductDto> products = productService.getLikeProductList(userId);
+        model.addAttribute("products", products);
+
+        // 로그인이 되어 있을 경우
+        if (userId != null) {
+            // 현재 로그인된 유저가 좋아요 한 상품 표시하기
+            ArrayList<String> likeInfo = productService.getLikeProductById(userId);
+
+            model.addAttribute("userLike", likeInfo);
+        }
+
+        // 좋아요를 누른 경우 -> js에서 이미 세션 체크를 거치므로 무조건 로그인이 되어있는 상태
+        if (likeProduct != null){
+            ProductLike productLike = new ProductLike();
+            // 유저 아이디 가져오기 & 넣기
+            productLike.setUserId(userId);
+            // 상품 아이디 정보 넣기
+            productLike.setProductId(likeProduct);
+
+            // 서비스에서 좋아요를 등록
+            productService.setLikeProductById(productLike);
+            return "redirect:/likeList"+URL.substring(0, URL.indexOf("likeProduct"));
+        }
+        return "/product/likeProductList";
+    }
 }

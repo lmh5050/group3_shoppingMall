@@ -385,12 +385,30 @@ public class ProductService {
     }
 
     // 로그인된 유저가 어떤 상품을 좋아요 눌렀는지 확인하기
-    public ArrayList<String> getLikeProductById(String productId) {
-        return productLikeRepository.getLikeProductById(productId);
+    public ArrayList<String> getLikeProductById(String userId) {
+        return productLikeRepository.getLikeProductById(userId);
     }
 
     // 상품을 좋아요 눌렀는지 확인하기(중복 확인을 위해)
     private ProductLike checkLikeExists(String productId, String userId) {
         return productLikeRepository.checkLikeExists(productId, userId);
+    }
+
+    // 좋아요한 상품만 dto 매핑하여 가져오기
+    public ArrayList<ProductDto> getLikeProductList(String userId) {
+        ArrayList<String> likeProductIds = this.getLikeProductById(userId);
+        ArrayList<ProductDto> products = this.getProductData();
+        ArrayList<ProductDto> likeProducts = new ArrayList<>();
+
+        // 좋아요 한 상품만 필터링
+        for(ProductDto productDto : products){
+            for(String likeProductId : likeProductIds){
+                if(productDto.getProductId().equals(likeProductId)){
+                    likeProducts.add(productDto);
+                }
+            }
+        }
+
+        return likeProducts;
     }
 }
