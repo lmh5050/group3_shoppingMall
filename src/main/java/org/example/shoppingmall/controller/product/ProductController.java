@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 
@@ -226,6 +224,10 @@ public class ProductController {
             @RequestParam(required = false, name = "URL") String URL,
             HttpSession session,
             Model model) {
+        // 대분류 카테고리 가져오기
+        ArrayList<ProductCategoryDto> list = productCategoryService.getMajorCategoryByPId();
+        model.addAttribute("categoryList", list);
+
         // 유저 아이디 얻어옴
         String userId = Optional.ofNullable(session.getAttribute("customerId"))
                 .map(Object::toString)

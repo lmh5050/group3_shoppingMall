@@ -2,27 +2,36 @@ package org.example.shoppingmall.controller.complaint;
 
 import jakarta.servlet.http.HttpSession;
 import org.example.shoppingmall.dto.complaint.ComplaintDto;
+import org.example.shoppingmall.dto.product.ProductCategoryDto;
 import org.example.shoppingmall.service.complaint.ComplaintService;
+import org.example.shoppingmall.service.product.ProductCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class ComplaintController {
 
     private final ComplaintService complaintService;
+    private final ProductCategoryService productCategoryService;
 
     @Autowired
-    public ComplaintController(ComplaintService complaintService) {
+    public ComplaintController(ComplaintService complaintService, ProductCategoryService productCategoryService) {
         this.complaintService = complaintService;
+        this.productCategoryService = productCategoryService;
     }
 
     @GetMapping("/complaint/list") // 기본 민원 리스트 페이지
     public String complaint(HttpSession session, Model model) {
+        // 대분류 카테고리 가져오기
+        ArrayList<ProductCategoryDto> list = productCategoryService.getMajorCategoryByPId();
+        model.addAttribute("categoryList", list);
+
         //customerId별로 조회하기 위해 추가
         String customerId = (String) session.getAttribute("customerId");
         model.addAttribute("customerId", customerId);

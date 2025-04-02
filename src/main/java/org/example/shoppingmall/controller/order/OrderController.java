@@ -2,8 +2,11 @@ package org.example.shoppingmall.controller.order;
 
 import jakarta.servlet.http.HttpSession;
 import org.example.shoppingmall.dto.order.*;
+import org.example.shoppingmall.dto.product.ProductCategoryDto;
 import org.example.shoppingmall.service.order.OrderListService;
 import org.example.shoppingmall.service.order.OrderService;
+import org.example.shoppingmall.service.product.ProductCategoryService;
+import org.example.shoppingmall.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +20,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/order")
 public class OrderController {
 
+    @Autowired
+    private ProductCategoryService productCategoryService;
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -119,6 +124,10 @@ public class OrderController {
 
         sortedGroupedOrders.putAll(groupedOrders);
         model.addAttribute("groupedOrders", sortedGroupedOrders);
+
+        // 대분류 카테고리 가져오기
+        ArrayList<ProductCategoryDto> list = productCategoryService.getMajorCategoryByPId();
+        model.addAttribute("categoryList", list);
 
         return "order/orderList";
     }
