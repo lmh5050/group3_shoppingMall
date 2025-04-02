@@ -1,0 +1,46 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.shoppingmall.repository.product.ProductLikeRepository">  <!-- 어떤 리포지토리를 볼지 정하는 곳 -->
+<!--  로그인된 사용자가 좋아요를 눌렀을 경우  -->
+    <insert id="setLikeProductById">
+        INSERT INTO product_like (
+             product_id, user_id, like_at
+        )
+        VALUES (
+             #{productId}, #{userId}, now()
+        )
+    </insert>
+
+<!--  로그인된 유저가 좋아요 한 상품 표시하기  -->
+    <select id="getLikeProductById">
+        SELECT product_id
+        FROM product_like
+        WHERE user_id = #{userId}
+    </select>
+
+<!--  좋아요를 눌렀는지 확인하기  -->
+    <select id="checkLikeExists">
+        SELECT *
+        FROM product_like
+        WHERE product_id = #{productId} AND user_id = #{userId}
+    </select>
+
+<!--  상품 테이블에 좋아요 수 올리기  -->
+    <update id="setProductLikeCountPlus">
+        UPDATE product
+        SET like_count = like_count+1
+        WHERE product_id = #{productId}
+    </update>
+    
+<!--  상품 테이블에 좋아요 취소  -->
+    <update id="setProductLikeCountMinus">
+        UPDATE product
+        SET like_count = like_count-1
+        WHERE product_id = #{productId}
+    </update>
+
+<!--  delete flag - 좋아요 취소  -->
+    <delete id="deleteProductLike">
+        DELETE FROM product_like
+        WHERE product_id = #{productId}
+    </delete>
+</mapper>

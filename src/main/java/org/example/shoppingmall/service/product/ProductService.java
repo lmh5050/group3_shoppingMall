@@ -2,6 +2,7 @@ package org.example.shoppingmall.service.product;
 
 import org.example.shoppingmall.dto.product.*;
 import org.example.shoppingmall.repository.product.ProductDetailRepository;
+import org.example.shoppingmall.repository.product.ProductLikeRepository;
 import org.example.shoppingmall.repository.product.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,15 @@ public class ProductService {
     private final ProductDetailRepository productDetailRepository;
 //    private static final String UPLOAD_DIR = "C:\\JAVA\\fast_campus_KDT\\projects\\prj_02\\group3_shoppingMall\\src\\main\\resources\\static\\images\\product\\";
     private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/src/main/resources/static/images/product/";
+    private final ProductLikeRepository productLikeRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository,  ProductDetailRepository productDetailRepository) {
+    public ProductService(ProductRepository productRepository,
+                          ProductDetailRepository productDetailRepository,
+                          ProductLikeRepository productLikeRepository) {
         this.productRepository = productRepository;
         this.productDetailRepository = productDetailRepository;
+        this.productLikeRepository = productLikeRepository;
     }
 
     // 모든 상품 리스트를 가져옴
@@ -362,5 +367,30 @@ public class ProductService {
     // 시즌 리스트 가져오기
     public ArrayList<ProductSeasonDTO> getAllSeasonList(){
         return productRepository.getAllSeasonList();
+    }
+
+    // 로그인된 유저가 상품 좋아요 리스트에 추가하기
+    @Transactional
+    public void setLikeProductById(ProductLike productLike) {
+        // 기존에 좋아요 테이블에 존재하는지 확인
+        ProductLike checkProductLike = this.checkLikeExists(productLike.getProductId(), productLike.getUserId());
+
+        if (checkProductLike == null){ // 기존에 존재하지 않는 경우
+            productLikeRepository.setLikeProductById(productLike);  //새로 등록
+            productLikeRepository.setProductLikeCountPlus(productLike.getProductId());  //상품 좋아요 수 ++
+        } else { // 좋아요 취소
+            productLikeRepository.deleteProductLike(productLike.getProductId());  //delete flag = 1오 만듬
+            productLikeRepository.setProductLikeCountMinus(productLike.getProductId());  //상품 좋아요 수 --
+        }
+    }
+
+    // 로그인된 유저가 어떤 상품을 좋아요 눌렀는지 확인하기
+    public ArrayList<String> getLikeProductById(String productId) {
+        return productLikeRepository.getLikeProductById(productId);
+    }
+
+    // 상품을 좋아요 눌렀는지 확인하기(중복 확인을 위해)
+    private ProductLike checkLikeExists(String productId, String userId) {
+        return productLikeRepository.checkLikeExists(productId, userId);
     }
 }

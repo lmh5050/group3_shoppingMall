@@ -57,7 +57,7 @@
             </li>
             <li th:if="${session.customerId != null}">
                 <form th:action="@{/user/logout}" method="post" style="display: inline;">
-                    <button type="submit">로그아웃</button>
+                    <button type="submit" onclick="sessionStorage.removeItem('customerId');">로그아웃</button>
                 </form>
             </li>
             <li th:if="${session.customerId == null}">

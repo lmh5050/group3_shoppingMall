@@ -7,7 +7,17 @@
     <link rel="stylesheet" th:href="@{/css/product-list.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
     <style>
+        .like-count .like-product {
+            border: 0;
+            background-color: transparent;
+            color: red;
+        }
 
+        .like-count .not-like-product {
+            border: 0;
+            background-color: transparent;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -36,6 +46,7 @@
                  th:each="product : ${products}"
                  th:if="${product.getName().contains(param.searchProduct)
                  && !product.getStatus().equals('stop-display')}">
+                <input type="hidden" th:value="${product.getProductId()}" class="product-id">
                 <div class="product-img">
                     <img th:src="@{'/images/product/' + ${product.getProductId()} + '.png'}"
                          alt="Product Image"
@@ -43,8 +54,21 @@
                     <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
                     <!-- 좋아요 수, 후기 수 -->
                     <div class="product-stats">
-                        <span class="like-count"  th:text="|❤ ${product.getLikeCount()}|"></span>
-                        <span class="review-count" th:text="|💭 ${product.getReviewCount()}|"></span>
+                        <th:block th:if="${session.get('customerId') != null}">
+                            <span class="like-count">
+                                <button th:text="|❤ ${product.getLikeCount()}|"
+                                        th:class="${userLike.contains(product.productId)
+                                         }? 'like-product' : 'not-like-product'"
+                                        th:attr="data-product-id=${product.getProductId()}"
+                                        onclick="return likeProduct(this.getAttribute('data-product-id'))"
+                                ></button>
+                            </span>
+                        </th:block>
+                        <span class="review-count">
+                            <button th:text="|💭 ${product.getReviewCount()}|" onclick="return getProductReviews()"
+                                    style="border: 0;
+                                    background-color: transparent; color: white;"></button>
+                        </span>
                     </div>
                 </div>
                 <div class="product-info">
@@ -60,6 +84,7 @@
             <div class="product-card"
                  th:each="product : ${products}"
                  th:if="${!product.getStatus().equals('stop-display')}">
+                <input type="hidden" th:value="${product.getProductId()}" id="product-id">
                 <div class="product-img">
                     <img th:src="@{'/images/product/' + ${product.getProductId()} + '.png'}"
                          alt="Product Image"
@@ -67,8 +92,21 @@
                     <div class="sold-out-overlay" th:if="${product.status == 'sold-out'}">SOLD OUT</div>
                     <!-- 좋아요 수, 후기 수 -->
                     <div class="product-stats">
-                        <span class="like-count" th:text="|❤ ${product.getLikeCount()}|"></span>
-                        <span class="review-count" th:text="|💭 ${product.getReviewCount()}|"></span>
+                        <th:block th:if="${session.get('customerId') != null}">
+                            <span class="like-count">
+                                <button th:text="|❤ ${product.getLikeCount()}|"
+                                        th:class="${userLike.contains(product.productId)
+                                         }? 'like-product' : 'not-like-product'"
+                                        th:attr="data-product-id=${product.getProductId()}"
+                                        onclick="return likeProduct(this.getAttribute('data-product-id'))"
+                                ></button>
+                            </span>
+                        </th:block>
+                        <span class="review-count">
+                            <button th:text="|💭 ${product.getReviewCount()}|" onclick="return getProductReviews()"
+                                    style="border: 0;
+                                    background-color: transparent; color: white;"></button>
+                        </span>
                     </div>
                 </div>
                 <div class="product-info">
@@ -88,6 +126,40 @@
 
 <!-- 스크립트 -->
 <script defer>
+    // 좋아요 버튼
+    function likeProduct(productId) {
+        // 로그인이 되어있는지 확인(세션)
+        if(window.sessionStorage.getItem('customerId') === null){
+            // 로그인이 안되어 있을 경우
+            alert('로그인 후 이용가능한 서비스입니다.');
+            window.location.href = "/user/login";
+            return;
+        }
+
+        // 로그인이 되어있을 경우 - 좋아요
+        let button = document.querySelector(`[data-product-id='${productId}']`);
+        let likeStatus = button.className;
+
+        // 이미 좋아요를 누른 경우 -> 취소
+        if (likeStatus === 'like-product'){
+            alert('상품 좋아요를 취소합니다.');
+        } else {
+            alert('상품을 좋아요 리스트에 담았습니다.');
+        }
+
+        console.log(productId);
+        let url = new URL(window.location.href);
+        url.searchParams.set("likeProduct", productId);
+        url.searchParams.set("URL", url.search);
+        window.location.href = url.toString();
+    }
+
+    // 리뷰 보러 가기
+    function getProductReviews() {
+        alert("후기 보기");
+    }
+
+    // 검색어 버튼
     function searchProductFunction() {
         let pdName = document.getElementById('productName').value;
         if (!pdName) {
