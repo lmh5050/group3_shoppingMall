@@ -2,8 +2,7 @@ package org.example.shoppingmall.controller.product;
 
 import jakarta.servlet.http.HttpSession;
 import org.example.shoppingmall.dto.product.*;
-import org.example.shoppingmall.service.product.ProductCategoryService;
-import org.example.shoppingmall.service.product.ProductService;
+import org.example.shoppingmall.service.product.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,13 +15,17 @@ import java.util.Optional;
 
 @Controller
 public class ProductController {
-    private final ProductService productService;
+    private final ProductQueryService productQueryService;
+    private final ProductLikeService productLikeService;
     private final ProductCategoryService productCategoryService;
 
     @Autowired
-    public ProductController(ProductService productService,
-                             ProductCategoryService productCategoryService) {
-        this.productService = productService;
+    public ProductController(
+            ProductQueryService productQueryService,
+            ProductLikeService productLikeService,
+            ProductCategoryService productCategoryService) {
+        this.productQueryService = productQueryService;
+        this.productLikeService = productLikeService;
         this.productCategoryService = productCategoryService;
 
     }
@@ -40,9 +43,9 @@ public class ProductController {
 
         // 정렬 순서를 정한 경우
         if (orderOption  != null){
-            products = productService.getProductOrderByOptions(orderOption);
+            products = productQueryService.getProductOrderByOptions(orderOption);
         } else {
-            products = productService.getProductData();
+            products = productQueryService.getProductData();
         }
 
         model.addAttribute("products", products);
@@ -50,7 +53,7 @@ public class ProductController {
         ArrayList<ProductCategoryDto> list = productCategoryService.getMajorCategoryByPId();
         model.addAttribute("categoryList", list);
 
-        ArrayList<ProductSortDto> sortList =  productService.getProductSortOptions();
+        ArrayList<ProductSortDto> sortList =  productQueryService.getProductSortOptions();
         model.addAttribute("sortList", sortList);
 
 
@@ -61,7 +64,7 @@ public class ProductController {
         // 로그인이 되어 있을 경우
         if (userId != null) {
             // 현재 로그인된 유저가 좋아요 한 상품 표시하기
-            ArrayList<String> likeInfo = productService.getLikeProductById(userId);
+            ArrayList<String> likeInfo = productLikeService.getLikeProductById(userId);
 
             model.addAttribute("userLike", likeInfo);
         }
@@ -75,7 +78,7 @@ public class ProductController {
             productLike.setProductId(likeProduct);
 
             // 서비스에서 좋아요를 등록
-            productService.setLikeProductById(productLike);
+            productLikeService.setLikeProductById(productLike);
             System.out.println(URL.substring(0, URL.indexOf("likeProduct")));
             return "redirect:/"+URL.substring(0, URL.indexOf("likeProduct"));
         }
@@ -94,15 +97,15 @@ public class ProductController {
         model.addAttribute("prdId", prdId);
 
         // 서비스 측 구현할 것: 상품 ID를 통해 ProductDto 가져오기
-        ProductDto product = productService.getProductById(prdId);
+        ProductDto product = productQueryService.getProductById(prdId);
         model.addAttribute("product", product);
 
         // 시즌 정보 가져오기
-        String season = productService.getSeasonBySeasonId(product.getSeasonId());
+        String season = productQueryService.getSeasonBySeasonId(product.getSeasonId());
         model.addAttribute("season", season);
 
         // 상품의 상세 옵션을 가져옴
-        ArrayList<ProductDetailDto> productDetailOptions = productService.getProductDetailOptions(prdId);
+        ArrayList<ProductDetailDto> productDetailOptions = productQueryService.getProductDetailOptions(prdId);
         model.addAttribute("productDetailOptions", productDetailOptions);
         String userId = Optional.ofNullable(session.getAttribute("customerId"))
                 .map(Object::toString)
@@ -111,7 +114,7 @@ public class ProductController {
         // 로그인이 되어 있을 경우
         if (userId != null) {
             // 현재 로그인된 유저가 좋아요 한 상품 표시하기
-            ArrayList<String> likeInfo = productService.getLikeProductById(userId);
+            ArrayList<String> likeInfo = productLikeService.getLikeProductById(userId);
 
             model.addAttribute("userLike", likeInfo);
         }
@@ -125,7 +128,7 @@ public class ProductController {
             productLike.setProductId(likeProduct);
 
             // 서비스에서 좋아요를 등록
-            productService.setLikeProductById(productLike);
+            productLikeService.setLikeProductById(productLike);
             System.out.println(URL.substring(0, URL.indexOf("likeProduct")));
             return "redirect:/productDetail"+URL.substring(0, URL.indexOf("likeProduct"));
         }
@@ -147,7 +150,7 @@ public class ProductController {
             Model model) {
 
 //        정렬 방법 리스트 가져오기
-        ArrayList<ProductSortDto> sortList =  productService.getProductSortOptions();
+        ArrayList<ProductSortDto> sortList =  productQueryService.getProductSortOptions();
         model.addAttribute("sortList", sortList);
 
         // 상품 전체 리스트 가져오기
@@ -161,7 +164,7 @@ public class ProductController {
         ArrayList<ProductCategoryDto> midCList = productCategoryService.getMiddleCategoryByPId(majorCID, "mid");
         model.addAttribute("midCategoryList", midCList);
 
-        products = productService.getFilteredProductData(majorCID);
+        products = productQueryService.getFilteredProductData(majorCID);
 
         // 중분류 카테고리가 선택된 경우
         ArrayList<ProductCategoryDto> subCList;
@@ -169,23 +172,23 @@ public class ProductController {
             subCList = productCategoryService.getMiddleCategoryByPId(midCID, "sub");
             model.addAttribute("subCategoryList", subCList);
             // 중분류 상품(소분류도 포함)만 가져오는 서비스
-            products = productService.getFilteredProductData(midCID);
+            products = productQueryService.getFilteredProductData(midCID);
         }
 
         // 소분류 카테고리가 선택된 경우
         if (subCID != null) {
             // 소분류 상품만 가져오는 서비스
-            products = productService.getFilteredProductData(subCID);
+            products = productQueryService.getFilteredProductData(subCID);
         }
 
 //      카테고리 화면에서 검색하는 경우 -> 카테고리 필터링 & 그 상품의 이름으로 필터링 두번 다 진행
         if(searchProduct != null) {
-            products = productService.getProductBySearch(searchProduct, products);
+            products = productQueryService.getProductBySearch(searchProduct, products);
         }
 
 //        카테고리 화면에서 정렬하는 경우
         if(orderOption != null && !products.isEmpty()) {
-            products = productService.getCategoryProductWithOrderOption(products, orderOption);
+            products = productQueryService.getCategoryProductWithOrderOption(products, orderOption);
         }
 
         String userId = Optional.ofNullable(session.getAttribute("customerId"))
@@ -195,7 +198,7 @@ public class ProductController {
         // 로그인이 되어 있을 경우
         if (userId != null) {
             // 현재 로그인된 유저가 좋아요 한 상품 표시하기
-            ArrayList<String> likeInfo = productService.getLikeProductById(userId);
+            ArrayList<String> likeInfo = productLikeService.getLikeProductById(userId);
 
             model.addAttribute("userLike", likeInfo);
         }
@@ -209,7 +212,7 @@ public class ProductController {
             productLike.setProductId(likeProduct);
 
             // 서비스에서 좋아요를 등록
-            productService.setLikeProductById(productLike);
+            productLikeService.setLikeProductById(productLike);
             return "redirect:/category"+URL.substring(0, URL.indexOf("&likeProduct"));
         }
 
@@ -233,13 +236,13 @@ public class ProductController {
                 .map(Object::toString)
                 .orElse(null);
 
-        ArrayList<ProductDto> products = productService.getLikeProductList(userId);
+        ArrayList<ProductDto> products = productLikeService.getLikeProductList(userId);
         model.addAttribute("products", products);
 
         // 로그인이 되어 있을 경우
         if (userId != null) {
             // 현재 로그인된 유저가 좋아요 한 상품 표시하기
-            ArrayList<String> likeInfo = productService.getLikeProductById(userId);
+            ArrayList<String> likeInfo = productLikeService.getLikeProductById(userId);
 
             model.addAttribute("userLike", likeInfo);
         }
@@ -253,7 +256,7 @@ public class ProductController {
             productLike.setProductId(likeProduct);
 
             // 서비스에서 좋아요를 등록
-            productService.setLikeProductById(productLike);
+            productLikeService.setLikeProductById(productLike);
             return "redirect:/likeList"+URL.substring(0, URL.indexOf("likeProduct"));
         }
         return "/product/likeProductList";
