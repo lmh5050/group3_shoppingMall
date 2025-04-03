@@ -8,6 +8,7 @@ import org.example.shoppingmall.repository.order.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,19 +21,18 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    //주문번호 표시
-    public Long getOrderId() {
-        return orderRepository.generateOrderId();
-    }
-
     //주문서 기본배송지 표시
     public AddressDto getDefaultAddress(String customerId) {
         return orderRepository.findDefaultAddressByCustomerId(customerId);
     }
 
+ /*   //배송지 목록 모두 표시
+    public List<AddressDto> getAllAddress(String customerId) {
+        return orderRepository.findAllAddressByCustomerId(customerId);
+    }*/
+
     //주문 상품 정보 표시
     public List<ProductInfoDto> getProductInfoByProductDetailId(List<String> productDetailId, List<Integer> quantity) {
-        // 파라미터를 Map에 담아서 쿼리 호출
         Map<String, Object> params = new HashMap<>();
         params.put("productDetailId", productDetailId);
         params.put("quantity", quantity);
@@ -45,11 +45,15 @@ public class OrderService {
             productInfoList.get(i).setQuantity(quantity.get(i));  // 순차적으로 quantity 설정
         }
 
-    /*    // 주문 일련번호 부여
-        for (int i = 0; i < productInfoList.size(); i++) {
-            productInfoList.get(i).setOrderDetailId(i + 1);  // 순차적으로 번호를 부여
-        }*/
-
         return productInfoList;
+    }
+
+    // 총 주문 금액 계산
+    public BigDecimal calculateTotalAmount(List<ProductInfoDto> productInfo) {
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        for (ProductInfoDto product : productInfo) {
+            totalAmount = totalAmount.add(product.getTotalPrice());
+        }
+        return totalAmount;
     }
 }

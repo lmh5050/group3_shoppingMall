@@ -147,15 +147,13 @@
     <div class="container">
         <input type="hidden" id="customerIdInput" th:value="${customerId}">
         <h1>주문서</h1>
-        <h3><input type="hidden" id="showOrderId" th:value="${showOrderId}" readonly></h3>
+    <!--    <h3><input type="hidden" id="showOrderId" th:value="${showOrderId}" readonly></h3>-->
         <div class="section">
             <div class="section-title">배송 정보</div>
             <div><span id="receivePeople" name="receive_people" th:text="${address.receivePeople}"></span>
                 <span th:text="${address.status == 1} ? '기본배송지' : '추가배송지'"
                       style="background-color: lightgray; color: black; font-size: 12px; padding: 3px 6px; border-radius: 5px;"></span><br>
-                <!--
-                <button onclick="location.href='/order/changeAddress'">배송지 변경</button><br>
-                -->
+                <!--<button onclick="location.href='/order/changeAddress'">배송지 변경</button><br>-->
                 (<span id="zipCode" th:text="${address.zipCode}"></span>)
                 <span id="addressBasic" name="shipping_address_basic" th:text="${address.address}"></span>
                 <span id="addressDetail" name="receive_people" th:text="${address.detailAddress}"></span><br>
@@ -225,7 +223,6 @@
             const width = 500, height = 700;
             const left = (window.screen.width - width) / 2;
             const top = (window.screen.height - height) / 2;
-            const orderId = document.getElementById('showOrderId').value;
             const customerId = document.getElementById('customerIdInput').value;
             const orderStatus = "MA01006";
             const totalDiscountAmount = 0;
@@ -301,7 +298,6 @@
             });
 
             const orderData = {
-                orderId: parseInt(orderId),
                 customerId: customerId,
                 orderStatus: orderStatus,
                 totalDiscountAmount: totalDiscountAmount,

@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 @Data
 public class AddressDto {
-    private BigDecimal price;
+    private BigDecimal price; //배송비
     private String address;
     private String detailAddress;
     private String zipCode;
