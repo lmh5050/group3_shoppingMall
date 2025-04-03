@@ -1,31 +1,34 @@
 package org.example.shoppingmall.controller.product;
 
 import org.example.shoppingmall.dto.product.*;
-import org.example.shoppingmall.service.CodeDetailService;
-import org.example.shoppingmall.service.product.ProductCategoryService;
-import org.example.shoppingmall.service.product.ProductService;
+import org.example.shoppingmall.service.product.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
 @Controller
 @RequestMapping("/admin")
 public class ProductInventoryMgmtController {
-    private final ProductService productService;
+    private final ProductQueryService productQueryService;
+    private final ProductManagementService productManagementService;
+    private final ProductUploadService productUploadService;
     private final ProductCategoryService productCategoryService;
 
     @Autowired
-    public ProductInventoryMgmtController(ProductService productService, ProductCategoryService productCategoryService) {
-        this.productService = productService;
+    public ProductInventoryMgmtController(
+            ProductQueryService productQueryService,
+            ProductManagementService productManagementService,
+            ProductUploadService productUploadService,
+            ProductCategoryService productCategoryService) {
+        this.productQueryService = productQueryService;
+        this.productManagementService = productManagementService;
+        this.productUploadService = productUploadService;
         this.productCategoryService = productCategoryService;
     }
 
@@ -34,7 +37,7 @@ public class ProductInventoryMgmtController {
     @GetMapping("/product")
     public String productInventoryMgmt(Model model) {
         // 저장되어 있는 상품들 가져오기
-        ArrayList<ProductDto> products = productService.getProductData();
+        ArrayList<ProductDto> products = productQueryService.getProductData();
         model.addAttribute("products", products);
 
         return "/product/ProductInventoryMgmt";
@@ -46,7 +49,7 @@ public class ProductInventoryMgmtController {
     public ResponseEntity<Boolean> changeProductStatus(
             @RequestBody ProductStatusDto productStatusDto, Model model) {
         // 상품의 상태를 변경
-        productService.setProductStatus(productStatusDto.getProductId(), productStatusDto.getSelectedOption());
+        productManagementService.setProductStatus(productStatusDto.getProductId(), productStatusDto.getSelectedOption());
         return ResponseEntity.ok(true);
     }
 
@@ -57,19 +60,19 @@ public class ProductInventoryMgmtController {
             @RequestParam(required = false, name = "prdId") String productId,
             Model model) {
         // 상품 정보 가져오기
-        ProductDto product = productService.getProductById(productId);
+        ProductDto product = productQueryService.getProductById(productId);
         model.addAttribute("product", product);
 
         // 색상/사이즈 정보 가져오기
-        ArrayList<ProductDetailDto> productDetailOptions = productService.getProductDetailOptions(productId);
+        ArrayList<ProductDetailDto> productDetailOptions = productQueryService.getProductDetailOptions(productId);
         model.addAttribute("productDetailOptions", productDetailOptions);
 
         // 색상 정보 가져오기
-        HashSet<String> detailColor = productService.getProductDetailOption(productId, "color");
+        HashSet<String> detailColor = productManagementService.getProductDetailOption(productId, "color");
         model.addAttribute("detailColor", detailColor);
 
         // 컬러 정보 가져오기
-        HashSet<String> detailSize = productService.getProductDetailOption(productId, "size");
+        HashSet<String> detailSize = productManagementService.getProductDetailOption(productId, "size");
         model.addAttribute("detailSize", detailSize);
 
         // 카테고리 정보 가져오기
@@ -77,7 +80,7 @@ public class ProductInventoryMgmtController {
         model.addAttribute("category", category);
 
         // 시즌 정보 가져오기
-        ArrayList<ProductSeasonDTO> season = productService.getAllSeasonList();
+        ArrayList<ProductSeasonDTO> season = productQueryService.getAllSeasonList();
         model.addAttribute("season", season);
 
        return "/product/ProductDetailUpdate";
@@ -88,17 +91,9 @@ public class ProductInventoryMgmtController {
     public ResponseEntity<?> updateProductDetail(
             @ModelAttribute ProductUpdateDto productUpdateDto) {
 
-        System.out.println(productUpdateDto.getColorStatus());
-        System.out.println(productUpdateDto.getColors());
-        System.out.println(productUpdateDto.getSizeStatus());
-        System.out.println(productUpdateDto.getSizes());
         // 프론트 단에서 예외 처리 해야함
-        String message = productService.updateProductInfo(productUpdateDto);
-        System.out.println();
-        System.out.println(productUpdateDto.getColorStatus());
-        System.out.println(productUpdateDto.getColors());
-        System.out.println(productUpdateDto.getSizeStatus());
-        System.out.println(productUpdateDto.getSizes());
+        String message = productManagementService.updateProductInfo(productUpdateDto);
+
         // 값이 옳지 않거나 오류가 나는 경우 메세지 전달
         if (message != null) {
             return ResponseEntity.badRequest().body(message);
@@ -116,7 +111,7 @@ public class ProductInventoryMgmtController {
         model.addAttribute("productCategory", productCategory);
 
         // 시즌 정보 가져오기
-        ArrayList<ProductSeasonDTO> productSeason = productService.getAllSeasonList();
+        ArrayList<ProductSeasonDTO> productSeason = productQueryService.getAllSeasonList();
         model.addAttribute("productSeason", productSeason);
         return "/product/NewProductPost";
     }
@@ -127,7 +122,7 @@ public class ProductInventoryMgmtController {
         MultipartFile imageFile = productUpdateDto.getImage();
 
         // 상품 등록 결과 메시지
-        String message = productService.productUpload(imageFile, productUpdateDto);
+        String message = productUploadService.productUpload(imageFile, productUpdateDto);
 
         if (!message.equals("성공")) {
             return "redirect:/admin/product/addNewProduct";
