@@ -1,7 +1,7 @@
 package org.example.shoppingmall.service.product;
 
 import org.example.shoppingmall.dto.product.ProductDto;
-import org.example.shoppingmall.dto.product.ProductLike;
+import org.example.shoppingmall.dto.product.ProductLikeDto;
 import org.example.shoppingmall.repository.product.ProductLikeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,21 +24,21 @@ public class ProductLikeService {
 
     // 로그인된 유저가 상품 좋아요 리스트에 추가하기
     @Transactional
-    public void setLikeProductById(ProductLike productLike) {
+    public void setLikeProductById(ProductLikeDto productLikeDto) {
         // 기존에 좋아요 테이블에 존재하는지 확인
-        ProductLike checkProductLike = this.checkLikeExists(productLike.getProductId(), productLike.getUserId());
+        ProductLikeDto checkProductLikeDto = this.checkLikeExists(productLikeDto.getProductId(), productLikeDto.getUserId());
 
-        if (checkProductLike == null){ // 기존에 존재하지 않는 경우
-            productLikeRepository.setLikeProductById(productLike);  //새로 등록
-            productLikeRepository.updateProductLikeCountPlus(productLike.getProductId());  //상품 좋아요 수 ++
+        if (checkProductLikeDto == null){ // 기존에 존재하지 않는 경우
+            productLikeRepository.setLikeProductById(productLikeDto);  //새로 등록
+            productLikeRepository.updateProductLikeCountPlus(productLikeDto.getProductId());  //상품 좋아요 수 ++
         } else { // 좋아요 취소
-            productLikeRepository.deleteProductLike(productLike.getProductId());  //delete flag = 1오 만듬
-            productLikeRepository.updateProductLikeCountMinus(productLike.getProductId());  //상품 좋아요 수 --
+            productLikeRepository.deleteProductLike(productLikeDto.getProductId());  //delete flag = 1오 만듬
+            productLikeRepository.updateProductLikeCountMinus(productLikeDto.getProductId());  //상품 좋아요 수 --
         }
     }
 
     // 상품을 좋아요 눌렀는지 확인하기(중복 확인을 위해)
-    private ProductLike checkLikeExists(String productId, String userId) {
+    private ProductLikeDto checkLikeExists(String productId, String userId) {
         return productLikeRepository.getCheckLikeExists(productId, userId);
     }
 
