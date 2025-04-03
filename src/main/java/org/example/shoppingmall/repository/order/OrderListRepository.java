@@ -4,8 +4,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.example.shoppingmall.dto.order.OrderDetailDto;
 import org.example.shoppingmall.dto.order.OrderDto;
 import org.example.shoppingmall.dto.order.OrderListDto;
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
