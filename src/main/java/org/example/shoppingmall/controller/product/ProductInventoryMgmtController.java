@@ -56,19 +56,30 @@ public class ProductInventoryMgmtController {
     public String productInventoryMgmtUpdateProductDetail(
             @RequestParam(required = false, name = "prdId") String productId,
             Model model) {
+        // 상품 정보 가져오기
         ProductDto product = productService.getProductById(productId);
         model.addAttribute("product", product);
 
+        // 색상/사이즈 정보 가져오기
         ArrayList<ProductDetailDto> productDetailOptions = productService.getProductDetailOptions(productId);
         model.addAttribute("productDetailOptions", productDetailOptions);
 
+        // 색상 정보 가져오기
         HashSet<String> detailColor = productService.getProductDetailOption(productId, "color");
         model.addAttribute("detailColor", detailColor);
 
+        // 컬러 정보 가져오기
         HashSet<String> detailSize = productService.getProductDetailOption(productId, "size");
         model.addAttribute("detailSize", detailSize);
 
         // 카테고리 정보 가져오기
+        ArrayList<ProductCategoryDto> category = productCategoryService.getSubCategory();
+        model.addAttribute("category", category);
+
+        // 시즌 정보 가져오기
+        ArrayList<ProductSeasonDTO> season = productService.getAllSeasonList();
+        model.addAttribute("season", season);
+
        return "/product/ProductDetailUpdate";
     }
 
@@ -77,7 +88,21 @@ public class ProductInventoryMgmtController {
     public ResponseEntity<?> updateProductDetail(
             @ModelAttribute ProductUpdateDto productUpdateDto) {
 
-        productService.setProductInfo(productUpdateDto);
+        System.out.println(productUpdateDto.getColorStatus());
+        System.out.println(productUpdateDto.getColors());
+        System.out.println(productUpdateDto.getSizeStatus());
+        System.out.println(productUpdateDto.getSizes());
+        // 프론트 단에서 예외 처리 해야함
+        String message = productService.updateProductInfo(productUpdateDto);
+        System.out.println();
+        System.out.println(productUpdateDto.getColorStatus());
+        System.out.println(productUpdateDto.getColors());
+        System.out.println(productUpdateDto.getSizeStatus());
+        System.out.println(productUpdateDto.getSizes());
+        // 값이 옳지 않거나 오류가 나는 경우 메세지 전달
+        if (message != null) {
+            return ResponseEntity.badRequest().body(message);
+        }
 
         return ResponseEntity.ok("ok");
     }

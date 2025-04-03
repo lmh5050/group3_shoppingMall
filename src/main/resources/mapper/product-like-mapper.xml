@@ -18,21 +18,21 @@
     </select>
 
 <!--  좋아요를 눌렀는지 확인하기  -->
-    <select id="checkLikeExists">
+    <select id="getCheckLikeExists">
         SELECT *
         FROM product_like
         WHERE product_id = #{productId} AND user_id = #{userId}
     </select>
 
 <!--  상품 테이블에 좋아요 수 올리기  -->
-    <update id="setProductLikeCountPlus">
+    <update id="updateProductLikeCountPlus">
         UPDATE product
         SET like_count = like_count+1
         WHERE product_id = #{productId}
     </update>
     
 <!--  상품 테이블에 좋아요 취소  -->
-    <update id="setProductLikeCountMinus">
+    <update id="updateProductLikeCountMinus">
         UPDATE product
         SET like_count = like_count-1
         WHERE product_id = #{productId}

@@ -12,11 +12,11 @@ public interface ProductLikeRepository {
 
     ArrayList<String> getLikeProductById(String userId);
 
-    ProductLike checkLikeExists(String productId, String userId);
+    ProductLike getCheckLikeExists(String productId, String userId);
 
-    void setProductLikeCountPlus(String productId);
+    void updateProductLikeCountPlus(String productId);
 
-    void setProductLikeCountMinus(String productId);
+    void updateProductLikeCountMinus(String productId);
 
     void deleteProductLike(String productId);
 
