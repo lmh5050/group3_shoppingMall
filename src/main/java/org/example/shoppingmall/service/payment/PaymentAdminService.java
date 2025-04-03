@@ -22,8 +22,6 @@ public class PaymentAdminService {
     // 결제 상태 변경
     @Transactional
     public void updatePaymentStatus(PaymentPendingDto paymentPendingDto) {
-        String orderStatus;
-
         // 결제 상태 업데이트
         paymentRepository.updatePaymentStatus(paymentPendingDto);
         // 주문 상태 업데이트
