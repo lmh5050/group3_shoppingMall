@@ -33,12 +33,14 @@ public class OrderController {
                             @RequestParam("quantity") List<Integer> quantity,
                             HttpSession session, Model model) {
 
+        // Q. 중복되는 부분 AOP(@before)로 빼야할지. 세션에서 ID가져오는 부분 등?
+        // 주문서
         String customerId = (String) session.getAttribute("customerId");
         model.addAttribute("customerId", customerId);
 
-        //주문번호 표시
-        Long showOrderId = orderService.getOrderId();
-        model.addAttribute("showOrderId", showOrderId);
+        if (customerId == null) {
+            return "redirect:/user/login";
+        }
 
         //기본배송지 가져오기
         AddressDto address = orderService.getDefaultAddress(customerId);
@@ -48,10 +50,8 @@ public class OrderController {
         List<ProductInfoDto> productInfo =
                 orderService.getProductInfoByProductDetailId(productDetailId, quantity);
 
-        BigDecimal totalAmount = BigDecimal.ZERO;
-        for (ProductInfoDto product : productInfo) {
-            totalAmount = totalAmount.add(product.getTotalPrice());
-        }
+        // 상품 주문금액 합산
+        BigDecimal totalAmount = orderService.calculateTotalAmount(productInfo);
 
         model.addAttribute("productInfo", productInfo);
         model.addAttribute("totalAmount", totalAmount);
@@ -71,29 +71,20 @@ public class OrderController {
             return "redirect:/user/login";
         }
 
-        //주문번호 표시
-        Long showOrderId = orderService.getOrderId();
-        model.addAttribute("showOrderId", showOrderId);
-
         //기본배송지 가져오기
         AddressDto address = orderService.getDefaultAddress(customerId);
         model.addAttribute("address", address);
 
+
         //상품정보 표시
-        List<String> productDetailId = new ArrayList<>();
-        List<Integer> quantity = new ArrayList<>();
+        List<String> productDetailId = Collections.singletonList(productInfoDto.getProductDetailId());
+        List<Integer> quantity = Collections.singletonList(productInfoDto.getQuantity());
 
-        productDetailId.add(productInfoDto.getProductDetailId());
-        quantity.add(productInfoDto.getQuantity());
         List<ProductInfoDto> productInfo =
-                orderService.getProductInfoByProductDetailId(
-                        productDetailId,
-                        quantity);
+                orderService.getProductInfoByProductDetailId(productDetailId, quantity);
 
-        BigDecimal totalAmount = BigDecimal.ZERO;
-        for (ProductInfoDto product : productInfo) {
-            totalAmount = totalAmount.add(product.getTotalPrice());
-        }
+        //상품 주문 금액 합산
+        BigDecimal totalAmount = orderService.calculateTotalAmount(productInfo);
 
         model.addAttribute("productInfo", productInfo);
         model.addAttribute("totalAmount", totalAmount);
@@ -104,9 +95,11 @@ public class OrderController {
     @GetMapping(value = "/list")
     public String showOrderList(HttpSession session, Model model) {
 
+        //세션에서 로그인id 가져오기
         String customerId = (String) session.getAttribute("customerId");
         model.addAttribute("customerId", customerId);
 
+        //로그인없이 접근하면 로그인페이지로
         if (customerId == null) {
             return "redirect:/user/login";
         }
@@ -135,24 +128,23 @@ public class OrderController {
     //주문상세
     @GetMapping("/detail/{orderId}")
     public String showOrderDetail(@PathVariable Long orderId, HttpSession session, Model model) {
+        //세션에서 로그인id 가져오기
         String customerId = (String) session.getAttribute("customerId");
         model.addAttribute("customerId", customerId);
 
+        //로그인없이 접근하면 로그인페이지로
         if (customerId == null) {
             return "redirect:/user/login";
         }
-        System.out.println("customerId = " + customerId);
-        System.out.println("orderId = " + orderId);
 
         // 주문 상세 정보 가져오기
         List<OrderDetailDto> orderDetails = orderListService.getOrderDetailByOrderId(orderId);
-        System.out.println("orderDetails = " + orderDetails);
 
-        // 주문이 존재하지 않거나, 고객 ID가 일치하지 않는 경우
-        String orderCustomerId = orderDetails.stream()
-                .findFirst()
-                .map(OrderDetailDto::getCustomerId)
-                .orElse(null);
+        // 고객 ID가 일치하지 않는 경우 로그인페이지로
+        String orderCustomerId = null;
+        if (orderDetails != null && !orderDetails.isEmpty()) {
+            orderCustomerId = orderDetails.get(0).getCustomerId();
+        }
 
         if (orderCustomerId == null || !customerId.equals(orderCustomerId)) {
             return "redirect:/user/login";
@@ -163,48 +155,24 @@ public class OrderController {
                 .collect(Collectors.groupingBy(OrderDetailDto::getOrderId));
 
         model.addAttribute("groupedOrderDetails", groupedOrderDetails);
-        System.out.println("groupedOrderDetails = " + groupedOrderDetails);
 
         return "order/orderDetail";
     }
-    /*@GetMapping("/detail/{orderId}")
-    public String showOrderDetail(@PathVariable Long orderId, HttpSession session, Model model) {
-
-        String customerId = (String) session.getAttribute("customerId");
-        model.addAttribute("customerId", customerId);
-
-        if (customerId == null) {
-            return "redirect:/user/login";
-        }
-
-        // 주문 상세 정보 가져오기
-        List<OrderDetailDto> orderDetails = orderListService.getOrderDetailByOrderId(orderId);
-
-
-        if (orderDetails.isEmpty() || !customerId.equals(orderDetails.getFirst().getCustomerId())) {
-            return "redirect:/user/login";
-        }
-
-        //주문번호별로 그룹화
-        Map<Long, List<OrderDetailDto>> groupedOrderDetails = orderDetails.stream()
-                .collect(Collectors.groupingBy(OrderDetailDto::getOrderId));
-
-        model.addAttribute("groupedOrderDetails", groupedOrderDetails);
-        System.out.println("groupedOrderDetails = " + groupedOrderDetails);
-
-        return "order/orderDetail";
-    }*/
 
     //주문내역삭제
     @GetMapping("/delete/{orderId}")
     public String deleteOrder(@PathVariable Long orderId, HttpSession session, Model model) {
 
+        //세션에서 id 가져오기
         String customerId = (String) session.getAttribute("customerId");
-        if (customerId != null) {
-            orderListService.deleteOrder(orderId, customerId);  // 서비스 호출
-        } else {
+
+        //id 없으면 로그인페이지로
+        if (customerId == null) {
             return "redirect:/user/login";
+        } else { //id 있으면 삭제 서비스 호출
+            orderListService.deleteOrder(orderId, customerId);
         }
-        return "redirect:/order/list";  // 주문 목록 페이지로 리디렉션
+        //삭제 후 주문목록으로
+        return "redirect:/order/list";
     }
 }
