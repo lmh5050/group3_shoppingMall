@@ -132,7 +132,7 @@
             <div>
                 <div>
                     <h1>관리자 - 상품 상세 정보 수정</h1>
-                    <form id="productForm">
+                    <form id="productForm" action="/admin/product/updateProductDetail" method="post">
                         <!-- 메인 사진 수정 -->
                         <div>
                             <input type="hidden" name="productId" th:value="${product.getProductId()}">
@@ -147,7 +147,7 @@
                             <button type="button" onclick="openNewFileInput()" class="select-img-btn">사진 선택</button>
 
                             <!-- 파일 선택 input 태그 (숨겨놓음) -->
-                            <input type="file" id="fileInput" style="display: none;" onchange="previewImage(event)">
+                            <input type="file" id="fileInput" style="display: none;"  onchange="storeFileInLocalStorage(event)">
 
                             <!-- 선택한 이미지 미리보기 -->
                             <div>
@@ -183,15 +183,26 @@
                         <!-- 카테고리 수정 -->
                         <div>
                             <h3>(5) 카테고리</h3>
-                            <p th:text="${product.categoryId}"></p>
-                            <input type="text" name="productCategoryId" th:value="${product.categoryId}">
+                            <select name="productCategoryId">
+                                <th:block th:each="ct : ${category}">
+                                    <option th:text="${ct.getName()}"
+                                            th:value="${ct.getCategoryId()}"
+                                            th:selected="${ct.getCategoryId() == product.getCategoryId()}"></option>
+                                </th:block>
+                            </select>
                         </div>
                         <br>
                         <!-- 시즌 수정 -->
                         <div>
                             <h3>(6) 시즌</h3>
-                            <p th:text="${product.seasonId}"></p>
-                            <input type="text" name="productSeasonId" th:value="${product.seasonId}">
+                            <select name="productSeasonId">
+                                <th:block th:each="ss : ${season}">
+                                    <option th:text="${ss.getName()}"
+                                            th:value="${ss.getSeasonId()}"
+                                            th:selected="${product.getSeasonId() == ss.getSeasonId()}"
+                                    ></option>
+                                </th:block>
+                            </select>
                         </div>
                         <br>
                         <!-- 비고 수정 -->
@@ -207,7 +218,11 @@
                         <div>
                             <h3>(8) 성별</h3>
                             <p th:text="${product.gender}"></p>
-                            <input type="text" name="productGender" th:value="${product.gender}">
+                            <select name="productGender">
+                                <option value="ALL" th:selected="${product.getGender() == 'ALL'}">전체</option>
+                                <option value="MALE" th:selected="${product.getGender() == 'MALE'}">여성</option>
+                                <option value="FEMALE" th:selected="${product.getGender() == 'FEMALE'}">남성</option>
+                            </select>
                         </div>
                         <br>
                         <!-- 핏 정보 수정 -->
@@ -248,38 +263,68 @@
                         <!-- 품질 보증 기준 수정 -->
                         <div>
                             <h3>(14) 품질 보증 기준</h3>
-                            <p th:text="${product.qualityAssuranceStandard}"></p>
-                            <input type="text" name="productQualityAssuranceStandard"
-                                   th:value="${product.qualityAssuranceStandard}">
+                            <select name="productQualityAssuranceStandard" id="productQualityAssuranceStandard">
+                                <option value="default">품질 보증 기준 선택</option>
+                                <option value="OEKO-TEX Standard 100" th:selected="${product.getQualityAssuranceStandard() == 'OEKO-TEX Standard 100'}">국제 섬유 및 환경 인증 : OEKO-TEX Standard 100</option>
+                                <option value="GOTS (Global Organic Textile Standard)" th:selected="${product.getQualityAssuranceStandard() == 'GOTS (Global Organic Textile Standard)'}">국제 섬유 및 환경 인증 : GOTS (Global Organic Textile Standard)</option>
+                                <option value="BLUESIGN®" th:selected="${product.getQualityAssuranceStandard() == 'BLUESIGN®'}">국제 섬유 및 환경 인증 : BLUESIGN®</option>
+                                <option value="ISO 9001 (품질경영시스템)" th:selected="${product.getQualityAssuranceStandard() == 'ISO 9001 (품질경영시스템)'}">국제 섬유 및 환경 인증 : ISO 9001 (품질경영시스템)</option>
+                                <option value="ISO 14001 (환경경영시스템)" th:selected="${product.getQualityAssuranceStandard() == 'ISO 14001 (환경경영시스템)'}">국제 섬유 및 환경 인증 : ISO 14001 (환경경영시스템)</option>
+                                <option value="REACH (EU 화학물질 규제)" th:selected="${product.getQualityAssuranceStandard() == 'REACH (EU 화학물질 규제)'}">국제 섬유 및 환경 인증 : REACH (EU 화학물질 규제)</option>
+                                <option value="ZDHC (Zero Discharge of Hazardous Chemicals)" th:selected="${product.getQualityAssuranceStandard() == 'ZDHC (Zero Discharge of Hazardous Chemicals)'}">국제 섬유 및 환경 인증 : ZDHC (Zero Discharge of Hazardous Chemicals)</option>
+                                <option value="RWS (Responsible Wool Standard)" th:selected="${product.getQualityAssuranceStandard() == 'RWS (Responsible Wool Standard)'}">친환경 및 지속 가능성 인증 : RWS (Responsible Wool Standard)</option>
+                                <option value="RDS (Responsible Down Standard)" th:selected="${product.getQualityAssuranceStandard() == 'RDS (Responsible Down Standard)'}">친환경 및 지속 가능성 인증 : RDS (Responsible Down Standard)</option>
+                                <option value="GRS (Global Recycled Standard)" th:selected="${product.getQualityAssuranceStandard() == 'GRS (Global Recycled Standard)'}">친환경 및 지속 가능성 인증 : GRS (Global Recycled Standard)</option>
+                                <option value="B-Corp 인증" th:selected="${product.getQualityAssuranceStandard() == 'B-Corp 인증'}">친환경 및 지속 가능성 인증 : B-Corp 인증</option>
+                                <option value="KC 인증 (한국)" th:selected="${product.getQualityAssuranceStandard() == 'KC 인증 (한국)'}">한국 및 국가별 의류 관련 인증 : KC 인증 (한국)</option>
+                                <option value="KS K ISO 105 (한국산업표준 섬유 색상 견뢰도 시험법)" th:selected="${product.getQualityAssuranceStandard() == 'KS K ISO 105 (한국산업표준 섬유 색상 견뢰도 시험법)'}">한국 및 국가별 의류 관련 인증 : KS K ISO 105 (한국산업표준 섬유 색상 견뢰도 시험법)</option>
+                                <option value="JIS L 0844 (일본 섬유 품질 인증)" th:selected="${product.getQualityAssuranceStandard() == 'JIS L 0844 (일본 섬유 품질 인증)'}">한국 및 국가별 의류 관련 인증 : JIS L 0844 (일본 섬유 품질 인증)</option>
+                                <option value="ASTM D123 (미국 섬유 품질 표준)" th:selected="${product.getQualityAssuranceStandard() == 'ASTM D123 (미국 섬유 품질 표준)'}">한국 및 국가별 의류 관련 인증 : ASTM D123 (미국 섬유 품질 표준)</option>
+                                <option value="EN 14682 (유럽 아동복 안전 기준)" th:selected="${product.getQualityAssuranceStandard() == 'EN 14682 (유럽 아동복 안전 기준)'}">한국 및 국가별 의류 관련 인증 : EN 14682 (유럽 아동복 안전 기준)</option>
+                                <option value="CPSIA (미국 소비자제품안전법)" th:selected="${product.getQualityAssuranceStandard() == 'CPSIA (미국 소비자제품안전법)'}">한국 및 국가별 의류 관련 인증 : CPSIA (미국 소비자제품안전법)</option>
+                                <option value="CAN/CGSB 4.2 (캐나다 섬유 표준)" th:selected="${product.getQualityAssuranceStandard() == 'CAN/CGSB 4.2 (캐나다 섬유 표준)'}">한국 및 국가별 의류 관련 인증 : CAN/CGSB 4.2 (캐나다 섬유 표준)</option>
+                            </select>
+
                         </div>
                         <br>
                         <!-- 색상 수정 -->
                         <div>
                             <h3>(15) 색상 개수</h3>
                             <th:block th:each="color : ${detailColor}">
-                                <label>
-                                    <input type="checkbox" checked
-                                           th:text="${color}">
-                                </label>
+                                색상:
                                 <label>
                                     <input type="text" name="colors" th:value="${color}">
-                                </label><br>
+                                </label>
+                                삭제 여부:
+                                <label>
+                                    <input type="hidden" name="colorStatus" value="false">
+                                    <input type="checkbox" name="colorStatus" value="true"
+                                           onclick="this.previousElementSibling.disabled = !!this.checked;">
+                                </label>
+                                <br>
                             </th:block>
-                            추가:<input type="text" name="productDetailColor" th:value="${detailColor}"><br>
+                            <div id="colorContainer"></div>
+                            <button type="button" onclick="return addColorInput('colors', 'colorStatus')">추가</button>
                         </div>
                         <br>
                         <!-- 사이즈 수정 -->
                         <div>
                             <h3>(16) 사이즈</h3>
                             <th:block th:each="size : ${detailSize}">
-                                <label>
-                                    <input type="checkbox" checked th:text="${size}" th:name="${size}">
-                                </label>
+                                사이즈:
                                 <label>
                                     <input type="text" name="sizes" th:value="${size}">
-                                </label><br>
+                                </label>
+                                삭제 여부:
+                                <label>
+                                    <input type="hidden" name="sizeStatus" value="false">
+                                    <input type="checkbox" name="sizeStatus" value="true"
+                                           onclick="this.previousElementSibling.disabled = !!this.checked;">
+                                </label>
+                                <br>
                             </th:block>
-                            추가: <input type="text" name="productDetailSize" th:value="${detailSize}"><br>
+                            <div id="sizeContainer"></div>
+                            <button type="button" onclick="return addSizeInput('sizes', 'sizeStatus')">추가</button>
                         </div>
                         <br>
                         <!-- 상품 상세 정보 진열 수정 (상품 전체 진열 수정은 이전페이지에서 진행)-->
@@ -320,7 +365,7 @@
     });
 </script>
 <script>
-    function previewImage(event) {
+    function storeFileInLocalStorage(event) {
 
         const file = event.target.files[0];  // 선택된 파일
         const reader = new FileReader();
@@ -342,7 +387,7 @@
 
         const storedFile = localStorage.getItem('uploadedFile');
         if (storedFile) {
-            const preview = document.getElementById('newImgPreview');
+            const preview = document.getElementById('preview');
             preview.src = storedFile;  // Base64로 저장된 파일을 미리보기 이미지로 표시
             console.log("저장된 파일을 로드했습니다.");
         } else {
@@ -353,7 +398,7 @@
 
     // 파일 선택 input 클릭 함수
     function openNewFileInput() {
-        document.getElementById('newImg').click();  // 파일 선택 input 클릭
+        document.getElementById('fileInput').click();  // 파일 선택 input 클릭
     }
 
 
@@ -385,29 +430,48 @@
             .catch(error => console.error("실패:", error.response?.data || error));
     });
 
-
-
-    function addSizeInput(name) {
+    // 사이즈 추가 박스 생성
+    function addSizeInput(inputName, checkName) {
         // 새로운 input 요소 생성
         const newInput = document.createElement("input");
         newInput.type = "text";
-        newInput.name = name; // 같은 name으로 추가 가능
+        newInput.name = inputName; // 같은 name으로 추가 가능
         newInput.style.display = "block"; // 줄바꿈을 위해 block 스타일 적용
 
         // 부모 요소에 추가
         document.getElementById("sizeContainer").appendChild(newInput);
+
+        // 새로운 checkbox 생성
+        const newCheckBox = document.createElement("input");
+        newCheckBox.type = "hidden";
+        newCheckBox.name = checkName;
+        newCheckBox.value = "false";
+
+        // 부모 요소에 추가
+        document.getElementById("sizeContainer").appendChild(newCheckBox);
     }
 
-    function addColorInput(name) {
+    // 색상 추가 박스 생성
+    function addColorInput(inputName, checkName) {
         // 새로운 input 요소 생성
         const newInput = document.createElement("input");
         newInput.type = "text";
-        newInput.name = name; // 같은 name으로 추가 가능
+        newInput.name = inputName; // 같은 name으로 추가 가능
         newInput.style.display = "block"; // 줄바꿈을 위해 block 스타일 적용
 
         // 부모 요소에 추가
         document.getElementById("colorContainer").appendChild(newInput);
+
+        // 새로운 checkbox 생성
+        const newCheckBox = document.createElement("input");
+        newCheckBox.type = "hidden";
+        newCheckBox.name = checkName;
+        newCheckBox.value = "false";
+
+        // 부모 요소에 추가
+        document.getElementById("colorContainer").appendChild(newCheckBox);
     }
+
     // // 파일 선택 input 클릭 함수
     // function openFileInput() {
     //     document.getElementById('fileInput').click();  // 파일 선택 input 클릭

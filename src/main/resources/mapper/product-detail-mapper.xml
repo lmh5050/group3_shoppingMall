@@ -24,4 +24,19 @@
         ORDER BY product_detail_id DESC
         LIMIT 1
     </select>
+
+<!--  상품 업데이트 할 때 : 업데이트 하는 옵션에 없는 색상과 사이즈일 경우 삭제  -->
+    <delete id="removeProductDetailsByProductId">
+        DELETE FROM product_detail
+        WHERE product_id = #{productId}
+    </delete>
+<!--    <delete id="removeByExcludedColorAndSize">-->
+<!--        DELETE FROM product_detail-->
+<!--        WHERE product_id = #{productId}-->
+<!--        AND (color, size) NOT IN-->
+<!--        <foreach collection="validColorSizePairs" item="pair" open="(" separator="," close=")">-->
+<!--            (#{pair.color}, #{pair.size})-->
+<!--        </foreach>-->
+<!--    </delete>-->
+
 </mapper>

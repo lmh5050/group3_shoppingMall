@@ -23,9 +23,9 @@ public interface ProductRepository {  // Repository
 
     ArrayList<ProductDto> getCategoryProductWithOrderOption(ArrayList<String> productIdList, String order);
 
-    void setProductStatus(String productId, String status);
+    void updateProductStatus(String productId, String status);
 
-    void setProductInfo(ProductUpdateDto productUpdateDto);
+    void updateProductInfo(ProductUpdateDto productUpdateDto);
 
     String getLastProductId();
 

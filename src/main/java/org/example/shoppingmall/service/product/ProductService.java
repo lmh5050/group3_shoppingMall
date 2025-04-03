@@ -72,8 +72,7 @@ public class ProductService {
     public  ArrayList<ProductDto> getProductBySearch(String search, ArrayList<ProductDto> products) {
         ArrayList<ProductDto> searchProducts = productRepository.getProductBySearch(search);
         ArrayList<ProductDto> filteredProducts = new ArrayList<>();
-        System.out.println("searchProducts = " + searchProducts);
-        System.out.println("products = " + products);
+
         for(ProductDto categoryProduct : products){
             for(ProductDto searchProduct : searchProducts){
                 if(categoryProduct.getName().contains(searchProduct.getName())){
@@ -110,7 +109,7 @@ public class ProductService {
         if(!isValidStatus(productId, status)){
             return;
         }
-        productRepository.setProductStatus(productId, status);
+        productRepository.updateProductStatus(productId, status);
     }
 
     private boolean isValidStatus(String productId, String status) {
@@ -128,11 +127,11 @@ public class ProductService {
         ArrayList<ProductDetailDto> productDtos = this.getProductDetailOptions(productId);
         HashSet<String> filteredProducts = new HashSet<>();
 
-        if(option.equals("color")){
+        if(option.equals("color")){  // 컬러 옵션
             for(ProductDetailDto productDetail : productDtos){
                 filteredProducts.add(productDetail.getColor());
             }
-        }else if(option.equals("size")){
+        }else if(option.equals("size")){  // 사이즈 옵션
             for(ProductDetailDto productDetail : productDtos){
                 filteredProducts.add(productDetail.getSize());
             }
@@ -142,8 +141,146 @@ public class ProductService {
     }
 
     // 변경사항 저장하기
-    public void setProductInfo(ProductUpdateDto productUpdateDto) {
-        productRepository.setProductInfo(productUpdateDto);
+    public String updateProductInfo(ProductUpdateDto productUpdateDto) {
+        // 컬러와 사이즈 전처리
+        productUpdateDto = this.preprocessingOptions(productUpdateDto);
+
+        // 유효성 검사
+        if (productUpdateDto == null){
+            return "입력하신 Color와 Size를 확인해 주세요.";
+        }
+
+        // 기존의 상품 상세 정보 삭제
+        productDetailRepository.removeProductDetailsByProductId(productUpdateDto.getProductId());
+
+        // 상품 상세 정보 DB에 저장
+//        this.setProductOptions(productUpdateDto.getSizes(), productUpdateDto.getColors(), productUpdateDto.getProductId());
+        this.updateDetailOptions(productUpdateDto.getProductId(), productUpdateDto.getColors(), productUpdateDto.getSizes());
+
+        // 상품 DB에 업데이트
+        productRepository.updateProductInfo(productUpdateDto);
+        return null;
+    }
+
+    // DB에 업데이트 전 option들 전처리
+    private ProductUpdateDto preprocessingOptions(ProductUpdateDto productUpdateDto) {
+        if(productUpdateDto == null){
+            return null;
+        }
+
+        // size 전처리 (check && 빈값이 아닌 경우)
+        List<String> sizes = this.colorAndSizeCheck(productUpdateDto.getSizes() , productUpdateDto.getSizeStatus());
+        // color 전처리 (check && 빈값이 아닌 경우)
+        List<String> colors = this.colorAndSizeCheck(productUpdateDto.getColors() ,productUpdateDto.getColorStatus());
+
+        // 입력한 값이 하나도 없는 경우
+        if (sizes == null || sizes.isEmpty() || colors == null || colors.isEmpty()) {
+            return null;
+        }
+        // DTO에 전처리된 데이터 저장
+        productUpdateDto.setSizes(sizes);
+        productUpdateDto.setColors(colors);
+
+        return productUpdateDto;
+    }
+
+    // 기존 옵션에 존재하는 데이터인지 확인
+//    private void setProductOptions(List<String> sizes, List<String> colors, String productId) {
+        // 원래 기존에 존재하는 색상 * 사이즈는 그냥 DB에 냅두고, 새롭게 생기는 색상 * 사이즈만 추가하려고했는데
+        // 잘 안되서 일단 관련된 모든 디테일 정보 삭제 후, 새로 insert하는 방향으로 가기로 결정
+        // 일단 전처리까지는 잘 돌아가는데, DB에서 기존에 존재하는 컬럼 삭제가 잘 안됨
+        //        // 기존에 존재하던 옵션들을 중복 제거
+//        HashSet<String> existenceColor = this.getProductDetailOption(productId, "color");
+//        HashSet<String> existenceSize = this.getProductDetailOption(productId, "size");
+//
+//        // 중복 제거 후, 각 사이즈와 컬러를 비교하여 이미 존재하는 애들만 남겨둠
+//        Iterator<String> colorIterator = existenceColor.iterator();
+//        while (colorIterator.hasNext()) {
+//            if (!colors.contains(colorIterator.next())) {
+//                colorIterator.remove();
+//            }
+//        }
+//        Iterator<String> sizeIterator = existenceSize.iterator();
+//        while (sizeIterator.hasNext()) {
+//            if (!sizes.contains(sizeIterator.next())) {
+//                sizeIterator.remove();
+//            }
+//        }
+//
+//        System.out.println("중복 제거 후, 이미 존재하는 애들을 출력");
+//        System.out.println("existenceSize = " + existenceSize);
+//        System.out.println("existenceColor = " + existenceColor);
+//
+//        // DB에서 이미 존재하는 애들을 제외한 나머지를 DB에서 삭제함
+//        List<Map<String, String>> colorAndSize = new ArrayList<>();
+//        for (String color : existenceColor) {
+//            for (String size : existenceSize) {
+//                Map<String, String> map = new HashMap<>();
+//                map.put("color", color);
+//                map.put("size", size);
+//                colorAndSize.add(map);
+//            }
+//        }
+//        Map<String, Object> pair = new HashMap<>();
+//        pair.put("productId", productId);
+//        pair.put("validColorSizePairs", colorAndSize); // List<Map<String, String>> 형태
+//        productDetailRepository.removeByExcludedColorAndSize(pair);
+
+        // detail 테이블에 컬럼 생성 -> 이미 존재하는 색상 * 컬러는 제외
+//        this.updateDetailOptions(productId, colors, existenceColor, sizes, existenceSize);
+//        this.updateDetailOptions(productId, colors, sizes);
+//    }
+
+
+    // 디테일 옵션 만들고 저장
+//    private void updateDetailOptions(String productId, List<String> colors, HashSet<String> existenceColor, List<String> sizes, HashSet<String> existenceSize) {
+    private void updateDetailOptions(String productId, List<String> colors, List<String> sizes) {
+        ArrayList<ProductDetailDto> productDetailDtos = new ArrayList<>();
+
+        // 상품 상세 아이디 생성
+        String productDetailId = this.makeProductId("productDetailId", null);
+        for(String color : colors){
+            for(String size : sizes){
+                // 만약 이미 존재하는 색상 * 사이즈인 경우에는 넘어감
+//                if(existenceColor.contains(color) && existenceSize.contains(size)){
+//                    continue;
+//                }
+                ProductDetailDto productDetailDto = new ProductDetailDto();
+                // 상품 상세 정보 DTO에 저장
+                productDetailDto.setProductId(productId);  //상품 아이디
+                productDetailDto.setProductDetailId(productDetailId);  //상품 상세 아이디
+                productDetailDto.setColor(color);  //상품 컬러
+                productDetailDto.setSize(size);  //상품 사이즈
+                productDetailDtos.add(productDetailDto);  //리스트에 추가
+                productDetailId = this.makeProductId("productDetailId", productDetailId);
+            }
+        }
+
+        // DB에 저장
+        for(ProductDetailDto productDetailDto : productDetailDtos){
+            productDetailRepository.setProductDetailByColorsAndSizes(productDetailDto);
+        }
+    }
+
+
+    // list에서 checked 된 데이터만 사용하기 위해 필터링
+    private List<String> colorAndSizeCheck(List<String> list, ArrayList<Boolean> status) {
+        // 그냥 remove를 사용하면 인덱스가 밀려서 삭제가 안됨 -> Iterator 사용
+        Iterator<String> listIterator = list.iterator();
+        Iterator<Boolean> statusIterator = status.iterator();
+
+        while (listIterator.hasNext() && statusIterator.hasNext()) {
+            listIterator.next(); // 리스트 요소 가져오기
+            if (statusIterator.next()) { // status 값 확인
+                listIterator.remove();
+                statusIterator.remove();
+            }
+        }
+
+        // 빈 값은 checked 되어있어도 사용하지 않음
+        list.removeIf(color -> color.trim().isEmpty());
+
+        return list;
     }
 
     // 새로운 상품 등록 시, 현재 마지막 상품번호 + 1
@@ -201,11 +338,9 @@ public class ProductService {
 
             // 파일 저장이 완료될 때까지 대기 (최대 3초)
             int retries = 0;
-            System.out.println("start");
             while (!destinationFile.exists() && retries < 30) {
                 Thread.sleep(100); // 0.1초씩 기다리면서 파일 존재 확인
                 retries++;
-                System.out.println("retries = " + retries);
             }
 
             // 새로운 상품 DB에 등록
@@ -233,98 +368,7 @@ public class ProductService {
         productRepository.setNewProduct(productUpdateDto);
         this.setProductImage(productDescriptionImageDto);
         this.setProductDetailByColorsAndSizes(productUpdateDto);
-
-        System.out.println("(완료) productUpdateDto = " + productUpdateDto);
     }
-
-    // 들어온 상품 정보의 유효성 검사
-//    private String validNewProductInfo(ProductUpdateDto productDto) {
-//        // 상품 사진
-//        if (productDto.getImage() == null){
-//            return "상품 사진이 비어있습니다.";
-//        }
-//
-//        // 상품 이름
-//        if (productDto.getProductName() == null || productDto.getProductName().isEmpty()){
-//            return "상품 이름이 비어있습니다";
-//        } else if (productDto.getProductName().length() < 5) {
-//            return "상품 이름은 5글자 이상으로 등록되어야 합니다.";
-//        } else if  (productDto.getProductName().length() > 50) {
-//            return "상품 이름은 50자 이하로 등록외어야 합니다.";
-//        }
-//
-//        // 상품 가격 -> 핸들러로 처리
-//        // 상품 상세 설명
-//        if (productDto.getProductDescription() == null || productDto.getProductDescription().isEmpty()){
-//            return "상품 상세 설명이 비어있습니다";
-//        } else if (productDto.getProductDescription().length() < 20) {
-//            return "상품 상세 설명은 20자 이상이어야 합니다.";
-//        } else if  (productDto.getProductDescription().length() > 100) {
-//            return "상품 상세 설명은 100자 이하이어야 합니다.";
-//        }
-//
-//        // 카테고리
-//        if (productDto.getProductCategoryId().equals("default")){
-//            return "상품의 카테고리는 필수로 선택되어야 합니다.";
-//        }
-//
-//        // 시즌
-//        if (productDto.getProductSeasonId().equals("default")){
-//            return "상품의 시즌은 필수로 선택되어야 합니다.";
-//        }
-//
-//        // 비고
-//        if (productDto.getProductNotes().length() >255){
-//            return "상품 비고의 길이는 255자 이하어야 합니다.";
-//        }
-//
-//        // 성별
-//        if (productDto.getProductGender().equals("default")){
-//            return "상품의 성별은 필수로 선택되어야 합니다.";
-//        }
-//
-//        // 핏
-//        if (productDto.getProductFit().equals("default")){
-//            return "상품의 핏은 필수로 선택되어야 합니다.";
-//        }
-//
-//        // 촉감
-//        if (productDto.getProductTexture().equals("default")){
-//            return "상품의 촉감은 필수로 선택되어야 합니다.";
-//        }
-//
-//        // 두께
-//        if (productDto.getProductThickness().equals("default")){
-//            return "상품의 두께는 필수로 선택되어야 합니다.";
-//        }
-//
-//        // 제조사
-//        if (productDto.getProductManufacturer() != null || productDto.getProductManufacturer().isEmpty()){
-//            return "상품의 제조사는 필수로 선택되어야 합니다.";
-//        }
-//
-//        // 원산지
-//        if (productDto.getProductOrigin() != null || productDto.getProductOrigin().isEmpty()){
-//            return "상품의 원산지는 필수로 선택되어야 합니다.";
-//        }
-//
-//        // 품질 보증 기준
-//        if (productDto.getProductQualityAssuranceStandard() != null || productDto.getProductQualityAssuranceStandard().isEmpty()){
-//            return "상품의 품질 보증 기준은 필수로 선택되어야 합니다.";
-//        }
-//
-//        // 색상
-//        if (productDto.getColors().isEmpty()){
-//            return "상품의 색상은 필수로 작성되어야 합니다.";
-//        }
-//
-//        // 사이즈
-//        if (productDto.getSizes().isEmpty()){
-//            return "상품의 사이즈는 필수로 작성되어야 합니다.";
-//        }
-//
-//        return null;
-//    }
 
     // 상품 사진 테이블에 등록하기
     private void setProductImage(ProductDescriptionImageDto productDescriptionImageDto) {
@@ -337,8 +381,16 @@ public class ProductService {
         List<String> colors = productUpdateDto.getColors();
         List<String> sizes = productUpdateDto.getSizes();
 
+        // DB에 저장
+        this.setDetailOptions(colors, sizes, productUpdateDto);;
+    }
+
+    // 디테일 옵션 만들고 저장
+    private void setDetailOptions(List<String> colors, List<String> sizes, ProductUpdateDto productUpdateDto) {
         // 반복문으로 insert문을 통해 등록
         ArrayList<ProductDetailDto> productDetailDtos = new ArrayList<>();
+
+        // 상품 상세 아이디 생성
         String productDetailId = this.makeProductId("productDetailId", null);
         for(String color : colors){
             for(String size : sizes){
@@ -377,10 +429,10 @@ public class ProductService {
 
         if (checkProductLike == null){ // 기존에 존재하지 않는 경우
             productLikeRepository.setLikeProductById(productLike);  //새로 등록
-            productLikeRepository.setProductLikeCountPlus(productLike.getProductId());  //상품 좋아요 수 ++
+            productLikeRepository.updateProductLikeCountPlus(productLike.getProductId());  //상품 좋아요 수 ++
         } else { // 좋아요 취소
             productLikeRepository.deleteProductLike(productLike.getProductId());  //delete flag = 1오 만듬
-            productLikeRepository.setProductLikeCountMinus(productLike.getProductId());  //상품 좋아요 수 --
+            productLikeRepository.updateProductLikeCountMinus(productLike.getProductId());  //상품 좋아요 수 --
         }
     }
 
@@ -391,7 +443,7 @@ public class ProductService {
 
     // 상품을 좋아요 눌렀는지 확인하기(중복 확인을 위해)
     private ProductLike checkLikeExists(String productId, String userId) {
-        return productLikeRepository.checkLikeExists(productId, userId);
+        return productLikeRepository.getCheckLikeExists(productId, userId);
     }
 
     // 좋아요한 상품만 dto 매핑하여 가져오기
