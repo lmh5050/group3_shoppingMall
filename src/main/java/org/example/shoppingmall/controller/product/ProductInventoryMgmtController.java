@@ -47,7 +47,7 @@ public class ProductInventoryMgmtController {
     @PostMapping("/product")
     @ResponseBody
     public ResponseEntity<Boolean> changeProductStatus(
-            @RequestBody ProductStatusDto productStatusDto, Model model) {
+            @RequestBody ProductStatusDto productStatusDto) {
         // 상품의 상태를 변경
         productManagementService.setProductStatus(productStatusDto.getProductId(), productStatusDto.getSelectedOption());
         return ResponseEntity.ok(true);
@@ -124,9 +124,11 @@ public class ProductInventoryMgmtController {
         // 상품 등록 결과 메시지
         String message = productUploadService.productUpload(imageFile, productUpdateDto);
 
+        // 1. 성공한 경우
         if (!message.equals("성공")) {
             return "redirect:/admin/product/addNewProduct";
         }
+        // 2. 실패한 경우
         return "/product/ProductInventoryMgmt";
     }
 }
