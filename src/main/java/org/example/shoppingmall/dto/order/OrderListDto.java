@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 public class OrderListDto {
     private Timestamp createdAt;
     private Long orderId;
+    private Long serialNumber;
     private String orderStatus;
     private String productName;
     private String size;

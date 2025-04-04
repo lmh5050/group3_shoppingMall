@@ -4,7 +4,7 @@ import org.example.shoppingmall.dto.user.InsertUserInfoDto;
 import org.example.shoppingmall.dto.user.UserAddressDto;
 import org.example.shoppingmall.dto.user.UserInfoDto;
 import org.example.shoppingmall.dto.user.UserLoginInfoDto;
-import org.example.shoppingmall.repository.User.UserRepository;
+import org.example.shoppingmall.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
