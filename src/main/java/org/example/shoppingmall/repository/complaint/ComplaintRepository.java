@@ -34,6 +34,7 @@ public interface ComplaintRepository {
     //상품 가격 조회
     String findProductTotalPriceByOrderId(Long orderId, String productName);
 
-    boolean existsByOrderIdAndProductNameAndStatusNotContaining(Long orderId, String productName, String status);
+    //철회를 포함하지 않는 상태있는지 확인
+    boolean existsValidStatus(Long orderId, String productName, String status);
 
 }
