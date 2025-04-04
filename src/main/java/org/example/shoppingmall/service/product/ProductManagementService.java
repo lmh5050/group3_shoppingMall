@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+// 상품 상태 및 상세 정보 관리
 @Service
 public class ProductManagementService {
     private final ProductRepository productRepository;

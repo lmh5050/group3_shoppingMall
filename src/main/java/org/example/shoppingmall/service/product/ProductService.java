@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-
+// 서비스 로직 다룸
 @Service
 public class ProductService {
     private final ProductQueryService productQueryService;

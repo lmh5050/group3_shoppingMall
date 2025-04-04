@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+// 상품 업로드 및 이미지 처리
 @Service
 public class ProductUploadService {
     private final ProductRepository productRepository;
