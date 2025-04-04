@@ -23,7 +23,7 @@
                            ON o.order_status = cd.code_no
                       JOIN order_detail od
                            ON o.order_id = od.order_id
-        ORDER BY o.order_id DESC, od.serial_number;
+        ORDER BY o.order_id DESC, od.serial_number
     </select>
 
     <!--고객별 주문 목록 가져오기-->
@@ -48,7 +48,7 @@
                            ON pd.product_id = pdi.product_id
         WHERE o.customer_id = #{customerId}
           AND o.active_flag = 1
-        ORDER BY o.order_id DESC
+        ORDER BY o.order_id DESC, od.serial_number
         </select>
 
     <!--특정 주문에 대한 주문 상세 정보 가져오기-->

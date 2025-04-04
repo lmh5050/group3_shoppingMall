@@ -137,100 +137,100 @@
 <div class="container">
     <h2>주문 상세 정보</h2>
 
-    <th:block th:each="entry : ${groupedOrderDetails}">
-        <!-- 주문 기본 정보 -->
-        <div class="section">
-            <div class="section-title">주문 정보</div>
-            <div style="display: none;" th:data-customer-id="${entry.value[0].customerId}"></div>
-            <p>주문일자: <span th:text="${#dates.format(entry.value[0].createdAt, 'yyyy. MM. dd HH:mm:ss')}"></span></p>
-            <p>주문번호: <span th:text="${entry.value[0].orderId}">6</span></p>
-            <p>주문 상태: <span th:text="${entry.value[0].codeName}"></span></p>
-        </div>
+    <div th:each="orderDetail, orderStat : ${orderDetails}">
+        <!-- 새로운 주문 그룹의 시작 -->
+        <div th:if="${orderStat.first || orderDetails[orderStat.index-1].orderId != orderDetail.orderId}">
+            <!-- 주문 기본 정보 -->
+            <div class="section">
+                <div class="section-title">주문 정보</div>
+                <div style="display: none;" th:data-customer-id="${orderDetail.customerId}"></div>
+                <p>주문일자: <span th:text="${#dates.format(orderDetail.createdAt, 'yyyy. MM. dd HH:mm:ss')}"></span></p>
+                <p>주문번호: <span th:text="${orderDetail.orderId}"></span></p>
+                <p>주문 상태: <span th:text="${orderDetail.codeName}"></span></p>
+            </div>
 
-        <!-- 배송 정보 -->
-        <div class="section">
-            <div class="section-title">배송 정보</div>
-            <p>수령인: <span th:text="${entry.value[0].receivePeople}"></span></p>
-            <p>연락처: <span th:text="${entry.value[0].receivePhoneNumber}"></span></p>
-            <p>배송 주소:
-                (<span th:text="${entry.value[0].zipCode}"></span>)
-                <span th:text="${entry.value[0].basicAddress}"></span>
-                <span th:text="${entry.value[0].detailAddress}"></span></p>
-            <p>배송 요청사항: <span th:text="${entry.value[0].deliveryRequest}"></span></p>
-        </div>
+            <!-- 배송 정보 -->
+            <div class="section">
+                <div class="section-title">배송 정보</div>
+                <p>수령인: <span th:text="${orderDetail.receivePeople}"></span></p>
+                <p>연락처: <span th:text="${orderDetail.receivePhoneNumber}"></span></p>
+                <p>배송 주소:
+                    (<span th:text="${orderDetail.zipCode}"></span>)
+                    <span th:text="${orderDetail.basicAddress}"></span>
+                    <span th:text="${orderDetail.detailAddress}"></span></p>
+                <p>배송 요청사항: <span th:text="${orderDetail.deliveryRequest}"></span></p>
+            </div>
 
-        <!-- 주문 상세 항목들 -->
-        <div class="section">
-            <div class="section-title">주문 상품</div>
-            <th:block th:each="orderDetail : ${entry.value}">
-                <div class="order-item">
-                    <img th:src="@{${orderDetail.imageUrl}}" alt="상품 이미지">
+            <!-- 주문 상세 항목들 -->
+            <div class="section">
+                <div class="section-title">주문 상품</div>
+                <div class="order-item" th:each="item : ${orderDetails}" 
+                     th:if="${item.orderId == orderDetail.orderId}">
+                    <img th:src="@{${item.imageUrl}}" alt="상품 이미지">
                     <div>
-                        <p>상품명: <span th:text="${orderDetail.productName}"></span></p>
-                        <p>색상: <span th:text="${orderDetail.color}"></span></p>
-                        <p>사이즈: <span th:text="${orderDetail.size}"></span></p>
-                        <p>수량: <span th:text="${orderDetail.quantity}"></span></p>
-                        <p>상품 금액: <span th:text="${#numbers.formatInteger(orderDetail.productTotalPrice, 0, 'COMMA')}"></span>원</p>
+                        <p>상품명: <span th:text="${item.productName}"></span></p>
+                        <p>색상: <span th:text="${item.color}"></span></p>
+                        <p>사이즈: <span th:text="${item.size}"></span></p>
+                        <p>수량: <span th:text="${item.quantity}"></span></p>
+                        <p>상품 금액: <span th:text="${#numbers.formatInteger(item.productTotalPrice, 0, 'COMMA')}"></span>원</p>
                     </div>
                 </div>
-            </th:block>
-        </div>
+            </div>
 
-        <!-- 결제 정보 -->
-        <div class="section">
-            <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
-                결제 정보
-                <button class="gray-button" th:onclick="'openReceiptPopup(' + ${entry.value[0].orderId} + ')'">거래명세서
+            <!-- 결제 정보 -->
+            <div class="section">
+                <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                    결제 정보
+                    <button class="gray-button" th:onclick="'openReceiptPopup(' + ${orderDetail.orderId} + ')'">거래명세서</button>
+                </div>
+
+                <div class="order-summary">
+                    <p></p>
+                </div>
+
+                <div class="order-summary">
+                    <p>상품 금액:</p>
+                    <span th:text="${#numbers.formatInteger(orderDetail.totalDiscountAmount.add(orderDetail.totalAmount), 0, 'COMMA')} +'원'"></span>
+                </div>
+                <div class="order-summary">
+                    <p>할인 금액:</p>
+                    <span th:text="${#numbers.formatInteger(orderDetail.totalDiscountAmount.add(orderDetail.discountAmount), 0, 'COMMA')} +'원'"></span>
+                </div>
+                <div class="order-summary">
+                    <p>배송비:</p>
+                    <span th:text="${orderDetail.shippingPrice == 0 ? '무료배송' : #numbers.formatInteger(orderDetail.shippingPrice, 0, 'COMMA')+'원'}"></span>
+                </div>
+                <div class="order-summary">
+                    <p>결제 금액:</p>
+                    <span th:text="${#numbers.formatInteger(orderDetail.finalAmount, 0, 'COMMA')} +'원'"></span>
+                </div>
+                <div class="order-summary">
+                    <p>결제 방법:</p>
+                    <span th:text="${orderDetail.name}"></span>
+                </div>
+                <div class="order-summary">
+                    <p></p>
+                    <span th:text="${orderDetail.bankDeposit}"></span>
+                </div>
+                <div class="order-summary">
+                    <p></p>
+                    <span th:text="${orderDetail.accountDeposit}"></span>
+                </div>
+            </div>
+
+            <!-- 주문 관리 버튼 -->
+            <div class="section">
+                <button class="btn" th:onclick="|location.href='/shipping/track?orderId=' + ${orderDetail.orderId}|">배송조회</button>
+                <button class="btn" th:onclick="|location.href='/complaint/' + ${orderDetail.orderId}|">취소/환불/교환 신청</button>
+                <button class="btn" th:onclick="|location.href='/order/list'|">목록으로</button>
+                <button class="delete-btn"
+                        th:data-order-id="${orderDetail.orderId}"
+                        onclick="confirmDelete(this.getAttribute('data-order-id'))">
+                    주문 내역 삭제
                 </button>
             </div>
-
-            <div class="order-summary">
-                <p></p>
-            </div>
-
-            <div class="order-summary">
-                <p>상품 금액:</p>
-                <span th:text="${#numbers.formatInteger(entry.value[0].totalDiscountAmount.add(entry.value[0].totalAmount), 0, 'COMMA')} +'원'">0</span>
-            </div>
-            <div class="order-summary">
-                <p>할인 금액:</p>
-                <span th:text="${#numbers.formatInteger(entry.value[0].totalDiscountAmount.add(entry.value[0].discountAmount), 0, 'COMMA')} +'원' ">0</span>
-            </div>
-            <div class="order-summary">
-                <p>배송비:</p>
-                <span th:text="${entry.value[0].shippingPrice == 0 ? '무료배송' : #numbers.formatInteger(entry.value[0].shippingPrice, 0, 'COMMA')+'원'}">무료배송</span>
-            </div>
-            <div class="order-summary">
-                <p>결제 금액:</p>
-                <span th:text="${#numbers.formatInteger(entry.value[0].finalAmount, 0, 'COMMA')} +'원'"></span>
-            </div>
-            <div class="order-summary">
-                <p>결제 방법:</p>
-                <span th:text="${entry.value[0].name}"></span>
-            </div>
-            <div class="order-summary">
-                <p></p>
-                <span th:text="${entry.value[0].bankDeposit}"></span>
-            </div>
-            <div class="order-summary">
-                <p></p>
-                <span th:text="${entry.value[0].accountDeposit}"></span>
-            </div>
         </div>
-
-        <!-- 주문 관리 버튼 -->
-        <div class="section">
-            <button class="btn" th:onclick="|location.href='/shipping/track?orderId=' + ${entry.value[0].orderId}|">배송조회</button>
-            <button class="btn" th:onclick="|location.href='/complaint/' + ${entry.value[0].orderId}|">취소/환불/교환 신청</button>
-            <!--<button class="btn">리뷰 작성하기</button>-->
-            <button class="btn" th:onclick="|location.href='/order/list'|">목록으로</button>
-            <button class="delete-btn"
-                    th:data-order-id="${entry.value[0].orderId}"
-                    onclick="confirmDelete(this.getAttribute('data-order-id'))">
-                주문 내역 삭제
-            </button>
-        </div>
-    </th:block>
+    </div>
 </div>
 
 <!-- ✅ 기존 푸터 유지 -->

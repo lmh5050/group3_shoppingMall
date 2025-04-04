@@ -31,12 +31,10 @@ public class OrderController {
     @GetMapping("/order")
     public String showOrder(@RequestParam("productDetailId") List<String> productDetailId,
                             @RequestParam("quantity") List<Integer> quantity,
-                            HttpSession session, Model model) {
+                            @SessionAttribute String customerId, Model model) {
 
         // Q. 중복되는 부분 AOP(@before)로 빼야할지. 세션에서 ID가져오는 부분 등?
         // 주문서
-        String customerId = (String) session.getAttribute("customerId");
-        model.addAttribute("customerId", customerId);
 
         if (customerId == null) {
             return "redirect:/user/login";
@@ -62,10 +60,7 @@ public class OrderController {
     //주문서 (상품페이지)
     @PostMapping("/order")
     public String showOrder(@ModelAttribute("productInfo") ProductInfoDto productInfoDto,
-                            HttpSession session, Model model) {
-
-        String customerId = (String) session.getAttribute("customerId");
-        model.addAttribute("customerId", customerId);
+                            @SessionAttribute String customerId, Model model) {
 
         if (customerId == null) {
             return "redirect:/user/login";
@@ -93,11 +88,7 @@ public class OrderController {
 
     // 주문목록
     @GetMapping(value = "/list")
-    public String showOrderList(HttpSession session, Model model) {
-
-        //세션에서 로그인id 가져오기
-        String customerId = (String) session.getAttribute("customerId");
-        model.addAttribute("customerId", customerId);
+    public String showOrderList(@SessionAttribute String customerId, Model model) {
 
         //로그인없이 접근하면 로그인페이지로
         if (customerId == null) {
@@ -105,18 +96,7 @@ public class OrderController {
         }
 
         List<OrderListDto> orders = orderListService.getOrderListByCustomerId(customerId);
-
-        // 주문번호별로 그룹화
-        Map<Long, List<OrderListDto>> groupedOrders = orders.stream()
-                .collect(Collectors.groupingBy(OrderListDto::getOrderId));
-
-        //자동 정렬 (내림차순)
-        Map<Long, List<OrderListDto>> sortedGroupedOrders = new TreeMap<>(
-                (orderId1, orderId2) -> Long.compare(orderId2, orderId1)
-        );
-
-        sortedGroupedOrders.putAll(groupedOrders);
-        model.addAttribute("groupedOrders", sortedGroupedOrders);
+        model.addAttribute("orders", orders);
 
         // 대분류 카테고리 가져오기
         ArrayList<ProductCategoryDto> list = productCategoryService.getMajorCategoryByPId();
@@ -127,11 +107,7 @@ public class OrderController {
 
     //주문상세
     @GetMapping("/detail/{orderId}")
-    public String showOrderDetail(@PathVariable Long orderId, HttpSession session, Model model) {
-        //세션에서 로그인id 가져오기
-        String customerId = (String) session.getAttribute("customerId");
-        model.addAttribute("customerId", customerId);
-
+    public String showOrderDetail(@PathVariable Long orderId, @SessionAttribute String customerId, Model model) {
         //로그인없이 접근하면 로그인페이지로
         if (customerId == null) {
             return "redirect:/user/login";
@@ -139,6 +115,8 @@ public class OrderController {
 
         // 주문 상세 정보 가져오기
         List<OrderDetailDto> orderDetails = orderListService.getOrderDetailByOrderId(orderId);
+        model.addAttribute("orderDetails", orderDetails);
+        System.out.println("오더디테일 = " + orderDetails);
 
         // 고객 ID가 일치하지 않는 경우 로그인페이지로
         String orderCustomerId = null;
@@ -150,21 +128,18 @@ public class OrderController {
             return "redirect:/user/login";
         }
 
-        // 주문번호별로 그룹화
+        /*// 주문번호별로 그룹화
         Map<Long, List<OrderDetailDto>> groupedOrderDetails = orderDetails.stream()
                 .collect(Collectors.groupingBy(OrderDetailDto::getOrderId));
 
-        model.addAttribute("groupedOrderDetails", groupedOrderDetails);
+        model.addAttribute("groupedOrderDetails", groupedOrderDetails);*/
 
         return "order/orderDetail";
     }
 
     //주문내역삭제
     @GetMapping("/delete/{orderId}")
-    public String deleteOrder(@PathVariable Long orderId, HttpSession session, Model model) {
-
-        //세션에서 id 가져오기
-        String customerId = (String) session.getAttribute("customerId");
+    public String deleteOrder(@PathVariable Long orderId, @SessionAttribute String customerId, Model model) {
 
         //id 없으면 로그인페이지로
         if (customerId == null) {
