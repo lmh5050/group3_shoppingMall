@@ -118,37 +118,36 @@
 
   <input type="text" id="search" class="search-box" placeholder="상품명, 색상" onkeyup="searchOrders()">
 
-  <th:block th:each="entry : ${groupedOrders}">
-    <div class="order-group">
+  <div th:each="order, orderStat : ${orders}">
+    <!-- 새로운 주문 그룹의 시작 -->
+    <div class="order-group" th:if="${orderStat.first || orders[orderStat.index-1].orderId != order.orderId}">
       <div class="order-header">
-        <span th:text="${entry.value[0].codeName}"></span>
-        <span th:text="${#dates.format(entry.value[0].createdAt, 'yyyy.MM.dd')}"></span>
-        <a th:href="@{/order/detail/{orderId}(orderId=${entry.value[0].orderId})}" class="order-detail-link">상세보기</a>
+        <span th:text="${order.codeName}"></span>
+        <span th:text="${#dates.format(order.createdAt, 'yyyy.MM.dd')}"></span>
+        <a th:href="@{/order/detail/{orderId}(orderId=${order.orderId})}" class="order-detail-link">상세보기</a>
       </div>
 
       <div class="order-items">
-        <th:block th:each="order : ${entry.value}">
-          <div class="order-item">
-            <img th:src="@{${order.imageUrl}}" alt="상품 이미지">
-            <div>
-              <p><span th:text="${order.productName}"></span>
-                <span th:text=" ' / ' + ${order.color}"></span></p>
-              <p><span th:text="${order.size}"></span>
-                <span th:text="' / '+${order.quantity} +'개'"></span></p>
-              <p><span th:text="'₩ '+ ${#numbers.formatInteger(order.productTotalPrice, 0, 'COMMA')}"></span></p>
-            </div>
+        <!-- 현재 주문의 모든 상품 표시 -->
+        <div class="order-item" th:each="item : ${orders}" 
+             th:if="${item.orderId == order.orderId}">
+          <img th:src="@{${item.imageUrl}}" alt="상품 이미지">
+          <div>
+            <p><span th:text="${item.productName}"></span>
+              <span th:text=" ' / ' + ${item.color}"></span></p>
+            <p><span th:text="${item.size}"></span>
+              <span th:text="' / '+${item.quantity} +'개'"></span></p>
+            <p><span th:text="'₩ '+ ${#numbers.formatInteger(item.productTotalPrice, 0, 'COMMA')}"></span></p>
           </div>
-        </th:block>
+        </div>
       </div>
 
       <div class="order-actions">
-        <button class="btn" th:onclick="|location.href='/shipping/track?orderId=' + ${entry.value[0].orderId}|">배송조회</button>
-        <button class="btn" th:onclick="|location.href='/complaint/' + ${entry.value[0].orderId}|">취소/환불/교환 신청</button>
-        <!--<button class="btn">리뷰 작성하기</button>-->
-
+        <button class="btn" th:onclick="|location.href='/shipping/track?orderId=' + ${order.orderId}|">배송조회</button>
+        <button class="btn" th:onclick="|location.href='/complaint/' + ${order.orderId}|">취소/환불/교환 신청</button>
       </div>
     </div>
-  </th:block>
+  </div>
 </div>
 
 <!-- ✅ 기존 푸터 유지 -->
