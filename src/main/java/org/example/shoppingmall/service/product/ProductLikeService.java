@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 
+// 좋아요 기능
 @Service
 public class ProductLikeService {
     private final ProductLikeRepository productLikeRepository;

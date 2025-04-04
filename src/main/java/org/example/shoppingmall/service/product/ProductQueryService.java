@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public class ProductQueryService {
     private final ProductRepository productRepository;
 
-
     @Autowired
     public ProductQueryService(ProductRepository productRepository) {
         this.productRepository = productRepository;
