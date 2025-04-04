@@ -19,12 +19,11 @@
             od.product_total_price
         FROM orders o JOIN payment p
                            ON o.order_id = p.order_id
-                      JOIN order_detail od
-                           ON o.order_id = od.order_id
                       JOIN code_detail cd
                            ON o.order_status = cd.code_no
-        ORDER BY o.order_id DESC,
-                 od.serial_number
+                      JOIN order_detail od
+                           ON o.order_id = od.order_id
+        ORDER BY o.order_id DESC, od.serial_number;
     </select>
 
     <!--고객별 주문 목록 가져오기-->
@@ -39,22 +38,22 @@
             od.product_total_price,
             pdi.product_id,
             cd.code_name
-        FROM orders o JOIN order_detail od
+        FROM orders o JOIN code_detail cd
+                           ON o.order_status = cd.code_no
+                      JOIN order_detail od
                            ON o.order_id = od.order_id
                       JOIN product_detail pd
                            ON od.product_detail_id = pd.product_detail_id
                       JOIN product_description_image pdi
                            ON pd.product_id = pdi.product_id
-                      JOIN code_detail cd
-                           ON o.order_status = cd.code_no
-        WHERE o.customer_id = #{customer_id}
+        WHERE o.customer_id = #{customerId}
           AND o.active_flag = 1
         ORDER BY o.order_id DESC
         </select>
 
     <!--특정 주문에 대한 주문 상세 정보 가져오기-->
     <select id="findOrderDetailByOrderId" parameterType="Long" resultType="OrderDetailDto">
-        SELECT DISTINCT
+        SELECT
             o.created_at,
             o.order_id,
             o.customer_id,
@@ -95,7 +94,7 @@
                       JOIN code_detail cd
                            ON o.order_status = cd.code_no
         WHERE o.order_id = #{orderId}
-          AND o.active_flag = 1
+          AND o.active_flag = 1;
     </select>
 
     <update id="deleteOrder" parameterType="Map">
@@ -116,8 +115,5 @@
         SET active_flag = 0
         WHERE order_id = #{orderId}
     </update>
-
-
-
 
 </mapper>

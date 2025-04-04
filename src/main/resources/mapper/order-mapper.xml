@@ -2,29 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.example.shoppingmall.repository.order.OrderRepository">
-    <!-- 주문번호 매기기 -->
-    <select id="generateOrderId" resultType="Long">
-        SELECT COALESCE(MAX(order_id), 1000) + 1
-        FROM orders;
-    </select>
-
 
     <!-- 고객id로 기본배송지 가져오기 -->
     <select id="findDefaultAddressByCustomerId" parameterType="String" resultType="AddressDto">
         SELECT
-            sp.price,
             a.address,
             a.detail_address,
             a.zip_code,
             a.status,
             a.delivery_request,
             a.receive_people,
-            a.receive_phone_number
-        FROM shipping_price sp
-            LEFT JOIN address a
-                ON sp.shipping_price_id = a.island_or_mountain
-        WHERE customer_id = #{customer_id}
+            a.receive_phone_number,
+            sp.price
+        FROM address a JOIN shipping_price sp
+                            ON sp.shipping_price_id = a.island_or_mountain
+        WHERE a.customer_id = #{customer_id}
           AND a.status = 1
+          AND a.active_flag = 1;
+    </select>
+
+    <!-- 고객id로 모든배송지 가져오기 -->
+    <select id="findAllAddressByCustomerId" parameterType="String" resultType="AddressDto">
+        SELECT
+            a.address,
+            a.detail_address,
+            a.zip_code,
+            a.status,
+            a.delivery_request,
+            a.receive_people,
+            a.receive_phone_number,
+            sp.price
+        FROM address a JOIN shipping_price sp
+                            ON sp.shipping_price_id = a.island_or_mountain
+        WHERE a.customer_id = #{customer_id}
           AND a.active_flag = 1;
     </select>
 
@@ -37,9 +47,8 @@
             pd.size,
             p.name,
             p.price
-        FROM product_detail AS pd
-            INNER JOIN product AS p
-                ON pd.product_id = p.product_id
+        FROM product AS p JOIN product_detail AS pd
+                               ON pd.product_id = p.product_id
         WHERE pd.product_detail_id IN
         <foreach item="id" collection="productDetailId" open="(" close=")" separator=",">
             #{id}
