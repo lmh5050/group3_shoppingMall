@@ -7,13 +7,13 @@
         select * from shipping order by order_id desc
     </select>
 
-    <!--배송 상세 페이지-->
+    <!--배송 상세 조회 페이지-->
     <select id="findDetailShippingId" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
         select * from shipping
         where shipping_id = #{id}
     </select>
 
-    <!--배송 상세 페이지 수정 페이지-->
+    <!--배송 상세 수정 페이지-->
     <select id="updateShipping" resultType="org.example.shoppingmall.dto.shipping.ShippingDto">
         select
             shipping_id,
@@ -21,7 +21,6 @@
             shipping_datetime,
             expected_datetime,
             end_datetime,
-            note,
             delay_reason,
             description,
             delivery_name,
@@ -35,7 +34,6 @@
     <update id="updateShippingList" parameterType="org.example.shoppingmall.dto.shipping.ShippingDto">
         update shipping
         <set>
-
             shipping_company_id = #{shippingCompanyId},
             <if test="trackingNumber != null">tracking_number = #{trackingNumber},</if>
             expected_datetime = #{expectedDatetime},

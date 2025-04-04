@@ -151,14 +151,18 @@
               <!-- 지연 사유 선택 -->
               <label>지연 사유:</label>
               <select name="delayReason" id="delayReason">
-                  <!--        <option value="default">선택하기</option> &lt;!&ndash; 기본 선택 옵션 &ndash;&gt;-->
                   <th:block th:each="code : ${codeDetail}">
                       <option th:value="${code.getCodeNo()}"
                               th:text="${code.getCodeName()}"
-                              th:selected="${updateShipping.delayReason == code.getCodeNo()}">
+                              th:selected="${updateShipping.delayReason == code.getCodeName()}">
+                          <!-- 지연사유의 값이 존재하면 선택된 그 값이 출력-->
+                          <!--th:selected="${updateShipping?.delayReason == code.getCodeName()}">-->
+                          <!--값이 null인지 아닌지 확인-->
                       </option>
                   </th:block>
               </select>
+
+              <!--        <option value="default">선택하기</option> &lt;!&ndash; 기본 선택 옵션 &ndash;&gt;-->
 
               <!-- 출발일시, 예정일시, 도착일시 입력 폼 -->
               <br>
