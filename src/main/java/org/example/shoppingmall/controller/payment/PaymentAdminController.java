@@ -30,6 +30,7 @@ public class PaymentAdminController {
         return "payment/payment-admin";
     }
 
+    // 결제 상태 변경
     @PutMapping("/update")
     public ResponseEntity<Map<String, Object>> updatePaymentStatus(@RequestBody PaymentPendingDto paymentPendingDto) {
         paymentAdminService.updatePaymentStatus(paymentPendingDto);

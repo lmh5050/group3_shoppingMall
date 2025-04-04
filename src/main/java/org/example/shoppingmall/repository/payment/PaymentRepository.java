@@ -7,9 +7,6 @@ import java.util.List;
 
 @Mapper
 public interface PaymentRepository {
-    // 주문번호로 마지막 결제 정보 조회
-    PaymentDto findLastPaymentByOrderId(Integer orderId);
-
     // 마지막 결제 ID 조회
     String getLastPaymentId();
 
@@ -54,9 +51,6 @@ public interface PaymentRepository {
 
     // 배송 이력 저장
     void insertShippingHistory(PaymentShippingDto shippingDto);
-
-    // 결제 정보 변경
-    void updatePayment(PaymentDto paymentDto);
 
     // 결제 상태 변경
     void updatePaymentStatus(PaymentPendingDto paymentPendingDto);

@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class PaymentService {
@@ -18,7 +16,12 @@ public class PaymentService {
         this.paymentRepository = paymentRepository;
     }
 
-    private String rightCardNumber = "3000313570007733";
+    private static final String rightCardNumber = "3000313570007733";
+    private static final String orderCompleted = "MA01006";    // 주문 완료
+    private static final String orderInProgress = "MA01008";   // 주문 중
+    private static final String paymentCompleted = "MA01003";  // 결제 완료
+    private static final String paymentInProgress = "MA01002"; // 결제 대기
+    private static final String paymentFailed = "MA01005";     // 결제 실패
 
     // 결제 처리
     @Transactional
@@ -31,10 +34,11 @@ public class PaymentService {
             // 주문 관련 정보 저장
             saveOrder(paymentInfoDto, now);
             saveOrderDetails(paymentInfoDto);
+            // 배송 정보 저장
             saveShipping(paymentInfoDto);
         } else {
             // 실패하는 경우 결제 정보만 저장
-            savefailedPayment(paymentInfoDto, now);
+            saveFailedPayment(paymentInfoDto, now);
         }
     }
 
@@ -43,9 +47,9 @@ public class PaymentService {
         String status;
         // 결제 방법에 따른 처리
         if (paymentInfoDto.getPaymentMethod().equals("신용/체크카드")) {
-            status = "MA01006";  // 주문 완료
+            status = orderCompleted;  // 주문 완료
         } else {
-            status = "MA01008";  // 주문 중
+            status = orderInProgress;  // 주문 중
         } 
 
         PaymentOrderDto orderDto = PaymentOrderDto.builder()
@@ -91,10 +95,10 @@ public class PaymentService {
         // 결제 방법/결과에 따른 처리
         if (paymentInfoDto.getPaymentMethod().equals("신용/체크카드") && paymentInfoDto.getCardNumber().equals(rightCardNumber)) {
             paymentMethod = paymentInfoDto.getCardType();
-            status = "MA01003";  // 결제 완료
+            status = paymentCompleted;  // 결제 완료
         } else {
             paymentMethod = 1;  // 가상계좌
-            status = "MA01002";  // 결제 대기
+            status = paymentInProgress;  // 결제 대기
             accountDeposit = generateVirtualAccount();  // 가상계좌 번호 생성
         } 
 
@@ -125,7 +129,7 @@ public class PaymentService {
     }
 
     // 결제 실패 - 결제 정보 저장
-    private void savefailedPayment(PaymentInfoDto paymentInfoDto, LocalDateTime paymentDatetime) {
+    private void saveFailedPayment(PaymentInfoDto paymentInfoDto, LocalDateTime paymentDatetime) {
         String newPaymentId = generatePaymentId();
 
         PaymentDto failedPayment = PaymentDto.builder()
@@ -134,7 +138,7 @@ public class PaymentService {
                 .customerId(paymentInfoDto.getCustomerId())
                 .paymentMethodId(paymentInfoDto.getCardType())
                 .paymentCode(UUID.randomUUID().toString())
-                .status("MA01005")  // 결제 실패
+                .status(paymentFailed)  // 결제 실패
                 .finalAmount(paymentInfoDto.getTotalOrderAmount())
                 .taxAmount((int)Math.round(paymentInfoDto.getTotalOrderAmount() * 0.1))
                 .discountAmount(0)
@@ -152,16 +156,7 @@ public class PaymentService {
 
     // 배송 정보 저장
     private void saveShipping(PaymentInfoDto paymentInfoDto) {
-        String lastShippingId = paymentRepository.getLastShippingId();
-        String newShippingId;
-
-        // 배송 ID 생성
-        if (lastShippingId == null) {
-            newShippingId = "SHP001";
-        } else {
-            int lastNumber = Integer.parseInt(lastShippingId.substring(3));
-            newShippingId = String.format("SHP%03d", lastNumber + 1);
-        }
+        String newShippingId = generateShippingId();
         
         PaymentShippingDto shippingDto = PaymentShippingDto.builder()
                 .shippingId(newShippingId)
@@ -198,5 +193,19 @@ public class PaymentService {
             newPaymentId = String.format("PAY%03d", lastNumber + 1);
         }
         return newPaymentId;
+    }
+
+    // 배송 ID 생성 메서드
+    private String generateShippingId() {
+        String lastShippingId = paymentRepository.getLastShippingId();
+        String newShippingId;
+
+        if (lastShippingId == null) {
+            newShippingId = "SHP001";
+        } else {
+            int lastNumber = Integer.parseInt(lastShippingId.substring(3));
+            newShippingId = String.format("SHP%03d", lastNumber + 1);
+        }
+        return newShippingId;
     }
 }
