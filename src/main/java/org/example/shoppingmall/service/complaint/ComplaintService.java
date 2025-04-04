@@ -33,19 +33,12 @@ public class ComplaintService {
     private String createNumericUUID(String complaintType) {
 
         //유형따라 다른 접두사 추가
-        String typeCode ="";
-
-        switch (complaintType.toLowerCase()) {
-            case "cancel":
-                typeCode = "CA";
-                break;
-            case "refund":
-                typeCode = "RE";
-                break;
-            case "exchange":
-                typeCode = "EX";
-                break;
-        }
+        String typeCode = switch (complaintType.toLowerCase()) {
+            case "cancel" -> "CA";
+            case "refund" -> "RE";
+            case "exchange" -> "EX";
+            default -> "";
+        };
 
         //숫자만 포함
         String uuid = UUID.randomUUID().toString().replaceAll("[^0-9]", "");
@@ -107,7 +100,6 @@ public class ComplaintService {
             complaintDto.setExpectedRefundAmount((expectedRefundAmount));
         } else complaintDto.setExpectedRefundAmount(expectedRefundAmount); //교환인 경우 예상 금액 = 0;
 
-
         // Repository를 통해 데이터 저장
         complaintRepository.insertComplaint(complaintDto);
     }
@@ -166,9 +158,9 @@ public class ComplaintService {
        return complaintRepository.findProductNameByOrderId(orderId);
     }
 
+    // 상태 값이 "철회"가 아닌 민원이 존재하는지 확인
     public boolean isComplaintAlreadyExists(Long orderId, String productName) {
-        // 상태 값이 "철회"가 아닌 민원이 존재하는지 확인
-        return complaintRepository.existsByOrderIdAndProductNameAndStatusNotContaining(orderId, productName, "철회");
+        return complaintRepository.existsValidStatus(orderId, productName, "철회");
     }
 
 

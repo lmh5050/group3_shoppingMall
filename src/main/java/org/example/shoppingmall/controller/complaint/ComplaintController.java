@@ -26,7 +26,8 @@ public class ComplaintController {
         this.productCategoryService = productCategoryService;
     }
 
-    @GetMapping("/complaint/list") // 기본 민원 리스트 페이지
+    // 기본 민원 리스트 페이지
+    @GetMapping("/complaint/list")
     public String complaint(HttpSession session, Model model) {
         // 대분류 카테고리 가져오기
         ArrayList<ProductCategoryDto> list = productCategoryService.getMajorCategoryByPId();
@@ -47,6 +48,7 @@ public class ComplaintController {
     //민원 신청 페이지(orderId 받도록 수정)
     @GetMapping("/complaint/{orderId}")
     public String complaintForm(@PathVariable("orderId") Long orderId, Model model) {
+        //한 주문에서 여러 개 상품
         List<String> productName = complaintService.findProductNameByOrderId(orderId);
 
         model.addAttribute("orderId", orderId);
@@ -65,7 +67,7 @@ public class ComplaintController {
                                     @RequestParam String productName,
                                     RedirectAttributes redirectAttributes) {
 
-        // 기존 민원이 있는지 확인, redirect 는 페이지가 다시 로드되면 사라짐
+        // 기존 민원이 있는지 확인, RedirectAttributes 는 페이지가 다시 로드되면 값 사라짐
         if (complaintService.isComplaintAlreadyExists(orderId, productName)) {
             redirectAttributes.addFlashAttribute("errorMessage", "이미 신청한 민원입니다.");
             return "redirect:/complaint/list"; // list 페이지로 리다이렉트
@@ -86,10 +88,6 @@ public class ComplaintController {
                                 Model model) {
 
         ComplaintDto complaint = complaintService.getComplaintById(complaintId);
-
-        if (complaint == null) {
-            complaint = new ComplaintDto(); // 빈 객체 전달
-        }
 
         //orderId, productName 있을 시 값 전달
         model.addAttribute("complaint", complaint);

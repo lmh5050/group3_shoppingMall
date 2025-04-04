@@ -80,7 +80,7 @@
     <!-- order_id에 해당하는 상품 이름 조회-->
     <select id="findProductNameByOrderId">
         SELECT
-            product_name
+            product_name,
         FROM order_detail
         WHERE order_id = #{orderId}
     </select>
@@ -94,7 +94,8 @@
         AND product_name = #{productName}
     </select>
 
-    <select id="existsByOrderIdAndProductNameAndStatusNotContaining" resultType="boolean">
+    <!-- 철회를 포함하지 않는 상태 값 조회 -->
+    <select id="existsValidStatus" resultType="boolean">
         SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
         FROM complaint
         WHERE order_id = #{orderId}
