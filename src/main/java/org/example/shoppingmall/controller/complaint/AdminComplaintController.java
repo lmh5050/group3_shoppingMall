@@ -66,18 +66,18 @@ public class AdminComplaintController {
                                             @RequestParam("orderId") Long orderId,
                                             @RequestParam("productName") String productName) {
 
-        System.out.println(productName);
         adminComplaintService.responseCustomerComplaint(complaintId, comment, complaintResponseType, complaintType, orderId, productName);
         return "redirect:/admin/complaint/list";
     }
-    //고객 민원 답변 수정 시 원래 내용 출력
-    @GetMapping("/admin/complaint/edit/{complaintId}")
-    public String editCustomerComplaint(@PathVariable("complaintId") String complaintId, Model model) {
-        model.addAttribute("complaint", adminComplaintService.getCustomerComplaintById(complaintId));
-        return "complaint/adminComplaintForm";
-    }
 
-    // 고객 민원 삭제
+//    //고객 민원 답변 수정 시 원래 내용 출력
+//    @GetMapping("/admin/complaint/edit/{complaintId}")
+//    public String editCustomerComplaint(@PathVariable("complaintId") String complaintId, Model model) {
+//        model.addAttribute("complaint", adminComplaintService.getCustomerComplaintById(complaintId));
+//        return "complaint/adminComplaintForm";
+//    }
+
+    // 고객 민원 삭제(미구현)
     @PostMapping("/admin/complaint/delete/{complaintId}")
     public String deleteCustomerComplaint(@PathVariable("complaintId") String complaintId) {
         adminComplaintService.getCustomerComplaintById(complaintId);
@@ -85,5 +85,11 @@ public class AdminComplaintController {
         adminComplaintService.deleteCustomerComplaint(complaintId);
 
         return "redirect:/admin/complaint/list";
+    }
+
+    //민원 이력 페이지 이동(페이지만 구현, 기능 미구현)
+    @GetMapping("/admin/complaint/history")
+    public String complaintHistory() {
+        return "complaint/adminComplaintHistory";
     }
 }

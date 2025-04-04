@@ -85,6 +85,7 @@
             --bs-btn-disabled-color: #fff;
             --bs-btn-disabled-bg: #111;
             --bs-btn-disabled-border-color: #111;
+        }
 
     </style>
 </head>
@@ -143,9 +144,9 @@
               <br>
 
 
-              <!-- 비고 입력 -->
-              <label>비고:</label>
-              <textarea name="note" th:text="${updateShipping.note ?: ''}"></textarea><br>
+              <!-- 설명 입력 -->
+              <label>설명:</label>
+              <textarea name="description" th:text="${updateShipping.description ?: ''}"></textarea><br>
 
               <!-- 지연 사유 선택 -->
               <label>지연 사유:</label>
