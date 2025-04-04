@@ -20,14 +20,13 @@ public class ShippingService {
     @Autowired
     private CodeDetailRepository codeDetailRepository;
 
-    //status 값에 code_Name 값 대입
+    //status 값에 해당 code_Name 값 반환
     private String getCodeNameByStatus(String status) {
-
         CodeDetailDto codeDetailDto = codeDetailRepository.findCodeNameByStatus(status);
         return codeDetailDto.getCodeName();
     }
 
-    //delayReason 값에 code_Name 값 대입
+    //delayReason 값에 해당 code_Name 값 반환
     private String getCodeNameByDelayReason(String delayReason) {
         CodeDetailDto codeDetailDto = codeDetailRepository.findCodeNameByDelayReason(delayReason);
         return codeDetailDto.getCodeName();
@@ -38,7 +37,7 @@ public class ShippingService {
         return shippingListRepository.selectAllShipping();
     }
 
-    //배송 상세 페이지
+    //배송 상세 정보 조회 페이지
     public ShippingDto getDetailShipping(String id) {
         return shippingListRepository.findDetailShippingId(id);
     }
@@ -51,15 +50,18 @@ public class ShippingService {
     //배송 상세 페이지 수정 후 업데이트
     @Transactional
     public void updateShippingListId(ShippingDto shippingDto) {
-
+        //배송 완료일이 있으면 배송 완료
         if (shippingDto.getEndDatetime() != null) {
-            shippingDto.setStatus("MA02006"); // 배송 완료
+            shippingDto.setStatus("MA02006");
+            //배송 일자가 있으면 배송 중
         } else if (shippingDto.getShippingDatetime() != null) {
-            shippingDto.setStatus("MA02004"); // 배송 중
+            shippingDto.setStatus("MA02004");
+            //배송 예정일자가 있으면 배송 준비 중
         } else if (shippingDto.getExpectedDatetime() != null) {
-            shippingDto.setStatus("MA02002"); // 배송 준비 중
+            shippingDto.setStatus("MA02002");
+            //배송 예정일자 없이 기사 정보&운송장 번호만 있으면 상품 확인 중
         } else {
-            shippingDto.setStatus("MA02001"); // 배송 정보 없음 (기본값)
+            shippingDto.setStatus("MA02001");
         }
         //배송 상태 코드에 대한 이름 변환 적용 (한 번만 실행)
         shippingDto.setStatus(getCodeNameByStatus(shippingDto.getStatus()));
@@ -67,40 +69,17 @@ public class ShippingService {
         //지연 사유 상태 코드에 대한 이름 변환 적용 (한 번만 실행)
         shippingDto.setDelayReason(getCodeNameByDelayReason(shippingDto.getDelayReason()));
 
-
         //운송장 뒤에 , 찍힘을 공백으로 대체
-        shippingDto.setTrackingNumber(shippingDto.getTrackingNumber().replace(",",""));
+        shippingDto.setTrackingNumber(shippingDto.getTrackingNumber().replace(",", ""));
 
+        //수정된 배송 정보 저장
         shippingListRepository.updateShippingList(shippingDto);
-        // 배송 아이디를 통해 업데이트 된 로우를 가져와서 이력 테이블에 그대로 저장함
-        ShippingDto getShippingDto = shippingListRepository.getShippingDtoByPk(shippingDto.getShippingId());
-        this.insertShippingHistory(getShippingDto);
     }
 
-    //배송 이력 삭제
-    public void deleteShipping(String id) {
-        shippingListRepository.deleteShippingList(id);
-    }
-
-    //배송 이력 리스트 페이지
-    public ArrayList<ShippingDto> getShippingDetailList(String id) {
-        return shippingListRepository.getShippingDetail(id);
-    }
-
-    //배송 이력
-    public void insertShippingHistory(ShippingDto shippingDto) {
-        shippingListRepository.insertShippingHistory(shippingDto);
-    }
-
-    //    //고객 배송 조회
-//    public ArrayList<ShippingDto> getShippingListTrack(String orderId){
-//        return shippingListRepository.getShippingTrack(orderId);
-//    }
-    //고객 배송 조회
+    //주문 아이디로 고객 배송 조회
     public ShippingDto getShippingListTrack(String orderId) {
         return shippingListRepository.getShippingTrack(orderId);
-//
-//    }
+
     }
 }
 

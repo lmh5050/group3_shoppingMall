@@ -22,20 +22,7 @@ public interface ShippingListRepository {
     //배송 상세 페이지 수정 후 업데이트
     void updateShippingList(ShippingDto shippingDto);
 
-    //배송 리스트 삭제
-    void deleteShippingList(String id);
-
-    //배송 이력 리스트
-    ArrayList<ShippingDto> getShippingDetail(String orderId);
-
-    //배송 이력 저장
-    void insertShippingHistory(ShippingDto shippingDto);
-
-    //배송 이력 찾기
-    ShippingDto getShippingDtoByPk(String shippingId);
-
     //고객 배송 조회
-//    ArrayList<ShippingDto> getShippingTrack(String orderId);
       ShippingDto getShippingTrack(String orderId);
 }
 
