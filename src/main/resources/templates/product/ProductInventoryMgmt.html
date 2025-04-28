@@ -171,6 +171,14 @@
                 <br>
                 <div>
                     <div class="product-list">
+                        <!-- 성공 또는 실패 메시지 출력용 -->
+                        <div id="messageBox" th:if="${successUpdate != null or errorMessage != null}"
+                             th:style="${successUpdate != null} ? 'padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px; background-color: #d4edda; color: #155724;' : 'padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px; background-color: #f8d7da; color: #721c24;'}">
+
+                            <p th:if="${successUpdate != null}">상품 정보가 성공적으로 수정되었습니다.</p>
+                            <p th:if="${errorMessage != null}">상품 정보 수정에 실패했습니다: <span th:text="${errorMessage}"></span></p>
+                        </div>
+
                         <div class="product-card" th:each="product : ${products}">
                             <!-- 상품 이미지 -->
                             <div class="product-image">
@@ -219,6 +227,15 @@
 </script>
 <!-- Bootstrap JS (CDN 이용) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    setTimeout(function() {
+        var messageDiv = document.getElementById('messageBox');
+        if (messageDiv) {
+            messageDiv.style.display = 'none';
+        }
+    }, 3000); // 3초 후에 사라짐
+</script>
+
 <!-- 인라인 JavaScript -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {

@@ -1,16 +1,8 @@
 package org.example.shoppingmall.service.product;
 
 import org.example.shoppingmall.dto.product.*;
-import org.example.shoppingmall.repository.product.ProductDetailRepository;
-import org.example.shoppingmall.repository.product.ProductLikeRepository;
-import org.example.shoppingmall.repository.product.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 // 서비스 로직 다룸

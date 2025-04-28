@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.result.view.RedirectView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,18 +18,18 @@ import java.util.HashSet;
 public class ProductInventoryMgmtController {
     private final ProductQueryService productQueryService;
     private final ProductManagementService productManagementService;
-    private final ProductUploadService productUploadService;
+//    private final ProductUploadService productUploadService;
     private final ProductCategoryService productCategoryService;
 
     @Autowired
     public ProductInventoryMgmtController(
             ProductQueryService productQueryService,
             ProductManagementService productManagementService,
-            ProductUploadService productUploadService,
+//            ProductUploadService productUploadService,
             ProductCategoryService productCategoryService) {
         this.productQueryService = productQueryService;
         this.productManagementService = productManagementService;
-        this.productUploadService = productUploadService;
+//        this.productUploadService = productUploadService;
         this.productCategoryService = productCategoryService;
     }
 
@@ -58,7 +59,15 @@ public class ProductInventoryMgmtController {
     @GetMapping("/product/updateProductDetail")
     public String productInventoryMgmtUpdateProductDetail(
             @RequestParam(required = false, name = "prdId") String productId,
+            @RequestParam(required = false, name = "successUpdate") String successUpdate,
+            @RequestParam(required = false, name = "errorMessage") String errorMessage,
             Model model) {
+        // 성공 후 돌아온 경우
+        model.addAttribute("successUpdate", successUpdate);
+
+        // 실패 후 돌아온 경ㅇ
+        model.addAttribute("errorMessage", errorMessage);
+
         // 상품 정보 가져오기
         ProductDto product = productQueryService.getProductById(productId);
         model.addAttribute("product", product);
@@ -83,12 +92,12 @@ public class ProductInventoryMgmtController {
         ArrayList<ProductSeasonDTO> season = productQueryService.getAllSeasonList();
         model.addAttribute("season", season);
 
-       return "/product/ProductDetailUpdate";
+       return "product/ProductDetailUpdate";
     }
 
     // 상품 정보 수정
     @PostMapping("/product/updateProductDetail")
-    public ResponseEntity<?> updateProductDetail(
+    public String updateProductDetail(
             @ModelAttribute ProductUpdateDto productUpdateDto) {
 
         // 프론트 단에서 예외 처리 해야함
@@ -96,10 +105,11 @@ public class ProductInventoryMgmtController {
 
         // 값이 옳지 않거나 오류가 나는 경우 메세지 전달
         if (message != null) {
-            return ResponseEntity.badRequest().body(message);
+            return "redirect:/product/updateProductDetail?prdId="+productUpdateDto.getProductId()+"&errorMessage=" + message;
         }
 
-        return ResponseEntity.ok("ok");
+        // 성공했으면 successUpdate를 파라미터로 넘겨서 다시 GET 호출
+        return "redirect:/product/updateProductDetail?prdId="+productUpdateDto.getProductId()+"&successUpdate=ok";
     }
 
     // 새로운 상품 추가 등록하기 위해 접근
@@ -122,7 +132,7 @@ public class ProductInventoryMgmtController {
         MultipartFile imageFile = productUpdateDto.getImage();
 
         // 상품 등록 결과 메시지
-        String message = productUploadService.productUpload(imageFile, productUpdateDto);
+        String message = productManagementService.productUpload(imageFile, productUpdateDto);
 
         // 1. 성공한 경우
         if (!message.equals("성공")) {

@@ -38,7 +38,7 @@
 <!--  상품에 존재하는 옵션들을 나열하기 위해 상품 상세 정보 찾기  -->
     <select id="getProductDetailOptions">
         SELECT * FROM product_detail
-        WHERE product_id = #{productId}
+        WHERE product_id = #{productId} AND status = 1
     </select>
 
 <!--  상품을 원하는 방식으로 정렬함  -->

@@ -30,13 +30,11 @@
         DELETE FROM product_detail
         WHERE product_id = #{productId}
     </delete>
-<!--    <delete id="removeByExcludedColorAndSize">-->
-<!--        DELETE FROM product_detail-->
-<!--        WHERE product_id = #{productId}-->
-<!--        AND (color, size) NOT IN-->
-<!--        <foreach collection="validColorSizePairs" item="pair" open="(" separator="," close=")">-->
-<!--            (#{pair.color}, #{pair.size})-->
-<!--        </foreach>-->
-<!--    </delete>-->
 
+<!--  상품 상세 정보를 업데이트 : 기존에 존재하던 상세 정보 status를 0으로 변경  -->
+    <update id="updateProductDetailsStatusByZero">
+        UPDATE product_detail
+        SET status = 0
+        WHERE product_id = #{productId}
+    </update>
 </mapper>

@@ -29,12 +29,15 @@ public class ProductUpdateDto {
     private String productQualityAssuranceStandard;  // 품질 보증 기준 productQualityAssuranceStandard
     private List<String> colors;        // 색상
     private List<String> sizes;         // 사이즈
+    private List<String> newColors;
+    private List<String> newSizes;
     private int colorCount;
     private int sizeCount;
     private MultipartFile image;
     private String status;
     private ArrayList<Boolean> colorStatus;
     private ArrayList<Boolean> sizeStatus;
+
 
     public ProductUpdateDto() {
         this.status = "display";
