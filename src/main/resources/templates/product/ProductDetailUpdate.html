@@ -289,7 +289,7 @@
                         <br>
                         <!-- 색상 수정 -->
                         <div>
-                            <h3>(15) 색상 개수</h3>
+                            <h3>(15) 상품 상세 옵션 - 색상</h3>
                             <th:block th:each="color : ${detailColor}">
                                 색상:
                                 <label>
@@ -304,12 +304,12 @@
                                 <br>
                             </th:block>
                             <div id="colorContainer"></div>
-                            <button type="button" onclick="return addColorInput('colors', 'colorStatus')">추가</button>
+                            <button type="button" onclick="return addColorInput('newColors', 'colorStatus')">추가</button>
                         </div>
                         <br>
                         <!-- 사이즈 수정 -->
                         <div>
-                            <h3>(16) 사이즈</h3>
+                            <h3>(16) 상품 상세 옵션 - 사이즈</h3>
                             <th:block th:each="size : ${detailSize}">
                                 사이즈:
                                 <label>
@@ -324,7 +324,7 @@
                                 <br>
                             </th:block>
                             <div id="sizeContainer"></div>
-                            <button type="button" onclick="return addSizeInput('sizes', 'sizeStatus')">추가</button>
+                            <button type="button" onclick="return addSizeInput('newSizes', 'sizeStatus')">추가</button>
                         </div>
                         <br>
                         <!-- 상품 상세 정보 진열 수정 (상품 전체 진열 수정은 이전페이지에서 진행)-->
@@ -442,13 +442,13 @@
         document.getElementById("sizeContainer").appendChild(newInput);
 
         // 새로운 checkbox 생성
-        const newCheckBox = document.createElement("input");
-        newCheckBox.type = "hidden";
-        newCheckBox.name = checkName;
-        newCheckBox.value = "false";
-
-        // 부모 요소에 추가
-        document.getElementById("sizeContainer").appendChild(newCheckBox);
+        // const newCheckBox = document.createElement("input");
+        // newCheckBox.type = "hidden";
+        // newCheckBox.name = checkName;
+        // newCheckBox.value = "false";
+        //
+        // // 부모 요소에 추가
+        // document.getElementById("sizeContainer").appendChild(newCheckBox);
     }
 
     // 색상 추가 박스 생성
@@ -462,14 +462,14 @@
         // 부모 요소에 추가
         document.getElementById("colorContainer").appendChild(newInput);
 
-        // 새로운 checkbox 생성
-        const newCheckBox = document.createElement("input");
-        newCheckBox.type = "hidden";
-        newCheckBox.name = checkName;
-        newCheckBox.value = "false";
-
-        // 부모 요소에 추가
-        document.getElementById("colorContainer").appendChild(newCheckBox);
+        // // 새로운 checkbox 생성
+        // const newCheckBox = document.createElement("input");
+        // newCheckBox.type = "hidden";
+        // newCheckBox.name = checkName;
+        // newCheckBox.value = "false";
+        //
+        // // 부모 요소에 추가
+        // document.getElementById("colorContainer").appendChild(newCheckBox);
     }
 
     // // 파일 선택 input 클릭 함수

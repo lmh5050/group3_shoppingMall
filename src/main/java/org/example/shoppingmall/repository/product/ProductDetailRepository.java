@@ -11,4 +11,5 @@ public interface ProductDetailRepository {
     String getLastProductDetailId();
 //    void removeByExcludedColorAndSize(Map<String, Object> pair);
     void removeProductDetailsByProductId(String productId);
+    void updateProductDetailsStatusByZero(String productId);
 }

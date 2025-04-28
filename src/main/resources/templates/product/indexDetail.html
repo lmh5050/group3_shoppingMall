@@ -62,7 +62,7 @@
             <div class="product-info">
                 <div class="product-meta">
                   <span class="like-count">
-                    <button th:class="${userLike.contains(product.productId)} ? 'like-product' : 'not-like-product'"
+                    <button th:class="${userLike?.contains(product.productId)} ? 'like-product' : 'not-like-product'"
                             th:attr="data-product-id=${product.getProductId()}"
                             onclick="return likeProduct(this.getAttribute('data-product-id'))"
                             th:utext="|<h4>❤ ${product.getLikeCount()}</h4>|"></button>
@@ -94,8 +94,8 @@
                     <input name="quantity" id="inputQuantity" type="number" value="1" min="1">
                     <label for="productDetail">옵션</label>
                     <select id="productDetail" name="productDetailId">
-                        <option th:each="option : ${productDetailOptions}" th:value="${option.getProductDetailId()}">
-                            <span th:text="|${option.getColor()} - ${option.getSize()}|"></span>
+                        <option th:each="option : ${productDetailOptions}" th:value="${option?.getProductDetailId()}">
+                            <span th:text="|${option?.getColor()} - ${option?.getSize()}|"></span>
                         </option>
                     </select>
                     <div class="button-group" th:if="${product.getStatus().equals('display')}">
