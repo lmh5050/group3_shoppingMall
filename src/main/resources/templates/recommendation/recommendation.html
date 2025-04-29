@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 추천 결과</title>
+    <style>
+        body { font-family: 'Noto Sans KR', Arial, sans-serif; margin: 0; background: #f7f7f9; }
+        .container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 40px 36px 32px 36px;
+            margin-bottom: 40px;
+        }
+        h2 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #222;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .form-item { display: flex; flex-direction: column; margin-bottom: 0; }
+        label { font-weight: 500; margin-bottom: 7px; color: #333; }
+        input, select {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 1rem;
+            background: #fafbfc;
+            transition: border 0.2s;
+        }
+        input:focus, select:focus { border: 1.5px solid #222; outline: none; }
+        .btn-row { display: flex; justify-content: center; }
+        .submit-btn {
+            padding: 16px 38px;
+            font-size: 1.15rem;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #111 0%, #444 100%);
+            color: #fff;
+            font-weight: 500;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.11);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .submit-btn:hover { background: linear-gradient(90deg, #222 0%, #111 100%); }
+        .form-message { color: #e74c3c; font-size: 0.97rem; margin-top: 2px; min-height: 18px; }
+        .section { margin-bottom: 40px; }
+        .section-title {
+            font-size: 1.18rem;
+            font-weight: 600;
+            margin-bottom: 18px;
+            color: #222;
+        }
+        .guide {
+            margin-bottom: 18px;
+            font-size: 1.04rem;
+            color: #666;
+            background: #f4f4f4;
+            border-radius: 10px;
+            padding: 16px 22px;
+            text-align: center;
+        }
+        .result-table-wrap {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            padding: 18px 0 10px 0;
+            margin-top: 16px;
+        }
+        table { border-collapse: collapse; width: 100%; background: transparent; }
+        th, td { border: none; padding: 13px 16px; text-align: left; }
+        th { background: #f4f4f4; font-size: 1.01rem; color: #222; font-weight: 600; }
+        tr:not(:last-child) td { border-bottom: 1px solid #e7e7e7; }
+        tr:hover { background: #f8f9fa; }
+        .rating { color: #e09015; font-weight: bold; }
+        /* 카드형 스타일 */
+        .recommend-card-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+        .recommend-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            padding: 20px 22px 16px 22px;
+            min-width: 210px;
+            max-width: 260px;
+            flex: 1 1 210px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .recommend-card .item-id {
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: #2b2b2b;
+        }
+        .recommend-card .item-desc {
+            color: #444;
+            margin-bottom: 4px;
+        }
+        .recommend-card .item-rating {
+            color: #e09015;
+            font-weight: bold;
+        }
+        .recommend-card .item-review {
+            font-size: 0.97rem;
+            color: #666;
+        }
+        /* 빈 상태 안내 */
+        .empty-state {
+            background: #f4f4f4;
+            border-radius: 10px;
+            padding: 32px 0;
+            text-align: center;
+            color: #888;
+            font-size: 1.08rem;
+            margin-top: 18px;
+            display: none;
+        }
+        #results-section { display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h2>맞춤 스타일 추천</h2>
+        <form id="recommend-form" autocomplete="off" novalidate>
+            <div class="form-row">
+                <div class="form-item">
+                    <label for="height">키 (cm)</label>
+                    <input type="number" step="0.1" id="height" name="height" placeholder="100~200cm" min="100" max="200">
+                    <div class="form-message" id="height-msg"></div>
+                </div>
+                <div class="form-item">
+                    <label for="weight">몸무게 (kg)</label>
+                    <input type="number" step="0.1" id="weight" name="weight" placeholder="30~150kg" min="30" max="150">
+                    <div class="form-message" id="weight-msg"></div>
+                </div>
+                <div class="form-item">
+                    <label for="size">사이즈</label>
+                    <select id="size" name="size">
+                        <option value="">사이즈 선택</option>
+                        <option value="44">44</option>
+                        <option value="55">55</option>
+                        <option value="66">66</option>
+                        <option value="77">77</option>
+                        <option value="88">88</option>
+                        <option value="99">99</option>
+                    </select>
+                    <div class="form-message" id="size-msg"></div>
+                </div>
+                <div class="form-item">
+                    <label for="age">나이</label>
+                    <input type="number" id="age" name="age" placeholder="15~100세" min="15" max="100">
+                    <div class="form-message" id="age-msg"></div>
+                </div>
+                <div class="form-item" style="grid-column: span 2;">
+                    <label for="body_type">체형</label>
+                    <select id="body_type" name="body_type">
+                        <option value="">체형 선택</option>
+                        <option value="hourglass">곡선 균형형 (Hourglass)</option>
+                        <option value="athletic">균형 잡힌형 (Athletic)</option>
+                        <option value="apple">상체 중심형 (Apple)</option>
+                        <option value="pear">하체 중심형 (Pear)</option>
+                        <option value="petite">아담한 체형 (Petite)</option>
+                        <option value="full bust">상체 볼륨형 (Full Bust)</option>
+                        <option value="straight & narrow">슬림 직선형 (Straight & Narrow)</option>
+                    </select>
+                    <div class="form-message" id="body_type-msg"></div>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button type="submit" class="submit-btn" id="submit-btn">맞춤 스타일 추천받기</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="section">
+        <div class="section-title">추천 상품</div>
+        <div class="guide" id="guide-msg">
+            정보를 입력하고 <b>'추천받기'</b>를 클릭하면 맞춤 상품을 확인할 수 있어요.
+        </div>
+        <div id="results-section">
+            <div class="recommend-card-list" id="recommend-card-list"></div>
+            <div class="result-table-wrap" id="result-table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>상품 ID</th>
+                        <th>상품 설명</th>
+                        <th>평점</th>
+                        <th>리뷰</th>
+                    </tr>
+                    </thead>
+                    <tbody id="recommendation-list"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="empty-state" id="empty-state">
+            추천 상품이 아직 준비되지 않았습니다. 고객님께 꼭 맞는 상품을 빠른 시일 내에 준비하도록 할게요!
+        </div>
+    </div>
+</div>
+<script>
+    // 한국 → 미국 사이즈 변환
+    function convertKoreanToUSSize(koreanSize) {
+        switch (Number(koreanSize)) {
+            case 44: return 0;
+            case 55: return 4;
+            case 66: return 8;
+            case 77: return 12;
+            case 88: return 14;
+            case 99: return 16;
+            default: return koreanSize;
+        }
+    }
+
+    function showGuideOnly() {
+        document.getElementById('guide-msg').style.display = "block";
+        document.getElementById('results-section').style.display = "none";
+        document.getElementById('empty-state').style.display = "none";
+    }
+
+    function showResults(items) {
+        document.getElementById('guide-msg').style.display = "none";
+        document.getElementById('results-section').style.display = "block";
+        document.getElementById('empty-state').style.display = "none";
+        const cardList = document.getElementById('recommend-card-list');
+        cardList.innerHTML = items.map(item => `
+            <div class="recommend-card">
+                <div class="item-id">${item.item_id}</div>
+                <div class="item-desc">${item.item_description || '-'}</div>
+                <div class="item-rating">평점: <span class="rating">${item.rating ?? '-'}</span></div>
+                <div class="item-review">${item.review_text || '-'}</div>
+            </div>
+        `).join('');
+        const tbody = document.getElementById('recommendation-list');
+        tbody.innerHTML = items.map(item => `
+            <tr>
+                <td>${item.item_id}</td>
+                <td>${item.item_description || '-'}</td>
+                <td class="rating">${item.rating ?? '-'}</td>
+                <td>${item.review_text || '-'}</td>
+            </tr>
+        `).join('');
+    }
+
+    function showEmptyState() {
+        document.getElementById('guide-msg').style.display = "none";
+        document.getElementById('results-section').style.display = "none";
+        document.getElementById('empty-state').style.display = "block";
+    }
+
+    document.getElementById('recommend-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('submit-btn');
+        btn.disabled = true;
+        btn.innerText = "추천 중...";
+
+        // 에러 메시지 초기화
+        document.querySelectorAll('.form-message').forEach(el => el.textContent = "");
+
+        // 입력값 수집
+        const height = this.height.value.trim();
+        const weight = this.weight.value.trim();
+        const size = this.size.value.trim();
+        const age = this.age.value.trim();
+        const bodyType = this.body_type.value.trim();
+
+        let valid = true;
+
+        if (!height) {
+            document.getElementById('height-msg').textContent = "입력해주세요.";
+            valid = false;
+        } else if (Number(height) < 100 || Number(height) > 250) {
+            document.getElementById('height-msg').textContent = "키는 100~250cm 사이여야 합니다.";
+            valid = false;
+        }
+        if (!weight) {
+            document.getElementById('weight-msg').textContent = "입력해주세요.";
+            valid = false;
+        } else if (Number(weight) < 30 || Number(weight) > 200) {
+            document.getElementById('weight-msg').textContent = "몸무게는 30~200kg 사이여야 합니다.";
+            valid = false;
+        }
+        if (!size) {
+            document.getElementById('size-msg').textContent = "입력해주세요.";
+            valid = false;
+        }
+        if (!age) {
+            document.getElementById('age-msg').textContent = "입력해주세요.";
+            valid = false;
+        } else if (Number(age) < 15 || Number(age) > 100) {
+            document.getElementById('age-msg').textContent = "나이는 15~100세 사이여야 합니다.";
+            valid = false;
+        }
+        if (!bodyType) {
+            document.getElementById('body_type-msg').textContent = "입력해주세요.";
+            valid = false;
+        }
+
+        if (!valid) {
+            btn.disabled = false;
+            btn.innerText = "맞춤 스타일 추천받기";
+            showGuideOnly();
+            return;
+        }
+
+        const usSize = convertKoreanToUSSize(Number(size));
+
+        const data = {
+            height: Number(height),
+            weight: Number(weight),
+            size: usSize,
+            age: Number(age),
+            body_type: bodyType
+        };
+
+        fetch('/api/recommendation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(items => {
+                // 배열이 아닌 객체(예: {cluster:..., recommended_items: [...]})가 올 경우 처리
+                let arr = Array.isArray(items) ? items : (items && items.recommended_items ? items.recommended_items : []);
+                if (arr.length === 0) {
+                    showEmptyState();
+                } else {
+                    showResults(arr);
+                }
+            })
+            .catch(error => {
+                showEmptyState();
+                document.getElementById('empty-state').innerHTML = `<span style="color:#e74c3c">오류 발생: ${error}</span>`;
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerText = "맞춤 스타일 추천받기";
+            });
+    });
+
+    // 페이지 진입 시 안내문구만 보이게
+    showGuideOnly();
+</script>
+</body>
+</html>
