@@ -25,6 +25,12 @@
                     <a th:href="|/category?majorCID=${majorC.categoryId}|" th:text="${majorC.name}">default</a>
                 </div>
             </li>
+            <!-- 추천서비스 -->
+            <li>
+                <a class="kaqg_main-menu" th:href="@{/recommendation}">
+                    <i class="fa-solid fa-house-chimney" style="color: white"></i> 추천서비스
+                </a>
+            </li>
             <!-- ▼ 고객센터 메뉴 + 드롭다운
             <li>
                 <a class="kaqg_main-menu" href="#">고객센터</a>
