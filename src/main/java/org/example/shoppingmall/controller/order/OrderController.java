@@ -33,9 +33,7 @@ public class OrderController {
                             @RequestParam("quantity") List<Integer> quantity,
                             @SessionAttribute String customerId, Model model) {
 
-        // Q. 중복되는 부분 AOP(@before)로 빼야할지. 세션에서 ID가져오는 부분 등?
         // 주문서
-
         if (customerId == null) {
             return "redirect:/user/login";
         }
@@ -116,7 +114,6 @@ public class OrderController {
         // 주문 상세 정보 가져오기
         List<OrderDetailDto> orderDetails = orderListService.getOrderDetailByOrderId(orderId);
         model.addAttribute("orderDetails", orderDetails);
-        System.out.println("오더디테일 = " + orderDetails);
 
         // 고객 ID가 일치하지 않는 경우 로그인페이지로
         String orderCustomerId = null;
@@ -127,12 +124,6 @@ public class OrderController {
         if (orderCustomerId == null || !customerId.equals(orderCustomerId)) {
             return "redirect:/user/login";
         }
-
-        /*// 주문번호별로 그룹화
-        Map<Long, List<OrderDetailDto>> groupedOrderDetails = orderDetails.stream()
-                .collect(Collectors.groupingBy(OrderDetailDto::getOrderId));
-
-        model.addAttribute("groupedOrderDetails", groupedOrderDetails);*/
 
         return "order/orderDetail";
     }
